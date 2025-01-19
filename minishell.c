@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 16:49:05 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/13 18:48:06 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/01/19 22:43:25 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,15 @@ int main(int argc, char **argv)
 }
 
 INSIDE LOOP
-REPL read evaluate print loop (loop only terminates when program is closed)
+REPL read, evaluate, print, loop (loop only terminates when program is closed)
 
+1. read the line (into buffer? ggf needed to make bigger dynamically?)
+2. evaluate/parse the line (->tokenization: check how ft strtok works) (pipes? ""? redirections? ...)
+3. execute
+
+
+??? 
+minishell = interactive bc we ask for propmt? or can all shells be run in both?
+what is a good hierarchy to parse and structure program? like 1. redirections, then pipes then etc?
+signals??? like user interrupt?
 */
