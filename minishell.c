@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 16:49:05 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/19 22:43:25 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/01/20 18:17:26 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,11 @@ REPL read, evaluate, print, loop (loop only terminates when program is closed)
 ??? 
 minishell = interactive bc we ask for propmt? or can all shells be run in both?
 what is a good hierarchy to parse and structure program? like 1. redirections, then pipes then etc?
-signals??? like user interrupt?
+what are signals??? like user interrupt?
+idea:
+parse and count pipes ->set loop for pipes
+
+First meeting: 
+how to work together? regular meetings? communication? github?
+how to structure the project?
 */
