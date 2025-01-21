@@ -2,7 +2,7 @@ goals for next week 29.1.:
 
 name for team! amazing shell
 get github running
-do more research what is parsing + execution (what to expect from the code)
+do more research what is parsing + execution (what to expect from the code) //what abou lexing? it seems to be good for parsing as well
 maybe implent some built ins
 ->get ready to split responsibility, be able to start the real deal
 
