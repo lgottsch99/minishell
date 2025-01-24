@@ -1,0 +1,114 @@
+Yes, splitting the project into **one person handling parsing** and the **other handling execution** 
+can work really well, especially for a two-person team, as it allows each person to focus on a large, 
+yet distinct, part of the project. This division helps streamline your work while keeping things modular.
+
+However, it’s important to structure the collaboration so that both parts integrate smoothly at the end. 
+Let’s break down how you could go about splitting it this way:
+
+--------------------------------
+1. Responsibilities of the Parser (Person A)
+
+The parser's job is to take the raw input, tokenize it, and build a logical structure (like an abstract syntax tree, AST, or a command table) that represents what the user wants to do.
+
+Key Tasks for the Parser (Person A):
+- Tokenizing the input: 
+  - Handle input strings, split them into tokens (commands, flags, arguments, operators).
+  - Implement logic for recognizing special characters like pipes (`|`), redirection (`>`, `<`), background execution (`&`), quotes, etc.
+- Building the command structure:
+  - Based on the tokens, create a representation of what needs to be executed (e.g., an array or a linked list of commands and arguments).
+  - For complex input (with pipes, redirections, etc.), organize the commands in a way that can be passed to the executor in the right order.
+- Error handling:
+  - Ensure that malformed commands are caught early and appropriate errors are raised (e.g., missing arguments, unexpected tokens).
+- Handling built-in commands:
+  - Recognize built-in shell commands (like `cd`, `exit`, etc.) and treat them differently from external commands.
+  
+How to Implement Parsing:
+- Input parsing loop: The parser will continuously read the tokens and match them with known patterns (commands, flags, operators). 
+- Command structure: Define a `struct` or some data structure to hold commands and arguments. This could look like:
+
+  typedef struct {
+      char *command;     // The command (e.g., "ls")
+      char args;       // Arguments (e.g., "-l", "/home")
+      char *input_file;  // Input redirection file (if any)
+      char *output_file; // Output redirection file (if any)
+      int pipe;          // 1 if this command is part of a pipeline, 0 otherwise
+  } Command;
+
+- Example: For input like `ls -l /home | grep "code" > output.txt`, the parser should:
+  - Tokenize it into: `["ls", "-l", "/home", "|", "grep", "code", ">", "output.txt"]`
+  - Create two `Command` structs representing `ls` and `grep` commands with their respective arguments and redirection.
+
+
+------------------------------------
+2. Responsibilities of the Executor (Person B)
+
+The executor's job is to take the parsed command structure and actually run the commands by spawning processes and managing I/O.
+
+Key Tasks for the Executor (Person B):
+- Fork and execute external commands: 
+  - Use `fork()` to create child processes, then use `execvp()` to run the actual commands in those processes.
+- Handle built-in commands:
+  - Some commands like `cd` and `exit` are built into the shell and don’t require creating a new process. The executor should check if the command is built-in and handle it directly.
+- Manage pipes:
+  - Set up pipes between processes using `pipe()` and `dup2()` to connect the standard output of one process to the standard input of the next.
+- Handle redirections:
+  - Use `dup2()` to redirect input/output to files (for `>` and `<`).
+- Wait for processes: 
+  - Use `wait()` to synchronize with the child processes, especially if it's not a background process.
+- Background execution:
+  - Handle commands with `&` by not waiting for the process to finish (i.e., running in the background).
+
+How to Implement Execution:
+- Check if the command is built-in:
+  - The executor will first check if the command is a built-in shell command (like `cd`, `exit`). If it is, it executes the built-in code directly.
+  - If it’s an external command, it proceeds with `fork()`, `exec()`, and `wait()`.
+- Process handling:
+  - For simple commands: Just `fork()` and `exec()` the command.
+  - For commands with pipes: Use `pipe()`, `fork()` multiple times to connect processes via pipes.
+  - For commands with redirection: Use `dup2()` to redirect input/output as needed.
+
+-----------------------------------
+
+How to Collaborate and Integrate the Two Parts:
+
+1. Define clear interfaces: 
+   - You should define how the parser communicates with the executor. For instance, the parser should return a structured representation of the commands (like the `Command` structs), and the executor should receive this structure to know what to do.
+   - You could have a function like `execute_command(Command *cmd)` in the executor that will handle the actual execution based on the command structure passed by the parser.
+
+2. Division of work: 
+   - Person A (Parser) can work on building the tokenization and command structure, while Person B (Executor) can work on the execution logic, handling processes, and I/O redirection.
+   - To avoid overlapping, Person A can define clear data structures for the command (like the `Command` struct) and ensure it's ready for execution.
+   - Person B can write functions to handle the execution flow, ensuring they accept the structured commands from Person A.
+
+3. Regular integration and communication:
+   - Periodically, Person A should send the structures (e.g., the `Command` structs) to Person B to see if the structure is working for execution.
+   - Person B should give feedback on whether the parsing logic needs to be adjusted based on how the execution is going.
+
+4. Error handling and validation:
+   - If any part of the code (either parsing or execution) expects certain behaviors from the other, communicate these expectations early. For example, Person A should ensure that command arguments and flags are properly structured so Person B can easily access them.
+
+----------------------
+
+Example Workflow for the First Command:
+Let’s break down a simple example where Person A handles the parsing and Person B executes it.
+
+1. Input: `ls -l /home`
+
+   - Person A:
+     - Tokenize the string: `["ls", "-l", "/home"]`.
+     - Build the `Command` struct:
+     c
+       Command cmd;
+       cmd.command = "ls";
+       cmd.args = ["-l", "/home"];
+       cmd.input_file = NULL;
+       cmd.output_file = NULL;
+       cmd.pipe = 0;
+     
+     - Pass this `Command` struct to Person B.
+   
+2. Person B:
+   - Check if the command is built-in (it’s not).
+   - `fork()` a child process.
+   - In the child process, `execvp("ls", ["ls", "-l", "/home"])` to execute the command.
+   - Wait for the process to finish with `wait()`.

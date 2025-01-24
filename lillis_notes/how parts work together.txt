@@ -1,0 +1,92 @@
+High-Level Overview of How a Shell Works:
+
+A shell is a command-line interface that allows users to interact with the underlying operating system. 
+It takes user input (commands), processes it, and executes the appropriate action. 
+The process usually involves several stages: 
+reading input, parsing the input, executing the command, and handling output.
+
+
+ 1. Reading Input (Command Loop)
+   The shell constantly waits for user input in a loop (hence the "loop" you mentioned). This is often called the read-eval-print loop (REPL). It reads the user's input and begins the process of parsing and execution.
+
+   - Input: A user types a command (e.g., `ls -l /home`) and presses Enter.
+   - Goal: The goal here is to process that input (a string) and execute the correct commands with the right arguments.
+
+
+ 2. Lexer (Tokenization)
+   After the input is read, it's passed to the lexer (also called the tokenizer). The lexer breaks down the input into tokens.
+
+   - A token is a meaningful unit of input. For example, in the command `ls -l /home`, the tokens would be:
+     - `ls` (the command),
+     - `-l` (an option/flag),
+     - `/home` (the argument).
+     
+   The lexer is responsible for identifying things like keywords, operators, arguments, and separators (spaces, semicolons, pipes, etc.). In more complex shells, it may also handle quoting, escaping, and command substitutions.
+
+   Key job: The lexer converts the raw input into a sequence of tokens that the shell can understand and work with.
+
+
+ 3. Parser (Building the Command Table)
+   Once the input is tokenized, the parser takes over. The parser takes the tokens and analyzes the structure of the command. It looks for things like:
+   - The command (e.g., `ls`).
+   - The flags/options (e.g., `-l`).
+   - The arguments (e.g., `/home`).
+   - Special operators like pipes (`|`), redirects (`>`), semicolons (`;`), and background execution (`&`).
+   
+   The parser creates an abstract syntax tree (AST) or command table from these tokens. This structure is a representation of what the user intends to do, broken down into smaller, logical parts.
+
+   - If the input involves multiple commands, like with pipes (`echo hello | grep h`), the parser will ensure that the commands are structured correctly (e.g., `echo` sends output to `grep`).
+   - If there are any redirections (`ls > output.txt`), the parser will identify the file to which the output should be redirected.
+
+   The result of parsing is a command table (or AST), which represents the parsed commands and their relationships.
+
+
+ 4. Executor (Execution)
+   Once the command table is ready, the executor takes over. The executor's job is to execute the commands in the table based on the parsed information.
+
+   - If the command is a built-in shell command (like `cd`, `exit`, or `export`), the shell directly handles it.
+   - If the command is an external command (like `ls` or `grep`), the shell must create a new process to run the command. This involves:
+     - Forking a new process using `fork()`.
+     - Executing the command using `exec()` (a system call that loads the program into the current process).
+     - The child process will run the command, and the shell waits for it to finish using `wait()`.
+
+   For commands involving pipes, redirections, or background processes, the executor will set up the necessary environment before executing the command:
+   - For pipes, it sets up communication between processes (using `pipe()`) so that the output of one process can be used as the input for another.
+   - For redirections, it manipulates file descriptors (`stdin`, `stdout`, `stderr`) to direct input/output to/from files instead of the terminal.
+   - For background processes, the shell doesn’t wait for the process to finish and moves on to the next command.
+
+
+ 5. Output and Error Handling
+   After the command is executed, the shell will return the result to the user. If the command produced any output, it will be displayed in the terminal. If the command encountered an error, the shell will typically print an error message.
+
+   In some cases, the shell handles exit status codes from the executed commands to determine whether they succeeded or failed. For example, a command might return `0` for success and a non-zero value for failure.
+
+---------------------------
+
+ How These Parts Work Together:
+- The input loop continuously waits for the user to type a command.
+- The lexer breaks down the input into tokens.
+- The parser organizes those tokens into a logical structure (like a command table).
+- The executor takes that structure and runs the necessary commands, handling any pipes, redirections, or background processes.
+
+-------------------------------
+
+ Example: `ls -l /home | grep "code" > output.txt`
+
+1. Input: The user types `ls -l /home | grep "code" > output.txt`.
+2. Lexer:
+   - Tokens: `ls`, `-l`, `/home`, `|`, `grep`, `"code"`, `>`, `output.txt`.
+3. Parser:
+   - Command table (or AST):
+     - `ls` with `-l` and `/home` as arguments.
+     - Pipe (`|`) to connect `ls` output to `grep` input.
+     - `grep` with `"code"` as an argument.
+     - Redirect output (`>`) to `output.txt`.
+4. Executor:
+   - Fork a process to run `ls -l /home`.
+   - Fork another process to run `grep "code"`, with the output of `ls` piped into `grep`.
+   - Redirect `grep` output to `output.txt`.
+
+
+
+
