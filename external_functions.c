@@ -50,7 +50,6 @@ dup,
 dup2
 
 
-
 //execution
 	//checking if files /cmds exist/ are executable
 access, open, read, close,
