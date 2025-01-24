@@ -6,12 +6,31 @@ https://medium.com/@jonathanmines/the-ultimate-github-collaboration-guide-df816e
 
 minishell: 
 
+    really good overall tutorial on how to build a shell:
+    https://medium.com/@mohammedisam2000/lets-build-a-linux-shell-part-i-954c95911501 
+
+
     https://m4nnb3ll.medium.com/minishell-building-a-mini-bash-a-42-project-b55a10598218
 
+    
     understand the basics:
     https://brennan.io/2015/01/16/write-a-shell-in-c/ 
+
+    https://www.geeksforgeeks.org/making-linux-shell-c/ 
+
+
+    parsing tree: 
+    https://en.wikipedia.org/wiki/Abstract_syntax_tree 
+
+    https://dev.to/oyagci/generating-a-parse-tree-from-a-shell-grammar-f1 
+
 
     20+ page pdf:
     https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf 
 
 
+
+how does a shell work in general:
+https://linuxcommand.org/lc3_learning_the_shell.php
+
+https://pubs.opengroup.org/onlinepubs/9699919799/ 
