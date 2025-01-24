@@ -19,6 +19,9 @@ minishell:
     https://www.geeksforgeeks.org/making-linux-shell-c/ 
 
 
+    how bash is parsing the line + executing:
+    https://mywiki.wooledge.org/BashParser 
+
     parsing tree: 
     https://en.wikipedia.org/wiki/Abstract_syntax_tree 
 
