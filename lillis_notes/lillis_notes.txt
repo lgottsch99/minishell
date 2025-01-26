@@ -4,7 +4,7 @@ parse tree? (also abstract syntax tree AST) how does it work?
 what command table structure do we need?
 
 HOW A SHELL WORKS
-get input line -> lexer -> tokens -> parser -> command table -> executor
+get input line -> lexer -> tokens -> parser -> AST/ command table -> executor
 
     PARSER
         The Parser is the software component that reads the command line such as “ls -­al” and puts it 

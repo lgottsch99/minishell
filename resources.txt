@@ -4,13 +4,16 @@ how to collaborate using github:
 https://medium.com/@jonathanmines/the-ultimate-github-collaboration-guide-df816e98fb67
 
 
-minishell: 
+minishell:
+
+    https://m4nnb3ll.medium.com/minishell-building-a-mini-bash-a-42-project-b55a10598218
+
 
     really good overall tutorial on how to build a shell:
     https://medium.com/@mohammedisam2000/lets-build-a-linux-shell-part-i-954c95911501 
 
-
-    https://m4nnb3ll.medium.com/minishell-building-a-mini-bash-a-42-project-b55a10598218
+    !!! this too:
+    https://github.com/zelhajou/ft_unix_minishell?tab=readme-ov-file#team-development-steps-for-minishell
 
     
     understand the basics:
@@ -22,8 +25,11 @@ minishell:
     how bash is parsing the line + executing:
     https://mywiki.wooledge.org/BashParser 
 
+    
     parsing tree: 
     https://en.wikipedia.org/wiki/Abstract_syntax_tree 
+
+    https://www.youtube.com/watch?v=wINY109MG10&list=LL
 
     https://dev.to/oyagci/generating-a-parse-tree-from-a-shell-grammar-f1 
 

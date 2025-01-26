@@ -1,23 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42prague.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/24 15:17:10 by lgottsch         ###   ########.fr       */
+/*   Created: 2024/09/22 13:45:19 by lgottsch          #+#    #+#             */
+/*   Updated: 2024/11/15 17:37:46 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-#define MINISHELL_H
+#include "../full_libft.h"
 
-//---------- external libraries ------------------
-#include <stdio.h>  //printf
-#include <unistd.h> //isatty
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
 
-
-
-
-#endif
+	ptr = malloc(size * nmemb);
+	if (!ptr)
+		return (NULL);
+	ft_bzero(ptr, size * nmemb);
+	return (ptr);
+}
