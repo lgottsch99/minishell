@@ -1,34 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/27 17:49:10 by lgottsch         ###   ########.fr       */
+/*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
+/*   Updated: 2025/01/27 17:49:50 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-#define MINISHELL_H
+#include "../includes/minishell.h"
 
-//---------- external libraries ------------------
-#include <stdio.h>  	//printf, readline
-#include <unistd.h> 	//isatty, exit
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdlib.h>		//malloc, free
+void	print_env(char *envp[])
+{
+	int	i;
 
+	i = 0;
+	while (envp[i])
+	{
+		printf("%s\n", envp[i]);
+		i++;
+	}
+	return;
+}
 
+void exit_shell(void)//exit, change input accordingly
+{
+	//a number after exit can be set which refers to exit status: check $?
+	printf("exit\n"); //bash prints exit 
+	exit();
+}
 
-//---------- functions ------------------
-
-//00_init_start
-void	print_start(void);
-
-//builtins
-void	print_env(char *envp[]);
-
-
-#endif

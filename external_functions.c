@@ -43,7 +43,10 @@ waitpid,
 wait3, 
 wait4
 
-
+//envirnoment var expansion
+getenv:		char *getenv(const char *name);
+searches the environment list to find the environment variable name, 
+and returns a pointer to the corresponding value string.
 
 //I/O redirections
 dup, 
@@ -117,9 +120,6 @@ The  function  ttyname() returns a pointer to the null-terminated path‐
 ttyslot(man):
 find the slot of the current users terminal in some file, ->read more in man
 
-getenv:		char *getenv(const char *name);
-searches the environment list to find the environment variable name, 
-and returns a pointer to the corresponding value string.
 
 ioctl( man):		int ioctl(int fd, unsigned long request, ...);
 The ioctl() system call manipulates the underlying device parameters of

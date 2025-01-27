@@ -6,7 +6,7 @@
 #    By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 15:57:29 by lgottsch          #+#    #+#              #
-#    Updated: 2025/01/26 18:13:57 by lgottsch         ###   ########.fr        #
+#    Updated: 2025/01/27 17:38:02 by lgottsch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -lreadline
 
 SRC_FOLDER = ./src/
-SRC = $(addprefix $(SRC_FOLDER), main.c )
+SRC = $(addprefix $(SRC_FOLDER), main.c 00_init_start.c builtins.c)
 
 OBJ = $(SRC:.c=.o)
 

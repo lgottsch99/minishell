@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:43:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/26 18:13:51 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/01/27 16:04:17 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void print_start(void)
 	printf("    $$ |   $$       |$$ |  $$ |$$ |  $$ |         \n");
 	printf("    $$/    $$$$$$$$/ $$/   $$/ $$/   $$/ ");
 	printf("\n");
+	printf("\n");
+	printf("Welcome to our minishell!\n");
 	printf("\n");
 	printf("\n");
 	return;
