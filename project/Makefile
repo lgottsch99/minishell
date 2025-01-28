@@ -6,7 +6,7 @@
 #    By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 15:57:29 by lgottsch          #+#    #+#              #
-#    Updated: 2025/01/28 16:28:44 by Watanudon        ###   ########.fr        #
+#    Updated: 2025/01/28 17:45:47 by Watanudon        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ CFLAGS = -Wall -Wextra -Werror -lreadline
 CFMAC = -L /Users/$(USER)/.brew/opt/readline/lib
 
 SRC_FOLDER = ./src/
-SRC = $(addprefix $(SRC_FOLDER), main.c 00_init_start.c builtins.c)
+SRC = $(addprefix $(SRC_FOLDER), main.c init_start.c builtins.c execution.c)
 
 OBJ = $(SRC:.c=.o)
 

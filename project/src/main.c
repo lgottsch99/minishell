@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/28 16:32:32 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/01/28 18:33:30 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 	
 */
 
-int	main (void)//(int argc, char *argv[], char *envp[])
+int	main (int argc, char *argv[], char *envp[]) //(void)
 {
 	char *input;
 
@@ -42,9 +42,10 @@ int	main (void)//(int argc, char *argv[], char *envp[])
 			//0. handle special quotes ('' ""), heredoc (<<)
 				//handle word expansions, env vars (eg. $USER)
 			//1. lexer: create tokens
-			//(2. parser: takes tokens (and builds AST))
+			//(2. parser: takes tokens (and builds commmand list))
 
-		//4. execute (AST)
+		//4. execute
+			execute(envp);
 			//creates processes, 
 			//handles redirections/pipes,
 			//decides if cmd is builtin or not etc and executes them
@@ -52,9 +53,12 @@ int	main (void)//(int argc, char *argv[], char *envp[])
 		
 		//5. free everything needed
 		free(input);
+		printf("argc = %i\n", argc);
+		printf("argv = %s\n", argv[0]);
+
 	}
 	//6 shutdown shell (also after signal)
 	//rl_clear_history();	
-
+	
 	return (0);
 }
