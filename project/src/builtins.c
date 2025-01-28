@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/27 17:49:50 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/01/28 16:08:35 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@ void exit_shell(void)//exit, change input accordingly
 {
 	//a number after exit can be set which refers to exit status: check $?
 	printf("exit\n"); //bash prints exit 
-	exit();
+	exit(0);
 }
 

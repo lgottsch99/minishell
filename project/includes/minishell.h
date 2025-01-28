@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/27 17:49:10 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/01/28 16:32:34 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include <readline/history.h>
 #include <stdlib.h>		//malloc, free
 
+//---------- Macros ------------------
+
 
 
 //---------- functions ------------------
@@ -29,6 +31,7 @@ void	print_start(void);
 
 //builtins
 void	print_env(char *envp[]);
+
 
 
 #endif

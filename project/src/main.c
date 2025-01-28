@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/27 17:38:45 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/01/28 16:32:32 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 	
 */
 
-int	main (int argc, char *argv[], char *envp[])
+int	main (void)//(int argc, char *argv[], char *envp[])
 {
 	char *input;
 
@@ -39,25 +39,22 @@ int	main (int argc, char *argv[], char *envp[])
 		printf("you typed: %s\n", input);
 
 		//3. parse (and create AST), 
-			//0. handle special quotes ('' "")
+			//0. handle special quotes ('' ""), heredoc (<<)
+				//handle word expansions, env vars (eg. $USER)
 			//1. lexer: create tokens
-			//handle word expansions, env vars (eg. $USER)
-			//2. parser: takes tokens (and builds AST)
+			//(2. parser: takes tokens (and builds AST))
 
 		//4. execute (AST)
 			//creates processes, 
 			//handles redirections/pipes,
 			//decides if cmd is builtin or not etc and executes them
 			//special cases: $?, 
-		print_env(envp);
+		
 		//5. free everything needed
 		free(input);
 	}
 	//6 shutdown shell (also after signal)
-	rl_clear_history();
-	argc = 0;
-	argv = NULL;
-	
+	//rl_clear_history();	
 
 	return (0);
 }
