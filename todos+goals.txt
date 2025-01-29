@@ -16,7 +16,7 @@ steps:
     (tips: always git pull before writing sth new, main branch should always be working)
 
 
-
+----------------------------------------------------------------------------------------
 goals next meetup wednesday 5.2.
 
 get started 
