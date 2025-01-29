@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/28 18:33:30 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/01/29 16:11:43 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 	???
 	somehow somewhere handling signals (ctrl C, ctrl D and ctrl \)
 	how to $?
+	 where to handle word expansions, env vars (eg. $USER)
 
 	
 */
@@ -40,7 +41,6 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 
 		//3. parse (and create AST), 
 			//0. handle special quotes ('' ""), heredoc (<<)
-				//handle word expansions, env vars (eg. $USER)
 			//1. lexer: create tokens
 			//(2. parser: takes tokens (and builds commmand list))
 
