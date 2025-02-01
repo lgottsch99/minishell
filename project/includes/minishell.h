@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/01 17:12:40 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:36:55 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct s_command {
     int		append_mode;     // 1 if output should be appended, 0 otherwise
 	//..more if needed:
 	char 	*exec_path; // NULL for parsing, execution: saves executable path in here
+	int		is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
 
     struct s_command *next; // Pointer to the next command in a pipeline
 } t_command;
