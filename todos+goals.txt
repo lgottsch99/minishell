@@ -24,3 +24,6 @@ dana parsing + signals
 lilli exec + builtins
 
 ??when to do env handling in parsing or exec?
+
+lilli: added following to cmd table:
+

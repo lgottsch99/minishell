@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/01/29 16:11:43 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/01 17:04:37 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 int	main (int argc, char *argv[], char *envp[]) //(void)
 {
-	char *input;
+	char	*input;
 
 	//1. load config files, init etc
 	print_start();
