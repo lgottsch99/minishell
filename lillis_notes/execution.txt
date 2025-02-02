@@ -1,0 +1,10 @@
+Steps in execution:
+-check access and existence of cmds, files
+
+1. create pipes
+2. fork children
+3. 		in children: close all unnecessary fildes
+						redrirect
+						exec
+		in parent:
+			

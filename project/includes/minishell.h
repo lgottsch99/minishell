@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/01 18:36:55 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/02 13:22:45 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 #include <readline/history.h>
 #include <stdlib.h>		//malloc, free
 #include "../lib/full_libft.h"
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 //---------- Macros ------------------
 
@@ -56,6 +60,14 @@ void	execute(char *envp[]);
 char 	**get_path(char *envp[]);
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
+int		check_files(t_command *cmd);
+int		check_access(t_command	*cmd_list, int nr_cmd, char *envp[]);
+void	check_path(t_command	*cmd, char *envp[]);
+
+//redirections
+void	red_infile(char	*input_file);
+void	red_outfile(char *output_file, t_command *cmd);
+void	redirect(int fd, int fd_to_replace);
 
 
 

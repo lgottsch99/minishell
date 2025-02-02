@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/01 18:49:25 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/02 18:09:43 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ typedef struct s_command {
 
 
 #include "../includes/minishell.h"
+
+void	pipeline(t_command *cmd_list, int nr_cmd, char * envp[]);
+
 
 void	init_test_one(t_command *one)
 {
@@ -88,78 +91,25 @@ int get_nr_cmd(t_command *cmd_list)
 	return (nr);
 }
 
-//check executability of cmds, (bash does not check if arguments to a cmd are valid!)
-//create executable path and save in cmd table, else stay at NULL
-void	check_path(t_command	*cmd, char *envp[])
-{
-	char	**path; //whole path from envp
-	char	*exec_path; //path that can be exec
 
-	//1. get whole path from env
-	path = get_path(envp);
-	//2. get executable path if cmd not builtin
-	exec_path = get_exec_path(cmd->command, path); //returns malloced str if exists, NULL if not
-	//3. save exec path in cmd table
-	cmd->exec_path = exec_path;
-	if(!exec_path)
-		printf("nooo executable path found\n");
-	else
-		printf("executable path found\n");
-}
-
-
-int	check_access(t_command	*cmd_list, int nr_cmd, char *envp[])//ret 1 if access denied, 0 if ok
-{
-	int			i;
-	int			builtin;
-	t_command	*tmp; //to trav list
-
-	tmp = cmd_list;
-	i = 0;
-	while (i < nr_cmd)	//for each cmd in list
-	{
-		builtin = 0;
-		//CHECK IF CMD IS BUILTIN
-		builtin = check_builtin(tmp->command);
-		//IF NOT BUILTIN:
-		if (builtin == 0)
-			check_path(tmp, envp);
-		else if (builtin == 1)
-		{
-			printf("cmd is builtin\n");
-			tmp->is_builtin = 1;
-		}
-		if (!tmp->exec_path && builtin == 0) //cmd not found
-		{
-			printf("minishell: error: cant find command\n");
-			return (1);
-		}
-		//check access to files
-		if (check_files(tmp) == 1)
-			return (1);
-		tmp = tmp->next;
-		i++;
-	}
-	return (0);
-}
 
 void	execute(char *envp[])
 {
 	int	nr_cmd;
-	int	i;
-	int	fd_pipe[2]; //fd[0] for read out, fd[1] for write in
-	int	prev_pipe_out; //to save fd to read out for next forked p dup
-	int	pid;
-	int j;
-	t_command	*tmp; //to traverse cmd list 
+	// int	i;
+	// int	fd_pipe[2]; //fd[0] for read out, fd[1] for write in
+	// int	prev_pipe_out; //to save fd to read out for next forked p dup
+	// int	pid;
+	// int j;
+	// t_command	*tmp; //to traverse cmd list 
 	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
-	//t_command	two;
+	t_command	two;
 	t_command	*cmd_list;
 	cmd_list = &one;
 	
-	init_test_one(&one);
+	init_test_two(&one, &two);
 	//---------------
 	
 	//get size of lists 
@@ -175,23 +125,43 @@ void	execute(char *envp[])
 	printf("access ok\n");
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
-
+	//only_builtin();
 
 	// set up pipes (if cmd is builtin they are forked as well, but might have no effect on the main shell p)
+	pipeline(cmd_list, nr_cmd, envp);
+
+	//exit (0);
+	return;
+}
+
+
+void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //ONLY 2 Ps FOR NOW
+{
+	int	i;
+	int	fd_pipe[2]; //fd[0] for read out, fd[1] for write in
+	int	prev_pipe_out; //to save fd to read out for next forked p dup
+	int	pid;
+	t_command	*tmp; //to traverse cmd list 
+
+
+	//TO DO:	Rethink fildes structure, for n-1 pipes
+
 	i = 0;
 	tmp = cmd_list;
 	while (i <= (nr_cmd - 1)) //main loop for pipes 
 	{
+		printf("i is: %i\n", i);
 		//set up pipe if not the last process
-		if (nr_cmd > 1 && i < (nr_cmd - 2)) //only if more than one cmd and not in last 
+		if (nr_cmd > 1 && i < (nr_cmd - 1)) //only if more than one cmd and not in last 
 		{
+			printf("creating pipe\n");
+
 			if (pipe(fd_pipe) == -1) 
 			{
 				perror("pipe: ");
 				//free + exit
 				exit(10);
 			}
-			printf("pipe created\n");
 		}
 		//fork process
 		if ((pid = fork()) < 0)
@@ -200,8 +170,11 @@ void	execute(char *envp[])
 			//free + exit
 			exit(11);
 		}
-		else if (pid == 0) //in child to exec cmd
+		if (pid == 0) //in child to exec cmd
 		{
+			//child_process();
+			//printf("\nthis is process nr: %i\n\n", i);
+
 			int	in; 
 			int	out;
 
@@ -211,47 +184,89 @@ void	execute(char *envp[])
 			//close not needed pipe ends
 			if (nr_cmd > 1 && i < nr_cmd - 1) //if pipes there AND not the last p
 				close(fd_pipe[0]);
+			if (nr_cmd > 1 && i == nr_cmd - 1) //if last p
+				close(fd_pipe[1]);
+			
 			//check in/out file
-			if (tmp->infile)
+			if (tmp->input_file) //no reading from previous pipe
 			{
-				red_in();
+				if (nr_cmd > 1 && i > 0) //??? if not in first
+					close(prev_pipe_out);
+				
+				red_infile(tmp->input_file);
 				in = 1;
+				printf("infile redirected\n");
 			}
-			if (tmp->outfile)
+			if (tmp->output_file) //we will not write to pipe
 			{
-				red_out();
+				if (nr_cmd > 1 && i < nr_cmd && i > 0)
+					close(fd_pipe[1]);
+
+				printf("outfile redirected\n");
+				red_outfile(tmp->output_file, tmp);
 				out = 1;
 			}
 			//redirect in/out to next pipe (if not already by file, file > pipe redirection)
-			if (in == 0 && i > 0) //redirect to 
-					//exec and leave process
-	
+			if (in == 0 && i > 0) //redirect in to be read out end of prev pipe
+			{
+				redirect(prev_pipe_out, STDIN_FILENO);
+				printf("input is prev pipe\n");
+			}
+			if (out == 0 && i < (nr_cmd - 1))//redirect out to be write in end of current pipe
+			{
+				printf("output is pipe\n");
+				redirect(fd_pipe[1], STDOUT_FILENO);
+			}
 
+			//exec and leave process TO DO
+			//if NOT BUILTIN
+			if (tmp->is_builtin == 0)
+			{
+				printf("going to execve\n");
 
+				if(execve(tmp->exec_path, tmp->args, envp) == -1) //?? execve closing open fds?
+					exit(100);
+			}
+			//If BUILTIN TODO
+			else
+				printf("its a builtin\n");
+
+			exit(400);
+
+			
 		}
 		else // in parent 
 		{
-			//save read out end of pipe for next process
-			prev_pipe_out = fd_pipe[0];
-			//close unnecessary pipe ends
-			close(fd_pipe[0]);
-			close(fd_pipe[1]);
+			if (nr_cmd > 1 && i < (nr_cmd - 1))
+			{
+				if (i > 0)
+					close(prev_pipe_out);
+				//save read out end of pipe for next process
+				if (i < nr_cmd - 1)
+					prev_pipe_out = fd_pipe[0];
+			}
+
+			tmp = tmp->next;
+			i++;
 		}
-	
-	tmp = tmp->next;
-	i++;
 	}
-	
-	//wait for all p
-	j = 0;
-	while (j < (nr_cmd - 1))
-	{
-		wait(NULL);
-		j++;
-	}
+	//close all open fildes
+		//TO DO
+	close(fd_pipe[0]);
+	close(fd_pipe[1]);
+	if (nr_cmd > 1)
+		close(prev_pipe_out);
 
+	//wait for all children
+	// while (nr_cmd > 0)
+	// {
+	wait(NULL);
+	wait(NULL);
+
+	// 	nr_cmd--;
+	// }
+	
+	
 	printf("waited for all ps and finished\n");
-
-	//random to silence comp warning
-	print_env(envp);
+	return;
 }

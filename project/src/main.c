@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/01 17:04:37 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/02 14:11:31 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 			//(2. parser: takes tokens (and builds commmand list))
 
 		//4. execute
-			execute(envp);
+		execute(envp);
 			//creates processes, 
 			//handles redirections/pipes,
 			//decides if cmd is builtin or not etc and executes them
@@ -53,6 +53,7 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 		
 		//5. free everything needed
 		free(input);
+		input = NULL;
 		printf("argc = %i\n", argc);
 		printf("argv = %s\n", argv[0]);
 
