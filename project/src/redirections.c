@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 12:12:58 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/02 13:51:45 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/03 16:26:44 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,17 @@ void	red_outfile(char *output_file, t_command *cmd)
 		}
 	}
 	//open outfile or create (>>), append
-	else if (cmd->append_mode == 1)
+	if (cmd->append_mode == 1)
 	{
 		if ((outfile_fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR)) == -1)
 		{
 			perror("error open outfile\n");
 			return;
 		}
-
 	}
-	else
-		return;
 	redirect(outfile_fd, STDOUT_FILENO);
 	close(outfile_fd);
 }
-
 
 void	redirect(int fd, int fd_to_replace)
 {

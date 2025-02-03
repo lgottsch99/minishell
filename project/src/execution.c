@@ -6,11 +6,19 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/02 18:09:43 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/03 16:52:54 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
+	TO DO:	pipeline:
+					Rethink fildes structure, for n-1 pipes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					differentiate builtin
+
+				single builtin:
+					rest of functions?
+
+
 typedef struct s_command {
     char	*command;       // The command name (e.g., "echo", "grep")
     char	**args;         // Array of arguments (NULL-terminated)
@@ -29,6 +37,22 @@ typedef struct s_command {
 #include "../includes/minishell.h"
 
 void	pipeline(t_command *cmd_list, int nr_cmd, char * envp[]);
+
+
+void	init_single_builtin(t_command *one)
+{
+	one->args = (char **)malloc(sizeof(char *) * 2);
+	one->command = "env";
+	one->args[0] = "env";
+	one->args[1] = NULL;
+	one->input_file = NULL;
+	one->output_file = "testtttt.txt";
+	one->append_mode = 0;
+	one->exec_path = NULL;
+	one->is_builtin = 0;
+	one->next = NULL;
+	return;
+}
 
 
 void	init_test_one(t_command *one)
@@ -105,11 +129,11 @@ void	execute(char *envp[])
 	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
-	t_command	two;
+	//t_command	two;
 	t_command	*cmd_list;
 	cmd_list = &one;
 	
-	init_test_two(&one, &two);
+	init_single_builtin(&one);//, &two);
 	//---------------
 	
 	//get size of lists 
@@ -125,14 +149,16 @@ void	execute(char *envp[])
 	printf("access ok\n");
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
-	//only_builtin();
-
+	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
+		only_builtin(cmd_list, envp);
 	// set up pipes (if cmd is builtin they are forked as well, but might have no effect on the main shell p)
-	pipeline(cmd_list, nr_cmd, envp);
+	else
+		pipeline(cmd_list, nr_cmd, envp);
 
 	//exit (0);
 	return;
 }
+
 
 
 void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //ONLY 2 Ps FOR NOW
@@ -144,7 +170,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //ONLY 2 Ps FOR NOW
 	t_command	*tmp; //to traverse cmd list 
 
 
-	//TO DO:	Rethink fildes structure, for n-1 pipes
+	//TO DO:	Rethink fildes structure, for n-1 pipes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 	i = 0;
 	tmp = cmd_list;
@@ -257,7 +283,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //ONLY 2 Ps FOR NOW
 	if (nr_cmd > 1)
 		close(prev_pipe_out);
 
-	//wait for all children
+	//wait for all children TO DO
 	// while (nr_cmd > 0)
 	// {
 	wait(NULL);

@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/02 13:22:45 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/03 16:26:20 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,10 @@ void	check_path(t_command	*cmd, char *envp[]);
 void	red_infile(char	*input_file);
 void	red_outfile(char *output_file, t_command *cmd);
 void	redirect(int fd, int fd_to_replace);
+
+//single_builtin
+void	only_builtin(t_command *cmd_list, char *envp[]);
+void	run_builtin(t_command *cmd_list, char *envp[]);
 
 
 
