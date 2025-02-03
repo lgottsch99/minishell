@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/02 13:08:06 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/03 18:24:00 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ int	check_access(t_command	*cmd_list, int nr_cmd, char *envp[])//ret 1 if access
 			check_path(tmp, envp);
 		else if (builtin == 1)
 		{
-			printf("cmd is builtin\n");
+			printf("cmd is builtin: %s\n", tmp->command);
 			tmp->is_builtin = 1;
 		}
 		if (!tmp->exec_path && builtin == 0) //cmd not found

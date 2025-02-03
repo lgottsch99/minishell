@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/03 16:52:54 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/03 18:39:21 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,12 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char * envp[]);
 void	init_single_builtin(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "env";
-	one->args[0] = "env";
+	one->command = "echo";
+	one->args[0] = "echo";
 	one->args[1] = NULL;
+	//one->args[3] = NULL;
 	one->input_file = NULL;
-	one->output_file = "testtttt.txt";
+	one->output_file = NULL;
 	one->append_mode = 0;
 	one->exec_path = NULL;
 	one->is_builtin = 0;

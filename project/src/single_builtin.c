@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/03 16:51:28 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/03 18:26:02 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,12 @@ typedef struct s_command {
 
 void	run_builtin(t_command *cmd_list, char *envp[])
 {
+	printf("choosing builtin ft\n");
+	
 	if (ft_strncmp(cmd_list->command, "env", ft_strlen(cmd_list->command)) == 0)
 		print_env(envp);
-
+	else if (ft_strncmp(cmd_list->command, "echo", ft_strlen(cmd_list->command)) == 0)
+		echo(cmd_list);
 
 
 	
@@ -42,7 +45,7 @@ void	run_builtin(t_command *cmd_list, char *envp[])
 
 void	only_builtin(t_command *cmd_list, char *envp[]) //no need to fork + pipe
 {
-	printf("running builtin\n");
+	printf("running single builtin\n");
 	int og_in;
 	int og_out;
 	int red_in;		//if 0 no red happened, if 1 yes 
@@ -70,7 +73,11 @@ void	only_builtin(t_command *cmd_list, char *envp[]) //no need to fork + pipe
 	// restore og fildes
 	if (red_in == 1)
 		redirect(og_in, STDIN_FILENO);
+	// else
+	// 	close(og_in);
 	if (red_out == 1)
 		redirect(og_out, STDOUT_FILENO);
+	// else
+	// 	close(og_out);
 	return;
 }

@@ -62,4 +62,3 @@ DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/101955/bus,guid=21a3510ddefcf2d265b
 OLDPWD=/home/lgottsch/core/minishell/minishell_mygit
 TERM_PROGRAM=vscode
 _=./minishell
-doneeeeeeeeeeeeee
