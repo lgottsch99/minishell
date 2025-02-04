@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/03 18:39:21 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/04 17:15:02 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,28 @@ typedef struct s_command {
 void	pipeline(t_command *cmd_list, int nr_cmd, char * envp[]);
 
 
+void	init_cd(t_command *one)
+{
+	one->args = (char **)malloc(sizeof(char *) * 3);
+	one->command = "cd";
+	one->args[0] = "cd";
+	one->args[1] = "..";
+	one->args[3] = NULL;
+	one->input_file = NULL;
+	one->output_file = NULL;
+	one->append_mode = 0;
+	one->exec_path = NULL;
+	one->is_builtin = 0;
+	one->next = NULL;
+	return;
+}
+
+
 void	init_single_builtin(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "echo";
-	one->args[0] = "echo";
+	one->command = "pwd";
+	one->args[0] = "pwd";
 	one->args[1] = NULL;
 	//one->args[3] = NULL;
 	one->input_file = NULL;
@@ -134,7 +151,8 @@ void	execute(char *envp[])
 	t_command	*cmd_list;
 	cmd_list = &one;
 	
-	init_single_builtin(&one);//, &two);
+	//init_single_builtin(&one);//, &two);
+	init_cd(&one);
 	//---------------
 	
 	//get size of lists 

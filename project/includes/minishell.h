@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/03 18:20:00 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/04 17:06:12 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <limits.h> 
+
 
 //---------- Macros ------------------
 
@@ -53,6 +55,8 @@ void	print_start(void);
 //builtins
 void	print_env(char *envp[]);
 void	echo(t_command *cmd_list);
+void	pwd(void);
+void	exit_shell(void);
 
 //execution
 void	execute(char *envp[]);

@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/03 18:40:14 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/04 17:24:06 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ typedef struct s_command {
 */
 
 
-
 #include "../includes/minishell.h"
 
 void	print_env(char *envp[])
@@ -41,6 +40,20 @@ void	print_env(char *envp[])
 		i++;
 	}
 	//printf("doneeeeeeeeeeeeee\n");
+	return;
+}
+
+void	pwd(void) //test with very long path TODO
+{
+	char *path = NULL;
+
+	path = getcwd(path, PATH_MAX);
+	// if (!path)
+	// 	//TO DO 
+	// 	perror("error pwd: ");
+	printf("%s\n", path);
+	if (path)
+		free(path);
 	return;
 }
 
@@ -105,10 +118,22 @@ void	echo(t_command *cmd_list)
 
 
 
-void exit_shell(void)//exit, change input accordingly
+void exit_shell(void)//TODO
 {
 	//a number after exit can be set which refers to exit status: check $?
+	//free all necessary
+
 	printf("exit\n"); //bash prints exit 
 	exit(0);
 }
 
+void	cd(t_command *cmd_list)//TO DO
+{
+	//only cd -> goes to home 
+
+	//cd fhksh/gdf/ -> goes 
+	if (chdir(path) != 0)
+		perror("cd: ");
+
+	
+}
