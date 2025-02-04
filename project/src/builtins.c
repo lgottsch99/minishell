@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/04 17:24:06 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/04 18:40:08 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	print_env(char *envp[])
 		printf("%s\n", envp[i]);
 		i++;
 	}
-	//printf("doneeeeeeeeeeeeee\n");
 	return;
 }
 
@@ -130,6 +129,7 @@ void exit_shell(void)//TODO
 void	cd(t_command *cmd_list)//TO DO
 {
 	//only cd -> goes to home 
+		//env HOME = path to home, use this?
 
 	//cd fhksh/gdf/ -> goes 
 	if (chdir(path) != 0)
