@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/04 17:06:12 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/05 17:06:32 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_command {
     char	**args;         // Array of arguments (NULL-terminated) and flags
     char	*input_file;    // File for input redirection (NULL if none)
     char	*output_file;   // File for output redirection (NULL if none)
-    int		append_mode;     // 1 if output should be appended, 0 otherwise
+    int		append_mode;    // 1 if output should be appended, 0 otherwise
 	//..more if needed:
 	char 	*exec_path; // NULL for parsing, execution: saves executable path in here
 	int		is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
@@ -57,6 +57,7 @@ void	print_env(char *envp[]);
 void	echo(t_command *cmd_list);
 void	pwd(void);
 void	exit_shell(void);
+void	cd(t_command *cmd_list);
 
 //execution
 void	execute(char *envp[]);

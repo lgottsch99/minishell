@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/04 18:40:08 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/05 17:39:47 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,12 +128,43 @@ void exit_shell(void)//TODO
 
 void	cd(t_command *cmd_list)//TO DO
 {
-	//only cd -> goes to home 
-		//env HOME = path to home, use this?
+	char s[100];
+	printf("in cd\n");
+	printf("current dir: %s\n", getcwd(s, 100));
 
-	//cd fhksh/gdf/ -> goes 
-	if (chdir(path) != 0)
-		perror("cd: ");
+	char	*home;
+	int		num_args;
 
-	
+	home = getenv("HOME");
+	if (!home)
+		printf("cant find home\n");
+	num_args = get_num_args(cmd_list->args);
+	if (num_args > 2) //OK
+	{	
+		printf("cd: too many args\n");
+		//free nd exit //TODO
+		exit(19);
+	}
+	if (!cmd_list->args[1] && home) //only cd -> goes to home //OK
+	{
+		printf("only cd\n");
+		if (chdir(home) == -1)
+			perror("cd: ");
+	}
+	else //cd fhksh/gdf/ -> goes to that dir
+	{
+		printf("going to cd hghjj\n");
+
+		if (chdir(cmd_list->args[1]) == -1)
+		{
+			perror("cd: ");
+			//free nd exit //TODO
+			exit(19);
+		}
+	}
+	printf("new dir: %s\n", getcwd(s, 100));
+
+
+	return;
+
 }

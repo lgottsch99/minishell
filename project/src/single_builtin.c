@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/04 17:16:07 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/05 17:07:27 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	run_builtin(t_command *cmd_list, char *envp[])
 		echo(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "pwd", ft_strlen(cmd_list->command)) == 0)
 		pwd();
-	else if (ft_strncmp(cmd_list->command, "exit", ft_strlen(cmd_list->command)) == 0)
-		exit_shell(cmd_list);
+	// else if (ft_strncmp(cmd_list->command, "exit", ft_strlen(cmd_list->command)) == 0)
+	// 	exit_shell(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "cd", ft_strlen(cmd_list->command)) == 0)
 		cd(cmd_list);
 
