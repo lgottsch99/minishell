@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/05 17:29:45 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/07 16:08:18 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,98 @@ void	init_test_one(t_command *one)
 	return;
 }
 
+void	init_test_four(t_command *one, t_command *two, t_command *three, t_command *four)
+{
+	one->args = (char **)malloc(sizeof(char *) * 2);
+	one->command = "ls";
+	one->args[0] = "ls";
+	one->args[1] = NULL;
+	one->input_file = NULL;
+	one->output_file = NULL;
+	one->append_mode = 0;
+	one->exec_path = NULL;
+	one->is_builtin = 0;
+	one->next = two;
+
+	two->args = (char **)malloc(sizeof(char *) * 3);
+	two->command = "wc";
+	two->args[0] = "wc";
+	two->args[1] = "-w";
+	two->args[2] = NULL;
+	two->input_file = NULL;
+	two->output_file = NULL;
+	two->append_mode = 0;
+	two->exec_path = NULL;
+	two->is_builtin = 0;
+	two->next = three;
+
+	three->args = (char **)malloc(sizeof(char *) * 2);
+	three->command = "cat";
+	three->args[0] = "cat";
+	three->args[1] = NULL;
+	three->input_file = NULL;
+	three->output_file = "wc.txt";
+	three->append_mode = 1;
+	three->exec_path = NULL;
+	three->is_builtin = 0;
+	three->next = four;
+
+
+	four->args = (char **)malloc(sizeof(char *) * 3);
+	four->command = "cat";
+	four->args[0] = "cat";
+	four->args[1] = "wc.txt";
+	four->args[2] = NULL;
+	four->input_file = NULL;
+	four->output_file = NULL;
+	four->append_mode = 1;
+	four->exec_path = NULL;
+	four->is_builtin = 0;
+	four->next = NULL;
+
+	return ;
+}
+
+
+void	init_test_three(t_command *one, t_command *two, t_command *three)
+{
+	one->args = (char **)malloc(sizeof(char *) * 2);
+	one->command = "ls";
+	one->args[0] = "ls";
+	one->args[1] = NULL;
+	one->input_file = NULL;
+	one->output_file = NULL;
+	one->append_mode = 0;
+	one->exec_path = NULL;
+	one->is_builtin = 0;
+	one->next = two;
+
+	two->args = (char **)malloc(sizeof(char *) * 2);
+	two->command = "cat";
+	two->args[0] = "cat";
+	two->args[1] = NULL;
+	two->input_file = NULL;
+	two->output_file = NULL;
+	two->append_mode = 0;
+	two->exec_path = NULL;
+	two->is_builtin = 0;
+	two->next = three;
+
+	three->args = (char **)malloc(sizeof(char *) * 2);
+	three->command = "cat";
+	three->args[0] = "cat";
+	three->args[1] = NULL;
+	three->input_file = NULL;
+	three->output_file = "outfile.txt";
+	three->append_mode = 0;
+	three->exec_path = NULL;
+	three->is_builtin = 0;
+	three->next = NULL;
+
+	return ;
+}
+
+
 void	init_test_two(t_command *one, t_command *two)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
@@ -148,12 +240,15 @@ void	execute(char *envp[])
 	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
-	//t_command	two;
+	t_command	two;
+	t_command	three;
+	t_command	four;
+
 	t_command	*cmd_list;
 	cmd_list = &one;
 	
 	//init_single_builtin(&one);//, &two);
-	init_cd(&one);
+	init_test_four(&one, &two, &three, &four);
 	//---------------
 	
 	//get size of lists 
@@ -179,65 +274,158 @@ void	execute(char *envp[])
 	return;
 }
 
+void	free_2d_array(int **fd_pipe, int size)
+{
+	while (size > 0)
+	{
+		free(fd_pipe[size]);
+		size--;
+	}
+	free(fd_pipe);
+}
 
 
-void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //ONLY 2 Ps FOR NOW
+int **alloc_fd(int nr_cmd)
+{
+	int **fd_pipe;
+	int	i;
+
+	i = 0;
+	//malloc space for nr of pointers to pipes
+	fd_pipe = (int **)malloc((nr_cmd - 1) * sizeof(int *));
+	if (!fd_pipe)
+	{
+		//free everything
+		perror("malloc: ");
+		exit (35498);
+	}
+
+	//in loop maloc space for each pipe
+	while (i < nr_cmd - 1)
+	{
+		fd_pipe[i] = (int *)malloc(sizeof(int) * 2);
+		if (!fd_pipe[i])
+		{
+			//free 2d array before 
+			free_2d_array(fd_pipe, i);
+			//free everything else 
+			perror("malloc: ");
+			exit(777);
+		}
+		i++;
+	}
+
+	return (fd_pipe);
+}
+
+int *alloc_pid(int nr_cmd)
+{
+	int *pid;
+
+	pid = (int *)malloc(sizeof(int) * nr_cmd);
+	if (!pid)
+	{
+		//free everything
+		perror("malloc: ");
+		exit(348);
+	}
+	return (pid);
+}
+
+void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n cmds 
 {
 	int	i;
-	int	fd_pipe[2]; //fd[0] for read out, fd[1] for write in
-	int	prev_pipe_out; //to save fd to read out for next forked p dup
-	int	pid;
+	int y; 
+	int	**fd_pipe;
+	int	*pid;
 	t_command	*tmp; //to traverse cmd list 
 
+	fd_pipe = alloc_fd(nr_cmd); //MALLOC
+	pid = alloc_pid(nr_cmd); //MALLOC
 
-	//TO DO:	Rethink fildes structure, for n-1 pipes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//1. create ALLLL pipes necessary
+	i = 0;
+	while (i < nr_cmd - 1)
+	{
+		if (pipe(fd_pipe[i]) == -1)
+		{
+			perror("pipe: ");
+			//free everything
+			exit(97);
+		}
+		i++;
+	}
 
 	i = 0;
 	tmp = cmd_list;
-	while (i <= (nr_cmd - 1)) //main loop for pipes 
+	while (i < nr_cmd) //main loop for fork, exec 
 	{
 		printf("i is: %i\n", i);
-		//set up pipe if not the last process
-		if (nr_cmd > 1 && i < (nr_cmd - 1)) //only if more than one cmd and not in last 
-		{
-			printf("creating pipe\n");
 
-			if (pipe(fd_pipe) == -1) 
-			{
-				perror("pipe: ");
-				//free + exit
-				exit(10);
-			}
-		}
 		//fork process
-		if ((pid = fork()) < 0)
+		if ((pid[i] = fork()) < 0)
 		{
 			perror("fork error: ");
 			//free + exit
 			exit(11);
 		}
-		if (pid == 0) //in child to exec cmd
+		if (pid[i] == 0) //in child to exec cmd 
 		{
 			//child_process();
 			//printf("\nthis is process nr: %i\n\n", i);
 
+			/// i is index of p
 			int	in; 
 			int	out;
 
 			in = 0;
 			out = 0;
 			printf("in child\n");
-			//close not needed pipe ends
-			if (nr_cmd > 1 && i < nr_cmd - 1) //if pipes there AND not the last p
-				close(fd_pipe[0]);
-			if (nr_cmd > 1 && i == nr_cmd - 1) //if last p
-				close(fd_pipe[1]);
-			
+
+			//close ALLLLLL not needed pipe ends
+				y = 0;
+				//looop thru fd structure
+				if (i == 0) //first cmd
+				{
+					//close all ex [i][1]
+					while (y < nr_cmd - 1)
+					{
+						if (y != i)
+							close(fd_pipe[y][1]);
+						close(fd_pipe[y][0]);
+						y++;
+					}
+				}
+				else if (i == nr_cmd - 1) //last cmd
+				{
+					//close all except [i - 1][0]
+					while (y < nr_cmd - 1)
+					{
+						close(fd_pipe[y][1]);
+						if (y != i - 1)
+							close(fd_pipe[y][0]);
+						y++;
+					}
+
+				}
+				else //inbetween
+				{
+					//close all except [i - 1][0]  AND [i][1]
+					while (y < nr_cmd - 1)
+					{
+						if (y != i)
+							close(fd_pipe[y][1]);
+						if (y != i - 1)
+							close(fd_pipe[y][0]);
+						y++;
+					}
+				}
+				
 			//check in/out file
 			if (tmp->input_file) //no reading from previous pipe
 			{
-				if (nr_cmd > 1 && i > 0) //??? if not in first
-					close(prev_pipe_out);
+				if (nr_cmd > 1 && i > 0) //if not in first
+					close(fd_pipe[i - 1][0]);
 				
 				red_infile(tmp->input_file);
 				in = 1;
@@ -245,8 +433,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //ONLY 2 Ps FOR NOW
 			}
 			if (tmp->output_file) //we will not write to pipe
 			{
-				if (nr_cmd > 1 && i < nr_cmd && i > 0)
-					close(fd_pipe[1]);
+				if (nr_cmd > 1 && i < nr_cmd - 1)
+					close(fd_pipe[i][1]);
 
 				printf("outfile redirected\n");
 				red_outfile(tmp->output_file, tmp);
@@ -255,63 +443,57 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //ONLY 2 Ps FOR NOW
 			//redirect in/out to next pipe (if not already by file, file > pipe redirection)
 			if (in == 0 && i > 0) //redirect in to be read out end of prev pipe
 			{
-				redirect(prev_pipe_out, STDIN_FILENO);
+				redirect(fd_pipe[i - 1][0], STDIN_FILENO);
 				printf("input is prev pipe\n");
 			}
 			if (out == 0 && i < (nr_cmd - 1))//redirect out to be write in end of current pipe
 			{
 				printf("output is pipe\n");
-				redirect(fd_pipe[1], STDOUT_FILENO);
+				redirect(fd_pipe[i][1], STDOUT_FILENO);
 			}
 
-			//exec and leave process TO DO
+			//exec and leave process 
 			//if NOT BUILTIN
 			if (tmp->is_builtin == 0)
 			{
 				printf("going to execve\n");
 
-				if(execve(tmp->exec_path, tmp->args, envp) == -1) //?? execve closing open fds?
+				if(execve(tmp->exec_path, tmp->args, envp) == -1) //execve closing open fds? - yes
 					exit(100);
 			}
+			
 			//If BUILTIN TODO
 			else
 				printf("its a builtin\n");
 
 			exit(400);
-
 			
 		}
 		else // in parent 
 		{
-			if (nr_cmd > 1 && i < (nr_cmd - 1))
-			{
-				if (i > 0)
-					close(prev_pipe_out);
-				//save read out end of pipe for next process
-				if (i < nr_cmd - 1)
-					prev_pipe_out = fd_pipe[0];
-			}
-
 			tmp = tmp->next;
 			i++;
 		}
 	}
 	//close all open fildes
-		//TO DO
-	close(fd_pipe[0]);
-	close(fd_pipe[1]);
-	if (nr_cmd > 1)
-		close(prev_pipe_out);
+	y = 0;
+	while (y < nr_cmd - 1)
+	{
+		close(fd_pipe[y][1]);
+		close(fd_pipe[y][0]);
+		y++;
+	}
 
-	//wait for all children TO DO
-	// while (nr_cmd > 0)
-	// {
-	wait(NULL);
-	wait(NULL);
-
-	// 	nr_cmd--;
-	// }
+	//wait for all children
+	y = 0;
+	while (y < nr_cmd)
+	{
+		wait(NULL);
+		y++;
+	}
 	
+	//free everything malloced for pipeline (=fd 2d array)
+	free_2d_array(fd_pipe, nr_cmd - 2);
 	
 	printf("waited for all ps and finished\n");
 	return;
