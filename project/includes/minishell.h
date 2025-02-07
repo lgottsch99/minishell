@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/05 17:06:32 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/07 16:15:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,10 @@ void	redirect(int fd, int fd_to_replace);
 void	only_builtin(t_command *cmd_list, char *envp[]);
 void	run_builtin(t_command *cmd_list, char *envp[]);
 
+//alloc_free_exec
+void	free_2d_array(int **fd_pipe, int size);
+int		**alloc_fd(int nr_cmd);
+int		*alloc_pid(int nr_cmd);
 
 
 #endif

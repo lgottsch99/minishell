@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/07 16:08:18 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/07 16:16:24 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,12 +231,6 @@ int get_nr_cmd(t_command *cmd_list)
 void	execute(char *envp[])
 {
 	int	nr_cmd;
-	// int	i;
-	// int	fd_pipe[2]; //fd[0] for read out, fd[1] for write in
-	// int	prev_pipe_out; //to save fd to read out for next forked p dup
-	// int	pid;
-	// int j;
-	// t_command	*tmp; //to traverse cmd list 
 	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
@@ -274,63 +268,6 @@ void	execute(char *envp[])
 	return;
 }
 
-void	free_2d_array(int **fd_pipe, int size)
-{
-	while (size > 0)
-	{
-		free(fd_pipe[size]);
-		size--;
-	}
-	free(fd_pipe);
-}
-
-
-int **alloc_fd(int nr_cmd)
-{
-	int **fd_pipe;
-	int	i;
-
-	i = 0;
-	//malloc space for nr of pointers to pipes
-	fd_pipe = (int **)malloc((nr_cmd - 1) * sizeof(int *));
-	if (!fd_pipe)
-	{
-		//free everything
-		perror("malloc: ");
-		exit (35498);
-	}
-
-	//in loop maloc space for each pipe
-	while (i < nr_cmd - 1)
-	{
-		fd_pipe[i] = (int *)malloc(sizeof(int) * 2);
-		if (!fd_pipe[i])
-		{
-			//free 2d array before 
-			free_2d_array(fd_pipe, i);
-			//free everything else 
-			perror("malloc: ");
-			exit(777);
-		}
-		i++;
-	}
-
-	return (fd_pipe);
-}
-
-int *alloc_pid(int nr_cmd)
-{
-	int *pid;
-
-	pid = (int *)malloc(sizeof(int) * nr_cmd);
-	if (!pid)
-	{
-		//free everything
-		perror("malloc: ");
-		exit(348);
-	}
-	return (pid);
-}
 
 void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n cmds 
 {

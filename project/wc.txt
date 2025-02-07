@@ -34,3 +34,19 @@ input is prev pipe
 going to execve
 going to execve
 12
+input is prev pipe
+going to execve
+going to execve
+12
+input is prev pipe
+going to execve
+going to execve
+12
+input is prev pipe
+going to execve
+going to execve
+12
+input is prev pipe
+going to execve
+going to execve
+12
