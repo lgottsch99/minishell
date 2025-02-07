@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/07 16:16:24 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/07 17:37:18 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,7 +306,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n 
 			//free + exit
 			exit(11);
 		}
-		if (pid[i] == 0) //in child to exec cmd 
+		if (pid[i] == 0) //in child to exec cmd
 		{
 			//child_process();
 			//printf("\nthis is process nr: %i\n\n", i);
@@ -401,9 +401,13 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n 
 			
 			//If BUILTIN TODO
 			else
+			{
 				printf("its a builtin\n");
-
-			exit(400);
+				run_builtin(tmp, envp);
+				//close fds
+				// exit p????
+				exit(400);
+			}
 			
 		}
 		else // in parent 
