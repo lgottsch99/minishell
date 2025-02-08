@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/07 16:15:14 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/08 16:39:10 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_command {
 
     struct s_command *next; // Pointer to the next command in a pipeline
 } t_command;
+
 
 
 //---------- functions ------------------
