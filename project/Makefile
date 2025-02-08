@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+         #
+#    By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 15:57:29 by lgottsch          #+#    #+#              #
-#    Updated: 2025/01/28 17:45:47 by Watanudon        ###   ########.fr        #
+#    Updated: 2025/02/07 16:14:11 by lgottsch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ CFLAGS = -Wall -Wextra -Werror -lreadline
 CFMAC = -L /Users/$(USER)/.brew/opt/readline/lib
 
 SRC_FOLDER = ./src/
-SRC = $(addprefix $(SRC_FOLDER), main.c init_start.c builtins.c execution.c)
+SRC = $(addprefix $(SRC_FOLDER), main.c init_start.c builtins.c execution.c access_exec.c redirections.c \
+	single_builtin.c alloc_free_exec.c )
 
 OBJ = $(SRC:.c=.o)
 
