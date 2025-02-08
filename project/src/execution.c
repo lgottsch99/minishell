@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/07 17:37:18 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/08 14:41:43 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,7 +343,6 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n 
 							close(fd_pipe[y][0]);
 						y++;
 					}
-
 				}
 				else //inbetween
 				{

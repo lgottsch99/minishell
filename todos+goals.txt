@@ -23,7 +23,6 @@ get started
 dana parsing + signals
 lilli exec + builtins
 
-??when to do env handling in parsing or exec?
+??when to do env handling in parsing or exec? ->in parsing bc only need to handle extension. 
 
-lilli: added following to cmd table:
-
+-> need to add env list

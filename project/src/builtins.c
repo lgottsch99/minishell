@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/05 17:39:47 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/08 15:56:40 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,16 @@ void	print_env(char *envp[])
 }
 
 void	pwd(void) //test with very long path TODO
-{
+{//if pwd hjfdh sdj  also works just like pwd ( doesnt care about args)
 	char *path = NULL;
 
 	path = getcwd(path, PATH_MAX);
-	// if (!path)
-	// 	//TO DO 
-	// 	perror("error pwd: ");
+	if (!path)
+	{
+	 	perror("error pwd: ");
+		//free everything 
+		exit(3246);
+	}
 	printf("%s\n", path);
 	if (path)
 		free(path);
@@ -122,6 +125,9 @@ void exit_shell(void)//TODO
 	//a number after exit can be set which refers to exit status: check $?
 	//free all necessary
 
+	// if (fd_pipe)
+	// 	free_2d_array(fd_pipe);
+
 	printf("exit\n"); //bash prints exit 
 	exit(0);
 }
@@ -164,7 +170,21 @@ void	cd(t_command *cmd_list)//TO DO
 	}
 	printf("new dir: %s\n", getcwd(s, 100));
 
-
 	return;
 
+}
+
+//export w/o args: lists all exported env vars
+//export multiple at once should be possible: eg export VAR1="value1" VAR2="value2"
+//usually setenv() but not allowed. -> modify env array manually
+void export()
+{
+
+}
+
+/* use unlink()
+*/
+void unlink()
+{
+	
 }
