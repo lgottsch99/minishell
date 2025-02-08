@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 16:39:10 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/08 18:01:21 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,14 @@ typedef struct s_command {
 void	print_start(void);
 
 //builtins
-void	print_env(char *envp[]);
+void	print_env(t_list *environ);
 void	echo(t_command *cmd_list);
 void	pwd(void);
 void	exit_shell(void);
 void	cd(t_command *cmd_list);
 
 //execution
-void	execute(char *envp[]);
+void	execute(t_list *envp);
 
 //check_access_exec
 char 	**get_path(char *envp[]);
@@ -77,8 +77,8 @@ void	red_outfile(char *output_file, t_command *cmd);
 void	redirect(int fd, int fd_to_replace);
 
 //single_builtin
-void	only_builtin(t_command *cmd_list, char *envp[]);
-void	run_builtin(t_command *cmd_list, char *envp[]);
+void	only_builtin(t_command *cmd_list, t_list *envp);
+void	run_builtin(t_command *cmd_list, t_list *envp);
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);

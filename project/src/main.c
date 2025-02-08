@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 17:13:35 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/08 18:08:10 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,29 @@
 	
 */
 
-void	add_shlvl(char **var)
+char	*add_shlvl(char *var)
 {
+
+				printf("creating new shlvl\n");
+
 	char	*value;
 	char	*new_str;
+	char	*tmp;
 	int		num;
 	int 	len;
+	int		i;
 
 	new_str = NULL;
-	len = ft_strlen(*var);
+	len = ft_strlen(var);
 	//get value,  atoi, +1, itoa
-	value = ft_substr(*var, 6, (len - 6)); //MALLOC
+	value = ft_substr(var, 6, (len - 6)); //MALLOC
 		//if (!value)
 	printf("current value shlvl is: %s\n", value);
 	
 	num = ft_atoi(value);
 	num += 1;
 	free(value);
-	value = ft_itoa(num);
+	value = ft_itoa(num); //MALLOC
 	printf("new value shlvl is: %s\n", value);
 
 	//create new str for shlvl
@@ -47,14 +52,23 @@ void	add_shlvl(char **var)
 	len = ft_strlen(value) + 7; //shlvl=  + \0 = 7
 	new_str = (char *)malloc(sizeof(char) * len); //MALLOC
 		//if (!new_str)
-	//copy first part, move pointer, copy 2nd part
-		//TO DO
+	//copy first part, move pointer by 6, copy 2nd part
+	ft_strlcpy(new_str, "SHLVL=", 7);
 
+	tmp = new_str;
+	i = 0;
+	while (i < 6)
+	{
+		tmp++;
+		i++;
+	}
+	ft_strlcpy(tmp, value, len);
+	free(var);
+	free(value);
+		printf("final new value shlvl is: %s\n", new_str);
 
-	free(*var);
+	return(new_str);
 
-
-	
 }
 
 
@@ -88,16 +102,13 @@ t_list	*set_env(char *envp[]) //create linked list w all env vars, increasing sh
 		{
 			printf("adding to shlvl\n");
 			//get value,  atoi, +1, itoa
-			add_shlvl(&var);
-
+			var = add_shlvl(var);
+			printf("finito adding to shlvl\n");
 		}
-
 		//for each create new node
 		new_node = ft_lstnew(var);
 		//connect to list
-		ft_lstadd_back(&environ, var);
-
-
+		ft_lstadd_back(&environ, new_node);
 		i++;
 	}
 	
@@ -112,10 +123,12 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 	//TO DO: init protection ( like if !envp etc) 
 
 	//1. load config files, init etc
+	print_start();
+
 	/*TO DO: set up env (SHLVL increases from std.!)
 	*/
 	environ = set_env(envp);
-	print_start();
+	print_env(environ);
 
 	//2. main loop
 	while (1)

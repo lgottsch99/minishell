@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 14:41:43 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/08 18:24:58 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	pipeline(t_command *cmd_list, int nr_cmd, char * envp[]);
+void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp);
 
 
 void	init_cd(t_command *one)
@@ -60,8 +60,8 @@ void	init_cd(t_command *one)
 void	init_single_builtin(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "pwd";
-	one->args[0] = "pwd";
+	one->command = "env";
+	one->args[0] = "env";
 	one->args[1] = NULL;
 	//one->args[3] = NULL;
 	one->input_file = NULL;
@@ -228,21 +228,21 @@ int get_nr_cmd(t_command *cmd_list)
 
 
 
-void	execute(char *envp[])
+void	execute(t_list *envp)
 {
 	int	nr_cmd;
 	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
-	t_command	two;
-	t_command	three;
-	t_command	four;
+	// t_command	two;
+	// t_command	three;
+	// t_command	four;
 
 	t_command	*cmd_list;
 	cmd_list = &one;
 	
 	//init_single_builtin(&one);//, &two);
-	init_test_four(&one, &two, &three, &four);
+	init_single_builtin(&one); //, &two, &three, &four);
 	//---------------
 	
 	//get size of lists 
@@ -250,12 +250,12 @@ void	execute(char *envp[])
 	printf("\n\nsize cmd list: %i\n\n", nr_cmd);
 
 	//check access of everything (files + cmds), creates paths, decides if builtin
-	if (check_access(cmd_list, nr_cmd, envp) != 0)
-	{
-		//free everything
-		exit(18);
-	}
-	printf("access ok\n");
+	// if (check_access(cmd_list, nr_cmd, envp) != 0)
+	// {
+	// 	//free everything
+	// 	exit(18);
+	// }
+	// printf("access ok\n");
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
@@ -269,7 +269,7 @@ void	execute(char *envp[])
 }
 
 
-void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n cmds 
+void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp) //works for 2 -> n cmds 
 {
 	int	i;
 	int y; 
@@ -393,9 +393,16 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n 
 			if (tmp->is_builtin == 0)
 			{
 				printf("going to execve\n");
+			
+			
+			//TO DO: convert t_list envp into char ** for execve
 
-				if(execve(tmp->exec_path, tmp->args, envp) == -1) //execve closing open fds? - yes
-					exit(100);
+
+
+
+				exit (87);
+				// if(execve(tmp->exec_path, tmp->args, envp) == -1) //execve closing open fds? - yes
+				// 	exit(100);
 			}
 			
 			//If BUILTIN TODO

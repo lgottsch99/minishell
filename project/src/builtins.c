@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 15:56:40 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/08 18:00:02 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,32 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	print_env(char *envp[])
-{
-	int	i;
+// void	print_env(t_list *envp[])//TO DO: CHANGE TO OWN ENV LIST
+// {
+// 	int	i;
 
-	i = 0;
-	while (envp[i])
+// 	i = 0;
+// 	while (envp[i])
+// 	{
+// 		printf("%s\n", envp[i]);
+// 		i++;
+// 	}
+// 	return;
+// }
+
+void	print_env(t_list *environ)//TO DO: CHANGE TO OWN ENV LIST
+{
+	t_list	*tmp;
+
+	tmp = environ;
+	while (tmp)
 	{
-		printf("%s\n", envp[i]);
-		i++;
+		printf("%s\n", (char *)tmp->content);
+		tmp = tmp->next;
 	}
 	return;
 }
+
 
 void	pwd(void) //test with very long path TODO
 {//if pwd hjfdh sdj  also works just like pwd ( doesnt care about args)
@@ -177,14 +191,14 @@ void	cd(t_command *cmd_list)//TO DO
 //export w/o args: lists all exported env vars
 //export multiple at once should be possible: eg export VAR1="value1" VAR2="value2"
 //usually setenv() but not allowed. -> modify env array manually
-void export()
-{
+// void export()
+// {
 
-}
+// }
 
-/* use unlink()
-*/
-void unlink()
-{
+// /* use unlink()
+// */
+// void unlink()
+// {
 	
-}
+// }
