@@ -1,8 +1,0 @@
-includes
-lib
-Makefile
-minishell
-outfile.txt
-out.txt
-src
-test.txt

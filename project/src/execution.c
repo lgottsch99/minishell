@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 18:24:58 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:17:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,12 +195,12 @@ void	init_test_two(t_command *one, t_command *two)
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 3);
-	two->command = "wc";
-	two->args[0] = "wc";
-	two->args[1] = "-w";
+	two->command = "ls";
+	two->args[0] = "ls";
+	two->args[1] = "-l";
 	two->args[2] = NULL;
 	two->input_file = NULL;
-	two->output_file = NULL;
+	two->output_file = NULL; //"out.txt";
 	two->append_mode = 0;
 	two->exec_path = NULL;
 	two->is_builtin = 0;
@@ -234,7 +234,7 @@ void	execute(t_list *envp)
 	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
-	// t_command	two;
+	t_command	two;
 	// t_command	three;
 	// t_command	four;
 
@@ -242,7 +242,7 @@ void	execute(t_list *envp)
 	cmd_list = &one;
 	
 	//init_single_builtin(&one);//, &two);
-	init_single_builtin(&one); //, &two, &three, &four);
+	init_test_two(&one, &two); //, &two, &three, &four);
 	//---------------
 	
 	//get size of lists 
@@ -250,12 +250,12 @@ void	execute(t_list *envp)
 	printf("\n\nsize cmd list: %i\n\n", nr_cmd);
 
 	//check access of everything (files + cmds), creates paths, decides if builtin
-	// if (check_access(cmd_list, nr_cmd, envp) != 0)
-	// {
-	// 	//free everything
-	// 	exit(18);
-	// }
-	// printf("access ok\n");
+	if (check_access(cmd_list, nr_cmd, envp) != 0)
+	{
+		//free everything
+		exit(18);
+	}
+	printf("access ok\n");
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
@@ -271,6 +271,8 @@ void	execute(t_list *envp)
 
 void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp) //works for 2 -> n cmds 
 {
+	printf("in pipeline\n");
+
 	int	i;
 	int y; 
 	int	**fd_pipe;
@@ -314,6 +316,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp) //works for 2 -> n 
 			/// i is index of p
 			int	in; 
 			int	out;
+			char **env_array;
 
 			in = 0;
 			out = 0;
@@ -392,19 +395,24 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp) //works for 2 -> n 
 			//if NOT BUILTIN
 			if (tmp->is_builtin == 0)
 			{
-				printf("going to execve\n");
-			
-			
-			//TO DO: convert t_list envp into char ** for execve
+				//printf("going to execve\n");
+			//convert t_list envp into char ** for execve
+				env_array = convert_env_array(envp);
+				if (!env_array)
+				{
+					//free everything
+					perror("malloc env_array: ");
+					exit(78);
+				}
+				printf("converted env to array\n");
 
-
-
-
-				exit (87);
-				// if(execve(tmp->exec_path, tmp->args, envp) == -1) //execve closing open fds? - yes
-				// 	exit(100);
+				//exit (87);
+				if(execve(tmp->exec_path, tmp->args, env_array) == -1) //execve closing open fds? - yes
+				{
+					perror("execve: \n");
+					exit(100);
+				}
 			}
-			
 			//If BUILTIN TODO
 			else
 			{

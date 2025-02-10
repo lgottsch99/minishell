@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 18:00:02 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:17:51 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,10 +191,25 @@ void	cd(t_command *cmd_list)//TO DO
 //export w/o args: lists all exported env vars
 //export multiple at once should be possible: eg export VAR1="value1" VAR2="value2"
 //usually setenv() but not allowed. -> modify env array manually
-// void export()
-// {
+void export(t_command *cmd, t_list *envp)
+{
+	int 	num_args;
+	t_list 	*tmp;
 
-// }
+	tmp = envp;
+	num_args = get_num_args(cmd->args);
+	if (num_args == 1) //only export
+	{
+		//showing all env vars in alpha + format: declare -x HOME="/home/user" bzw man: When no arguments are given, the results are unspecified.
+
+		while (tmp)
+		{
+
+			tmp = tmp->next;
+		}
+	}
+
+}
 
 // /* use unlink()
 // */

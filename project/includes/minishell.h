@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 18:01:21 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/10 18:05:24 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,14 @@ void	cd(t_command *cmd_list);
 void	execute(t_list *envp);
 
 //check_access_exec
-char 	**get_path(char *envp[]);
+char **get_path(t_list *envp);
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
 int		check_files(t_command *cmd);
-int		check_access(t_command	*cmd_list, int nr_cmd, char *envp[]);
-void	check_path(t_command	*cmd, char *envp[]);
+int		check_access(t_command	*cmd_list, int nr_cmd, t_list *envp);
+void	check_path(t_command	*cmd, t_list *envp);
+char 	**convert_env_array(t_list *envp);
+
 
 //redirections
 void	red_infile(char	*input_file);
