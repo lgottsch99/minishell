@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/10 19:17:51 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:46:17 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,28 +188,108 @@ void	cd(t_command *cmd_list)//TO DO
 
 }
 
-//export w/o args: lists all exported env vars
-//export multiple at once should be possible: eg export VAR1="value1" VAR2="value2"
-//usually setenv() but not allowed. -> modify env array manually
-void export(t_command *cmd, t_list *envp)
+void	print_list(t_list *envp)
 {
-	int 	num_args;
-	t_list 	*tmp;
+	t_list	*tmp;
 
 	tmp = envp;
-	num_args = get_num_args(cmd->args);
-	if (num_args == 1) //only export
+	while(tmp)
 	{
-		//showing all env vars in alpha + format: declare -x HOME="/home/user" bzw man: When no arguments are given, the results are unspecified.
-
-		while (tmp)
-		{
-
-			tmp = tmp->next;
-		}
+		printf("%s\n", (char *)tmp->content);
+		tmp = tmp->next;
 	}
-
 }
+
+// //SHELL VAR RULES:  A variable name could contain any alphabet (a-z, A-Z), any digits (0-9), and an underscore ( _ ). However, a variable name must start with an alphabet or underscore. It can never start with a number. 
+// int	check_shellvar_rules(t_command *cmd)
+// {//chck if all args valid (see rules below), else error, stop
+// 	int	i;
+// 	int	y;
+	
+// 	i = 0;
+// 	y = 0;
+// 	while (cmd->args[i])
+// 	{
+// 		//check char[0]: if not a-z or '_' (NO DIGITS)
+// 		if (ft_isalpha(cmd->arg[i][0]) == 0 && cmd->arg[i][0] != '_')
+// 			return (1);
+// 		//goo thru whole arg and check if anything not a-z or 0-9 or _
+// 		y = 1;
+// 		while (cmd->arg[i][y])
+// 		{
+// 			if (ft_isalnum(cmd->arg[i][y]) == 0 && cmd->arg[i][y] != '_')
+// 				return (1);
+// 			y++;
+// 		}
+// 		i++;
+// 	}
+// 	return (0);
+// }
+
+
+
+// void	update_or_create_env(t_command *cmd, t_list *envp)
+// {		//for each arg check: (all args valid at this point)
+// 		//1.if already exists
+// 			//if yes (get list node)
+// 			//1.5 if need to update (= inside)
+// 				//if yes update list node
+// 				//if no do nothing
+// 			//if no (create new list node)
+
+// 	int		i;
+// 	char	*arg_name;
+// 	t_list	*existing_var;
+
+// 	i = 0;
+// 	while (cmd->args[i]) //go thru args
+// 	{
+// 	//go thru env list
+// 		//get clear names
+// 		arg_
+
+
+
+
+// 		i++;
+// 	}
+
+
+
+
+// }
+
+// //export w/o args: lists all exported env vars
+// //export multiple at once should be possible: eg export VAR1="value1" VAR2="value2"
+// //usually setenv() but not allowed. -> modify env array manually
+// void export(t_command *cmd, t_list *envp)
+// {
+// 	int 	num_args;
+// 	t_list 	*tmp;
+// 	int		i;
+
+// 	tmp = envp;
+// 	num_args = get_num_args(cmd->args);
+// 	printf("nr export args is: %i\n", num_args);
+// 	if (num_args == 1) //only export, man export: When no arguments are given, the results are unspecified.
+// 	{ //just print list of exported vars
+// 		print_list(envp);
+// 	}
+// 	else
+// 	{
+// 		//chck if all args valid (see rules below), else error, stop
+// 		if (check_shellvar_rules(cmd) == 1) //1 if invalid, 0 if valid
+// 		{
+// 			ft_putstr_fd("not valid shell var format\n", 1);//print error
+// 			//free and exit
+// 			exit(34404);
+// 		}
+// 		update_or_create_env(cmd, env);
+// 	}
+// }
+// //SHELL VAR RULES:  A variable name could contain any alphabet (a-z, A-Z), any digits (0-9), and an underscore ( _ ). However, a variable name must start with an alphabet or underscore. It can never start with a number. 
+
+
 
 // /* use unlink()
 // */
