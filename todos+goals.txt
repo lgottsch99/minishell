@@ -32,6 +32,3 @@ lilli exec + builtins
 
 ??here doc create own file
 
-
-
-to do lilli: clean up main + push for dana
