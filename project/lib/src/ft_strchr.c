@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42prague.com    +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 16:36:43 by lgottsch          #+#    #+#             */
-/*   Updated: 2024/11/15 17:40:48 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:19:34 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../full_libft.h"
 
-//WHILE i<= len BC also need to check for \0
+//returns pointer to first occurence
 
 char	*ft_strchr(const char *s, int c)
 {

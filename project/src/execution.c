@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 14:41:43 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:17:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	pipeline(t_command *cmd_list, int nr_cmd, char * envp[]);
+void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp);
 
 
 void	init_cd(t_command *one)
@@ -60,8 +60,8 @@ void	init_cd(t_command *one)
 void	init_single_builtin(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "pwd";
-	one->args[0] = "pwd";
+	one->command = "env";
+	one->args[0] = "env";
 	one->args[1] = NULL;
 	//one->args[3] = NULL;
 	one->input_file = NULL;
@@ -195,12 +195,12 @@ void	init_test_two(t_command *one, t_command *two)
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 3);
-	two->command = "wc";
-	two->args[0] = "wc";
-	two->args[1] = "-w";
+	two->command = "ls";
+	two->args[0] = "ls";
+	two->args[1] = "-l";
 	two->args[2] = NULL;
 	two->input_file = NULL;
-	two->output_file = NULL;
+	two->output_file = NULL; //"out.txt";
 	two->append_mode = 0;
 	two->exec_path = NULL;
 	two->is_builtin = 0;
@@ -228,21 +228,21 @@ int get_nr_cmd(t_command *cmd_list)
 
 
 
-void	execute(char *envp[])
+void	execute(t_list *envp)
 {
 	int	nr_cmd;
 	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
 	t_command	two;
-	t_command	three;
-	t_command	four;
+	// t_command	three;
+	// t_command	four;
 
 	t_command	*cmd_list;
 	cmd_list = &one;
 	
 	//init_single_builtin(&one);//, &two);
-	init_test_four(&one, &two, &three, &four);
+	init_test_two(&one, &two); //, &two, &three, &four);
 	//---------------
 	
 	//get size of lists 
@@ -269,8 +269,10 @@ void	execute(char *envp[])
 }
 
 
-void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n cmds 
+void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp) //works for 2 -> n cmds 
 {
+	printf("in pipeline\n");
+
 	int	i;
 	int y; 
 	int	**fd_pipe;
@@ -314,6 +316,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n 
 			/// i is index of p
 			int	in; 
 			int	out;
+			char **env_array;
 
 			in = 0;
 			out = 0;
@@ -392,12 +395,24 @@ void	pipeline(t_command *cmd_list, int nr_cmd, char *envp[]) //works for 2 -> n 
 			//if NOT BUILTIN
 			if (tmp->is_builtin == 0)
 			{
-				printf("going to execve\n");
+				//printf("going to execve\n");
+			//convert t_list envp into char ** for execve
+				env_array = convert_env_array(envp);
+				if (!env_array)
+				{
+					//free everything
+					perror("malloc env_array: ");
+					exit(78);
+				}
+				printf("converted env to array\n");
 
-				if(execve(tmp->exec_path, tmp->args, envp) == -1) //execve closing open fds? - yes
+				//exit (87);
+				if(execve(tmp->exec_path, tmp->args, env_array) == -1) //execve closing open fds? - yes
+				{
+					perror("execve: \n");
 					exit(100);
+				}
 			}
-			
 			//If BUILTIN TODO
 			else
 			{

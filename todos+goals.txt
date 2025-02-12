@@ -23,6 +23,15 @@ get started
 dana parsing + signals
 lilli exec + builtins
 
+----------------------------------------------------------------------------------------
+12.2.
+
 ??when to do env handling in parsing or exec? ->in parsing bc only need to handle extension. 
 
--> need to add env list
+-> need use own env list
+
+??here doc create own file
+
+
+
+to do lilli: clean up main + push for dana

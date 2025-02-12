@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42prague.com    +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 17:00:14 by lgottsch          #+#    #+#             */
-/*   Updated: 2024/11/15 17:42:07 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:39:37 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../full_libft.h"
 
-//1 + FT STRLEN BC check \0
 char	*ft_strrchr(const char *s, int c) //ptr to the LAST OCCURENCE
 {
 	int	len;

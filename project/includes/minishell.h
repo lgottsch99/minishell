@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/07 16:15:14 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/12 19:11:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,28 +47,31 @@ typedef struct s_command {
 } t_command;
 
 
+
 //---------- functions ------------------
 
 //00_init_start
 void	print_start(void);
 
 //builtins
-void	print_env(char *envp[]);
+void	print_env(t_list *environ);
 void	echo(t_command *cmd_list);
 void	pwd(void);
 void	exit_shell(void);
 void	cd(t_command *cmd_list);
 
 //execution
-void	execute(char *envp[]);
+void	execute(t_list *envp);
 
 //check_access_exec
-char 	**get_path(char *envp[]);
+char **get_path(t_list *envp);
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
 int		check_files(t_command *cmd);
-int		check_access(t_command	*cmd_list, int nr_cmd, char *envp[]);
-void	check_path(t_command	*cmd, char *envp[]);
+int		check_access(t_command	*cmd_list, int nr_cmd, t_list *envp);
+void	check_path(t_command	*cmd, t_list *envp);
+char 	**convert_env_array(t_list *envp);
+
 
 //redirections
 void	red_infile(char	*input_file);
@@ -76,8 +79,8 @@ void	red_outfile(char *output_file, t_command *cmd);
 void	redirect(int fd, int fd_to_replace);
 
 //single_builtin
-void	only_builtin(t_command *cmd_list, char *envp[]);
-void	run_builtin(t_command *cmd_list, char *envp[]);
+void	only_builtin(t_command *cmd_list, t_list *envp);
+void	run_builtin(t_command *cmd_list, t_list *envp);
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);

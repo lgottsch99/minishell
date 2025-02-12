@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/05 17:07:27 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/08 18:01:40 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	run_builtin(t_command *cmd_list, char *envp[])
+void	run_builtin(t_command *cmd_list, t_list *envp)
 {
 	printf("choosing builtin ft\n");
 	
@@ -48,7 +48,7 @@ void	run_builtin(t_command *cmd_list, char *envp[])
 
 }
 
-void	only_builtin(t_command *cmd_list, char *envp[]) //no need to fork + pipe
+void	only_builtin(t_command *cmd_list, t_list *envp) //no need to fork + pipe
 {
 	printf("running single builtin\n");
 	int og_in;

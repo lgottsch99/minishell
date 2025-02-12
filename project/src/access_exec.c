@@ -6,43 +6,81 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/03 18:24:00 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/10 18:16:20 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char **get_path(char *envp[]) //find path in envp and extract full path
+// char **get_path(t_list *envp) //find path in envp and extract full path
+// {
+// 	int i;
+// 	char *fullpath;
+//     char **paths;
+	
+// 	i = 0;
+// 	while (envp[i])
+// 	{
+// 		if ((ft_strnstr(envp[i], "PATH=", ft_strlen(envp[i])))!= NULL)
+// 		{
+// 			if (envp[i][0]== 'P' && envp[i][1]== 'A' && envp[i][2] == 'T' && envp[i][3] == 'H')
+// 			{
+// 				fullpath = ft_substr(envp[i], 5, (ft_strlen(envp[i]))); // !!!!malloc
+//                 paths = ft_split(fullpath, ':');
+//                 free(fullpath);
+// 				return (paths);
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	return (NULL);
+// }
+
+char **get_path(t_list *envp) //find path in envp and extract full path
 {
+	//printf("in get path \n");
+
 	int i;
 	char *fullpath;
     char **paths;
+	t_list *tmp;
 	
+	tmp = envp;
 	i = 0;
-	while (envp[i])
+	while (tmp)
 	{
-		if ((ft_strnstr(envp[i], "PATH=", ft_strlen(envp[i])))!= NULL)
+		//printf("in get path loop \n");
+		if ((ft_strncmp((char *)tmp->content, "PATH=", 5)) == 0)
 		{
-			if (envp[i][0]== 'P' && envp[i][1]== 'A' && envp[i][2] == 'T' && envp[i][3] == 'H')
+			fullpath = ft_substr((char *)tmp->content, 5, (ft_strlen((char *)tmp->content))); // !!!!malloc
+			if (!fullpath)
 			{
-				fullpath = ft_substr(envp[i], 5, (ft_strlen(envp[i]))); // !!!!malloc
-                paths = ft_split(fullpath, ':');
-                free(fullpath);
-				return (paths);
+				perror("fullpath: ");
+				exit(22222);
 			}
+			printf("fullpath: %s\n", fullpath);
+
+            paths = ft_split(fullpath, ':');
+            free(fullpath);
+			return (paths);
 		}
-		i++;
+		tmp = tmp->next;
 	}
 	return (NULL);
 }
 
+
 char *get_exec_path(char *cmd, char **path)
 {
+	//printf("in get exec path \n");
+
     char *tmp;
     char *commandpath; //zb /usr/bin/ls
 
     while (*path)
     {
+		//printf("in loop \n");
+
         tmp = ft_strjoin(*path, "/"); //MALLOC
         commandpath = ft_strjoin(tmp, cmd); //MALLOC
         free(tmp);
@@ -114,8 +152,10 @@ int	check_files(t_command *cmd) //ret 1 if denied, 0 if ok
 	return (infile);
 }
 
-int	check_access(t_command	*cmd_list, int nr_cmd, char *envp[])//ret 1 if access denied, 0 if ok
+int	check_access(t_command	*cmd_list, int nr_cmd, t_list *envp)//ret 1 if access denied, 0 if ok
 {
+		printf("in check access \n");
+
 	int			i;
 	int			builtin;
 	t_command	*tmp; //to trav list
@@ -154,8 +194,10 @@ int	check_access(t_command	*cmd_list, int nr_cmd, char *envp[])//ret 1 if access
 
 //check executability of cmds, (bash does not check if arguments to a cmd are valid!)
 //create executable path and save in cmd table, else stay at NULL
-void	check_path(t_command	*cmd, char *envp[])
+void	check_path(t_command	*cmd, t_list *envp)
 {
+			printf("in check path \n");
+
 	char	**path; //whole path from envp
 	char	*exec_path; //path that can be exec
 
@@ -169,4 +211,38 @@ void	check_path(t_command	*cmd, char *envp[])
 		printf("nooo executable path found\n");
 	else
 		printf("executable path found\n");
+}
+
+
+char **convert_env_array(t_list *envp) //The envp array must be terminated by a NULL pointer.
+{
+	char	**array;
+	int		lstsize;
+	t_list	*tmp;
+	int		i;
+
+	//count size list
+	lstsize = ft_lstsize(envp);
+	printf("size list is: %i\n", lstsize);
+		//malloc space for pointer array + 1 for NULL
+	array = (char **)malloc(sizeof(char *) * (lstsize + 1));
+	if (!array)
+		return (NULL);
+	
+	//go thru list and array and connect pointers;
+	tmp = envp;
+	i = 0;
+	while(tmp && i < lstsize)
+	{
+		array[i] = (char *)tmp->content;
+		tmp = tmp->next;
+		i++;
+	}
+	array[i] = NULL;
+
+	// for (int y = 0; y <= lstsize; y++) { //debug only
+    // printf("envp[%i]:%s\n", y, array[y]);
+	// }
+
+	return (array);
 }
