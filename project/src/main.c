@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/10 15:27:18 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/12 19:17:52 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 char	*add_shlvl(char *var)
 {
 
-				printf("creating new shlvl\n");
+			//	printf("creating new shlvl\n");
 
 	char	*value;
 	char	*new_str;
@@ -39,13 +39,13 @@ char	*add_shlvl(char *var)
 	//get value,  atoi, +1, itoa
 	value = ft_substr(var, 6, (len - 6)); //MALLOC
 		//if (!value)
-	printf("current value shlvl is: %s\n", value);
+	//printf("current value shlvl is: %s\n", value);
 	
 	num = ft_atoi(value);
 	num += 1;
 	free(value);
 	value = ft_itoa(num); //MALLOC
-	printf("new value shlvl is: %s\n", value);
+	//printf("new value shlvl is: %s\n", value);
 
 	//create new str for shlvl
 	len = 0;
@@ -65,7 +65,7 @@ char	*add_shlvl(char *var)
 	ft_strlcpy(tmp, value, len);
 	free(var);
 	free(value);
-		printf("final new value shlvl is: %s\n", new_str);
+		//printf("final new value shlvl is: %s\n", new_str);
 
 	return(new_str);
 
@@ -74,7 +74,7 @@ char	*add_shlvl(char *var)
 
 t_list	*set_env(char *envp[]) //create linked list w all env vars, increasing shlvl by 1
 {
-	printf("creating environ\n");
+	//printf("creating environ\n");
 	t_list	*environ;
 	t_list	*new_node;
 	char	*var;
@@ -100,10 +100,10 @@ t_list	*set_env(char *envp[]) //create linked list w all env vars, increasing sh
 		//if shlvl increase by 1
 		if (ft_strncmp(var, "SHLVL", 5) == 0)
 		{
-			printf("adding to shlvl\n");
+			//printf("adding to shlvl\n");
 			//get value,  atoi, +1, itoa
 			var = add_shlvl(var);
-			printf("finito adding to shlvl\n");
+			//printf("finito adding to shlvl\n");
 		}
 		//for each create new node
 		new_node = ft_lstnew(var);
@@ -128,7 +128,7 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 	/*TO DO: set up env (SHLVL increases from std.!)
 	*/
 	environ = set_env(envp);
-	print_env(environ);
+	//print_env(environ);
 
 	//2. main loop
 	while (1)
@@ -146,7 +146,7 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 			//(2. parser: takes tokens (and builds commmand list))
 
 		//4. execute
-		execute(environ);
+		//execute(environ);
 			//creates processes, 
 			//handles redirections/pipes,
 			//decides if cmd is builtin or not etc and executes them

@@ -1,7 +1,0 @@
-external_functions.c
-lillis_notes
-out.txt
-project
-resources.txt
-test.c
-todos+goals.txt
