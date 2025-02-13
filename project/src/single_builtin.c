@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/08 18:01:40 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/13 18:09:49 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ void	run_builtin(t_command *cmd_list, t_list *envp)
 {
 	printf("choosing builtin ft\n");
 	
-	if (ft_strncmp(cmd_list->command, "env", ft_strlen(cmd_list->command)) == 0)
-		print_env(envp);
-	else if (ft_strncmp(cmd_list->command, "echo", ft_strlen(cmd_list->command)) == 0)
+	// if (ft_strncmp(cmd_list->command, "env", ft_strlen(cmd_list->command)) == 0)
+	// 	print_env(envp);
+	 if (ft_strncmp(cmd_list->command, "echo", ft_strlen(cmd_list->command)) == 0)
 		echo(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "pwd", ft_strlen(cmd_list->command)) == 0)
 		pwd();
@@ -43,7 +43,7 @@ void	run_builtin(t_command *cmd_list, t_list *envp)
 	else if (ft_strncmp(cmd_list->command, "cd", ft_strlen(cmd_list->command)) == 0)
 		cd(cmd_list);
 
-
+	envp = NULL;
 	return;
 
 }

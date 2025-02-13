@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/10 19:17:53 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/13 18:49:31 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -417,7 +417,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp) //works for 2 -> n 
 			else
 			{
 				printf("its a builtin\n");
-				run_builtin(tmp, envp);
+				//run_builtin(tmp, envp);
 				//close fds
 				// exit p????
 				exit(400);

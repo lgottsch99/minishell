@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/11 18:46:17 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/13 18:26:30 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,16 @@ typedef struct s_command {
 // 	return;
 // }
 
-void	print_env(t_list *environ)//TO DO: CHANGE TO OWN ENV LIST
+void	print_env(t_env *environ)
 {
-	t_list	*tmp;
+	t_env	*tmp;
 
 	tmp = environ;
 	while (tmp)
 	{
-		printf("%s\n", (char *)tmp->content);
+		printf("%s", (char *)tmp->key);
+		printf("=\"");
+		printf("%s\"\n", (char *)tmp->value);
 		tmp = tmp->next;
 	}
 	return;

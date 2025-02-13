@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/12 19:11:14 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/13 18:10:07 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,12 @@ typedef struct s_command {
     struct s_command *next; // Pointer to the next command in a pipeline
 } t_command;
 
-
+//env list struct
+typedef struct s_env {
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+} t_env;
 
 //---------- functions ------------------
 
@@ -54,7 +59,7 @@ typedef struct s_command {
 void	print_start(void);
 
 //builtins
-void	print_env(t_list *environ);
+void	print_env(t_env *environ);
 void	echo(t_command *cmd_list);
 void	pwd(void);
 void	exit_shell(void);

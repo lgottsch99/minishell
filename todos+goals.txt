@@ -28,7 +28,7 @@ lilli exec + builtins
 
 ??when to do env handling in parsing or exec? ->in parsing bc only need to handle extension. 
 
--> need use own env list
+-> need use own env list CHANGED ENV LIST STRUCTURE A LITTLE
 
 ??here doc create own file
 
