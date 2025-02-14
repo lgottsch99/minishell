@@ -6,68 +6,12 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/10 18:16:20 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/14 14:12:43 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-// char **get_path(t_list *envp) //find path in envp and extract full path
-// {
-// 	int i;
-// 	char *fullpath;
-//     char **paths;
-	
-// 	i = 0;
-// 	while (envp[i])
-// 	{
-// 		if ((ft_strnstr(envp[i], "PATH=", ft_strlen(envp[i])))!= NULL)
-// 		{
-// 			if (envp[i][0]== 'P' && envp[i][1]== 'A' && envp[i][2] == 'T' && envp[i][3] == 'H')
-// 			{
-// 				fullpath = ft_substr(envp[i], 5, (ft_strlen(envp[i]))); // !!!!malloc
-//                 paths = ft_split(fullpath, ':');
-//                 free(fullpath);
-// 				return (paths);
-// 			}
-// 		}
-// 		i++;
-// 	}
-// 	return (NULL);
-// }
-
-char **get_path(t_list *envp) //find path in envp and extract full path
-{
-	//printf("in get path \n");
-
-	int i;
-	char *fullpath;
-    char **paths;
-	t_list *tmp;
-	
-	tmp = envp;
-	i = 0;
-	while (tmp)
-	{
-		//printf("in get path loop \n");
-		if ((ft_strncmp((char *)tmp->content, "PATH=", 5)) == 0)
-		{
-			fullpath = ft_substr((char *)tmp->content, 5, (ft_strlen((char *)tmp->content))); // !!!!malloc
-			if (!fullpath)
-			{
-				perror("fullpath: ");
-				exit(22222);
-			}
-			printf("fullpath: %s\n", fullpath);
-
-            paths = ft_split(fullpath, ':');
-            free(fullpath);
-			return (paths);
-		}
-		tmp = tmp->next;
-	}
-	return (NULL);
-}
 
 
 char *get_exec_path(char *cmd, char **path)
@@ -152,9 +96,9 @@ int	check_files(t_command *cmd) //ret 1 if denied, 0 if ok
 	return (infile);
 }
 
-int	check_access(t_command	*cmd_list, int nr_cmd, t_list *envp)//ret 1 if access denied, 0 if ok
+int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access denied, 0 if ok
 {
-		printf("in check access \n");
+	printf("in check access \n");
 
 	int			i;
 	int			builtin;
@@ -192,19 +136,41 @@ int	check_access(t_command	*cmd_list, int nr_cmd, t_list *envp)//ret 1 if access
 	return (0);
 }
 
-//check executability of cmds, (bash does not check if arguments to a cmd are valid!)
-//create executable path and save in cmd table, else stay at NULL
-void	check_path(t_command	*cmd, t_list *envp)
+char	*ret_value_env(char *key, t_env *envp)
 {
-			printf("in check path \n");
+	t_env	*tmp;
 
-	char	**path; //whole path from envp
+	tmp = envp;
+	//go thru list until we find key
+	while (ft_strncmp(tmp->key, key, ft_strlen(key)) != 0)
+	{
+		tmp = tmp->next;
+	}
+	//return value at node
+	if (tmp)
+		return ((char *)tmp->value);
+	else
+	{
+		printf("no key in env found\n");
+		return (NULL);
+	}
+}
+
+
+void	check_path(t_command	*cmd, t_env *envp) //TODO
+{
+	printf("in check path \n");
+
+	char	*fullpath; //whole path from envp
 	char	*exec_path; //path that can be exec
+	char	**paths;
 
 	//1. get whole path from env
-	path = get_path(envp);
+	fullpath = ret_value_env("PATH", envp);
+	printf("fullpath: %s\n", fullpath);
+	paths = ft_split(fullpath, ':');
 	//2. get executable path if cmd not builtin
-	exec_path = get_exec_path(cmd->command, path); //returns malloced str if exists, NULL if not
+	exec_path = get_exec_path(cmd->command, paths); //returns malloced str if exists, NULL if not
 	//3. save exec path in cmd table
 	cmd->exec_path = exec_path;
 	if(!exec_path)
@@ -214,27 +180,84 @@ void	check_path(t_command	*cmd, t_list *envp)
 }
 
 
-char **convert_env_array(t_list *envp) //The envp array must be terminated by a NULL pointer.
+
+int	count_env_size(t_env *envp)
+{
+	int		size;
+	t_env	*tmp;
+	
+	tmp = envp;
+	size = 0;
+	if (envp)
+	{
+		size = 1;
+		while (tmp->next)
+		{
+			tmp = tmp->next;
+			size++;
+		}
+	}
+	return (size);
+}
+
+char	*create_fullstr(t_env *node)
+{
+	int		fullsize;
+	char	*fullstr;
+	int		i;
+
+	//get size of full
+	fullsize = ft_strlen(node->key) + ft_strlen(node->value) + 2; //2 bc one = and one \0
+	//malloc
+	fullstr = (char *)malloc(sizeof(char) * fullsize);
+	//if (!fullstr)
+		//return (NULL);
+	//copy key
+	i = 0;
+	while (i < (int)ft_strlen(node->key))
+	{
+		fullstr[i] = node->key[i];
+		i++;
+	}
+	//copy =
+	fullstr[i] = '=';
+	i++;
+	//copy value
+	while (i < fullsize - 1)
+	{
+		fullstr[i] = node->value[i];
+		i++;
+	}
+	fullstr[i] = '\0';
+	return (fullstr);
+}
+
+char **convert_env_array(t_env *envp) //The envp array must be terminated by a NULL pointer.
 {
 	char	**array;
 	int		lstsize;
-	t_list	*tmp;
+	t_env	*tmp;
 	int		i;
+	char	*fullstr;
 
 	//count size list
-	lstsize = ft_lstsize(envp);
+	lstsize = count_env_size(envp);
 	printf("size list is: %i\n", lstsize);
 		//malloc space for pointer array + 1 for NULL
 	array = (char **)malloc(sizeof(char *) * (lstsize + 1));
 	if (!array)
 		return (NULL);
 	
-	//go thru list and array and connect pointers;
+	//go thru list and array
 	tmp = envp;
 	i = 0;
 	while(tmp && i < lstsize)
 	{
-		array[i] = (char *)tmp->content;
+		//for each node in envp: 
+			//create full string in form key=value
+		fullstr = create_fullstr(tmp);
+			//set full str to array[i]
+		array[i] = fullstr;
 		tmp = tmp->next;
 		i++;
 	}

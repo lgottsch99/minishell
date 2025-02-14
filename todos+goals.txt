@@ -26,9 +26,11 @@ lilli exec + builtins
 ----------------------------------------------------------------------------------------
 12.2.
 
-??when to do env handling in parsing or exec? ->in parsing bc only need to handle extension. 
+when to do env handling in parsing or exec? ->in parsing bc only need to handle extension. 
 
 -> need use own env list CHANGED ENV LIST STRUCTURE A LITTLE
 
-??here doc create own file
+??here doc create own file??
+
+??export quote handling possible in parsing part? export lilli=cool lilli="cool" should have same result
 

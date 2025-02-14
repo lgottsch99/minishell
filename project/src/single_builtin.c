@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/13 18:09:49 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:46:09 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	run_builtin(t_command *cmd_list, t_list *envp)
+void	run_builtin(t_command *cmd_list, t_env *envp)
 {
 	printf("choosing builtin ft\n");
 	
-	// if (ft_strncmp(cmd_list->command, "env", ft_strlen(cmd_list->command)) == 0)
-	// 	print_env(envp);
-	 if (ft_strncmp(cmd_list->command, "echo", ft_strlen(cmd_list->command)) == 0)
+	if (ft_strncmp(cmd_list->command, "env", ft_strlen(cmd_list->command)) == 0)
+		print_env(envp);
+	else if (ft_strncmp(cmd_list->command, "echo", ft_strlen(cmd_list->command)) == 0)
 		echo(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "pwd", ft_strlen(cmd_list->command)) == 0)
 		pwd();
@@ -42,13 +42,17 @@ void	run_builtin(t_command *cmd_list, t_list *envp)
 	// 	exit_shell(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "cd", ft_strlen(cmd_list->command)) == 0)
 		cd(cmd_list);
+	else if (ft_strncmp(cmd_list->command, "export", ft_strlen(cmd_list->command)) == 0)
+		eexport(cmd_list, envp);
+	else if (ft_strncmp(cmd_list->command, "unset", ft_strlen(cmd_list->command)) == 0)
+		unset(cmd_list, envp);
 
 	envp = NULL;
 	return;
 
 }
 
-void	only_builtin(t_command *cmd_list, t_list *envp) //no need to fork + pipe
+void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 {
 	printf("running single builtin\n");
 	int og_in;

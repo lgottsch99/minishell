@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/13 18:10:07 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:44:00 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,17 @@ typedef struct s_command {
 
 //env list struct
 typedef struct s_env {
-	char			*key;
-	char			*value;
+	char			*key; //eg PATH
+	char			*value; // /home/lgottsch/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 	struct s_env	*next;
 } t_env;
 
 //---------- functions ------------------
+
+//amin.c
+void	set_key_value(char *env_str,t_env *new_node); // = in str
+void	add_env_back(t_env **environ, t_env *new_node);//add new node to end of list
+
 
 //00_init_start
 void	print_start(void);
@@ -64,19 +69,21 @@ void	echo(t_command *cmd_list);
 void	pwd(void);
 void	exit_shell(void);
 void	cd(t_command *cmd_list);
+int		get_num_args(char **args);
+
 
 //execution
-void	execute(t_list *envp);
+void	execute(t_env *envp);
 
 //check_access_exec
-char **get_path(t_list *envp);
+char **get_path(t_env *envp);
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
 int		check_files(t_command *cmd);
-int		check_access(t_command	*cmd_list, int nr_cmd, t_list *envp);
-void	check_path(t_command	*cmd, t_list *envp);
-char 	**convert_env_array(t_list *envp);
-
+int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp);
+void	check_path(t_command	*cmd, t_env *envp);
+char 	**convert_env_array(t_env *envp);
+int		count_env_size(t_env *envp);
 
 //redirections
 void	red_infile(char	*input_file);
@@ -84,13 +91,20 @@ void	red_outfile(char *output_file, t_command *cmd);
 void	redirect(int fd, int fd_to_replace);
 
 //single_builtin
-void	only_builtin(t_command *cmd_list, t_list *envp);
-void	run_builtin(t_command *cmd_list, t_list *envp);
+void	only_builtin(t_command *cmd_list, t_env *envp);
+void	run_builtin(t_command *cmd_list, t_env *envp);
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);
 int		**alloc_fd(int nr_cmd);
 int		*alloc_pid(int nr_cmd);
+
+//export.c
+void	eexport(t_command *cmd, t_env *envp);
+t_env	*check_existing_env(char *arg_name,  t_env *envp);
+
+//unset.c
+void	unset(t_command *cmd, t_env *envp);
 
 
 #endif
