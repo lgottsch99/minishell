@@ -3,14 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42prague.com    +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 16:25:09 by lgottsch          #+#    #+#             */
-/*   Updated: 2024/11/15 17:42:20 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/13 18:01:55 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../full_libft.h"
+
+/*Allocates (with malloc(3)) and returns a copy of
+’s1’ with the characters specified in ’set’ removed
+from the beginning and the end of the string.*/
 
 static int	ft_isinset(char c, char const *set)
 {

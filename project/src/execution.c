@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/10 19:17:53 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/16 14:19:38 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp);
+void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp);
 
 
 void	init_cd(t_command *one)
@@ -64,6 +64,41 @@ void	init_single_builtin(t_command *one)
 	one->args[0] = "env";
 	one->args[1] = NULL;
 	//one->args[3] = NULL;
+	one->input_file = NULL;
+	one->output_file = NULL;
+	one->append_mode = 0;
+	one->exec_path = NULL;
+	one->is_builtin = 0;
+	one->next = NULL;
+	return;
+}
+
+void	init_test_unset(t_command *one)
+{
+	one->args = (char **)malloc(sizeof(char *) * 3);
+	one->command = "unset";
+	one->args[0] = "unset";
+	one->args[1] = "SHLVL";
+	one->args[2] = "hiiii";
+	one->args[3] = NULL;
+	one->input_file = NULL;
+	one->output_file = NULL;
+	one->append_mode = 0;
+	one->exec_path = NULL;
+	one->is_builtin = 0;
+	one->next = NULL;
+	return;
+}
+
+void	init_test_export(t_command *one)
+{
+	one->args = (char **)malloc(sizeof(char *) * 5);
+	one->command = "export";
+	one->args[0] = "export";
+	one->args[1] = "lilli=\"cool\"";
+	one->args[2] = "lillian=cooler=jik";
+	one->args[3] = "hello=world";
+	one->args[4] = NULL;
 	one->input_file = NULL;
 	one->output_file = NULL;
 	one->append_mode = 0;
@@ -228,7 +263,7 @@ int get_nr_cmd(t_command *cmd_list)
 
 
 
-void	execute(t_list *envp)
+void	execute(t_env *envp)
 {
 	int	nr_cmd;
 	
@@ -269,7 +304,7 @@ void	execute(t_list *envp)
 }
 
 
-void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp) //works for 2 -> n cmds 
+void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n cmds 
 {
 	printf("in pipeline\n");
 
@@ -417,7 +452,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_list *envp) //works for 2 -> n 
 			else
 			{
 				printf("its a builtin\n");
-				run_builtin(tmp, envp);
+				//run_builtin(tmp, envp);
 				//close fds
 				// exit p????
 				exit(400);
