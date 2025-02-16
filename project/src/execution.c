@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/14 15:41:31 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/16 14:19:38 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,33 @@ void	init_single_builtin(t_command *one)
 	one->next = NULL;
 	return;
 }
+
+void	init_test_unset(t_command *one)
+{
+	one->args = (char **)malloc(sizeof(char *) * 3);
+	one->command = "unset";
+	one->args[0] = "unset";
+	one->args[1] = "SHLVL";
+	one->args[2] = "hiiii";
+	one->args[3] = NULL;
+	one->input_file = NULL;
+	one->output_file = NULL;
+	one->append_mode = 0;
+	one->exec_path = NULL;
+	one->is_builtin = 0;
+	one->next = NULL;
+	return;
+}
+
 void	init_test_export(t_command *one)
 {
-	one->args = (char **)malloc(sizeof(char *) * 4);
+	one->args = (char **)malloc(sizeof(char *) * 5);
 	one->command = "export";
 	one->args[0] = "export";
 	one->args[1] = "lilli=\"cool\"";
 	one->args[2] = "lillian=cooler=jik";
-	one->args[3] = NULL;
+	one->args[3] = "hello=world";
+	one->args[4] = NULL;
 	one->input_file = NULL;
 	one->output_file = NULL;
 	one->append_mode = 0;
@@ -250,7 +269,7 @@ void	execute(t_env *envp)
 	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
-	//t_command	two;
+	t_command	two;
 	// t_command	three;
 	// t_command	four;
 
@@ -258,7 +277,7 @@ void	execute(t_env *envp)
 	cmd_list = &one;
 	
 	//init_single_builtin(&one);//, &two);
-	init_test_export(&one); //, &two, &three, &four);
+	init_test_two(&one, &two); //, &two, &three, &four);
 	//---------------
 	
 	//get size of lists 
