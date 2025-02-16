@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/14 15:44:00 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:52:30 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,26 @@ typedef struct s_env {
 	struct s_env	*next;
 } t_env;
 
+//pipeline everything malloced
+typedef struct s_pipeline {
+	int			**fd_pipe;
+	int 		*pid;
+	char		**env_array;
+	t_command	*cmd_list;
+} t_pipeline;
+
 //---------- functions ------------------
 
-//amin.c
-void	set_key_value(char *env_str,t_env *new_node); // = in str
-void	add_env_back(t_env **environ, t_env *new_node);//add new node to end of list
+//main.c
 
 
 //00_init_start
 void	print_start(void);
+char	*add_shlvl(char *value);
+void	set_key_value(char *env_str,t_env *new_node, t_env *environ);
+void	add_env_back(t_env **environ, t_env *new_node);//add new node to end of list
+t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing shlvl by 1
+
 
 //builtins
 void	print_env(t_env *environ);
@@ -76,13 +87,13 @@ int		get_num_args(char **args);
 void	execute(t_env *envp);
 
 //check_access_exec
-char **get_path(t_env *envp);
+char	**get_path(t_env *envp);
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
 int		check_files(t_command *cmd);
 int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp);
 void	check_path(t_command	*cmd, t_env *envp);
-char 	**convert_env_array(t_env *envp);
+char	**convert_env_array(t_env *envp, t_pipeline *pipeline); //The envp array must be terminated by a NULL pointer.
 int		count_env_size(t_env *envp);
 
 //redirections
@@ -96,8 +107,13 @@ void	run_builtin(t_command *cmd_list, t_env *envp);
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);
-int		**alloc_fd(int nr_cmd);
-int		*alloc_pid(int nr_cmd);
+int		**alloc_fd(int nr_cmd, t_env *envp);
+int		*alloc_pid(int nr_cmd, t_env *envp);
+void	free_env_list(t_env **env);
+void	free_2d_char(char **array);
+void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline);
+void	free_cmd_list(t_command **cmd_list);
+
 
 //export.c
 void	eexport(t_command *cmd, t_env *envp);

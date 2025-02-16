@@ -6,18 +6,11 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 14:19:38 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/16 18:14:09 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
-	TO DO:	pipeline:
-					Rethink fildes structure, for n-1 pipes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-					differentiate builtin
-
-				single builtin:
-					rest of functions?
-
 
 typedef struct s_command {
     char	*command;       // The command name (e.g., "echo", "grep")
@@ -230,9 +223,9 @@ void	init_test_two(t_command *one, t_command *two)
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 3);
-	two->command = "ls";
-	two->args[0] = "ls";
-	two->args[1] = "-l";
+	two->command = "cd";
+	two->args[0] = "cd";
+	two->args[1] = "..";
 	two->args[2] = NULL;
 	two->input_file = NULL;
 	two->output_file = NULL; //"out.txt";
@@ -263,7 +256,7 @@ int get_nr_cmd(t_command *cmd_list)
 
 
 
-void	execute(t_env *envp)
+void	execute(t_env *envp) //t_command *cmd_list);
 {
 	int	nr_cmd;
 	
@@ -287,7 +280,8 @@ void	execute(t_env *envp)
 	//check access of everything (files + cmds), creates paths, decides if builtin
 	if (check_access(cmd_list, nr_cmd, envp) != 0)
 	{
-		//free everything
+		free_env_list(&envp);
+		//free more?
 		exit(18);
 	}
 	printf("access ok\n");
@@ -299,7 +293,6 @@ void	execute(t_env *envp)
 	else
 		pipeline(cmd_list, nr_cmd, envp);
 
-	//exit (0);
 	return;
 }
 
@@ -308,42 +301,43 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 {
 	printf("in pipeline\n");
 
-	int	i;
-	int y; 
-	int	**fd_pipe;
-	int	*pid;
+	int			i;
+	int			y; 
 	t_command	*tmp; //to traverse cmd list 
+	t_pipeline	pipeline;
 
-	fd_pipe = alloc_fd(nr_cmd); //MALLOC
-	pid = alloc_pid(nr_cmd); //MALLOC
+	pipeline.fd_pipe = alloc_fd(nr_cmd, envp); //MALLOC
+	pipeline.pid = alloc_pid(nr_cmd, envp); //MALLOC
+	pipeline.env_array = NULL;
+	pipeline.cmd_list = cmd_list;
 
 	//1. create ALLLL pipes necessary
 	i = 0;
 	while (i < nr_cmd - 1)
 	{
-		if (pipe(fd_pipe[i]) == -1)
+		if (pipe(pipeline.fd_pipe[i]) == -1)
 		{
 			perror("pipe: ");
-			//free everything
-			exit(97);
+			free_everything_pipeline_exit(envp, &pipeline);
+			//free more?
 		}
 		i++;
 	}
 
 	i = 0;
-	tmp = cmd_list;
+	tmp = pipeline.cmd_list;
 	while (i < nr_cmd) //main loop for fork, exec 
 	{
 		printf("i is: %i\n", i);
 
 		//fork process
-		if ((pid[i] = fork()) < 0)
+		if ((pipeline.pid[i] = fork()) < 0)
 		{
 			perror("fork error: ");
-			//free + exit
-			exit(11);
+			free_everything_pipeline_exit(envp, &pipeline);
+			//free more?
 		}
-		if (pid[i] == 0) //in child to exec cmd
+		if (pipeline.pid[i] == 0) //in child to exec cmd
 		{
 			//child_process();
 			//printf("\nthis is process nr: %i\n\n", i);
@@ -351,7 +345,6 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 			/// i is index of p
 			int	in; 
 			int	out;
-			char **env_array;
 
 			in = 0;
 			out = 0;
@@ -366,8 +359,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 					while (y < nr_cmd - 1)
 					{
 						if (y != i)
-							close(fd_pipe[y][1]);
-						close(fd_pipe[y][0]);
+							close(pipeline.fd_pipe[y][1]);
+						close(pipeline.fd_pipe[y][0]);
 						y++;
 					}
 				}
@@ -376,9 +369,9 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 					//close all except [i - 1][0]
 					while (y < nr_cmd - 1)
 					{
-						close(fd_pipe[y][1]);
+						close(pipeline.fd_pipe[y][1]);
 						if (y != i - 1)
-							close(fd_pipe[y][0]);
+							close(pipeline.fd_pipe[y][0]);
 						y++;
 					}
 				}
@@ -388,9 +381,9 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 					while (y < nr_cmd - 1)
 					{
 						if (y != i)
-							close(fd_pipe[y][1]);
+							close(pipeline.fd_pipe[y][1]);
 						if (y != i - 1)
-							close(fd_pipe[y][0]);
+							close(pipeline.fd_pipe[y][0]);
 						y++;
 					}
 				}
@@ -399,7 +392,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 			if (tmp->input_file) //no reading from previous pipe
 			{
 				if (nr_cmd > 1 && i > 0) //if not in first
-					close(fd_pipe[i - 1][0]);
+					close(pipeline.fd_pipe[i - 1][0]);
 				
 				red_infile(tmp->input_file);
 				in = 1;
@@ -408,7 +401,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 			if (tmp->output_file) //we will not write to pipe
 			{
 				if (nr_cmd > 1 && i < nr_cmd - 1)
-					close(fd_pipe[i][1]);
+					close(pipeline.fd_pipe[i][1]);
 
 				printf("outfile redirected\n");
 				red_outfile(tmp->output_file, tmp);
@@ -417,13 +410,13 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 			//redirect in/out to next pipe (if not already by file, file > pipe redirection)
 			if (in == 0 && i > 0) //redirect in to be read out end of prev pipe
 			{
-				redirect(fd_pipe[i - 1][0], STDIN_FILENO);
+				redirect(pipeline.fd_pipe[i - 1][0], STDIN_FILENO);
 				printf("input is prev pipe\n");
 			}
 			if (out == 0 && i < (nr_cmd - 1))//redirect out to be write in end of current pipe
 			{
 				printf("output is pipe\n");
-				redirect(fd_pipe[i][1], STDOUT_FILENO);
+				redirect(pipeline.fd_pipe[i][1], STDOUT_FILENO);
 			}
 
 			//exec and leave process 
@@ -432,32 +425,46 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 			{
 				//printf("going to execve\n");
 			//convert t_list envp into char ** for execve
-				env_array = convert_env_array(envp);
-				if (!env_array)
+				pipeline.env_array = convert_env_array(envp, &pipeline); //MALLOC
+				if (!pipeline.env_array)
 				{
-					//free everything
 					perror("malloc env_array: ");
-					exit(78);
+					free_everything_pipeline_exit(envp, &pipeline);
+					//free more?
 				}
 				printf("converted env to array\n");
 
-				//exit (87);
-				if(execve(tmp->exec_path, tmp->args, env_array) == -1) //execve closing open fds? - yes
+				if(execve(tmp->exec_path, tmp->args, pipeline.env_array) == -1) //execve closing open fds? - yes
 				{
 					perror("execve: \n");
-					exit(100);
+					free_2d_char(pipeline.env_array);
+					free_everything_pipeline_exit(envp, &pipeline);
+					///free more?
 				}
 			}
-			//If BUILTIN TODO
+			//If BUILTIN //TODO test
 			else
 			{
 				printf("its a builtin\n");
-				//run_builtin(tmp, envp);
-				//close fds
+				run_builtin(tmp, envp);
+				
+				//close open fds
+				if (i == 0) //first cmd
+					close(pipeline.fd_pipe[i][1]);
+				else if (i == nr_cmd - 1) //last cmd
+					close(pipeline.fd_pipe[i - 1][0]);
+				else //inbetween
+				{
+					close(pipeline.fd_pipe[i - 1][0]);
+					close(pipeline.fd_pipe[i][1]);
+				}
+				//free
+				free_everything_pipeline_exit(envp, &pipeline);
+				//free cmd_list 
 				// exit p????
-				exit(400);
+				exit(0);
 			}
-			
+
 		}
 		else // in parent 
 		{
@@ -469,8 +476,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 	y = 0;
 	while (y < nr_cmd - 1)
 	{
-		close(fd_pipe[y][1]);
-		close(fd_pipe[y][0]);
+		close(pipeline.fd_pipe[y][1]);
+		close(pipeline.fd_pipe[y][0]);
 		y++;
 	}
 
@@ -482,9 +489,10 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 		y++;
 	}
 	
-	//free everything malloced for pipeline (=fd 2d array)
-	free_2d_array(fd_pipe, nr_cmd - 2);
-	
+	//free everything malloced for pipeline 
+	free_everything_pipeline_exit(envp, &pipeline);
+	// free_cmd_list(&cmd_list);
+
 	printf("waited for all ps and finished\n");
 	return;
 }

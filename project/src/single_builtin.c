@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/14 15:46:09 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:06:01 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,7 @@ void	run_builtin(t_command *cmd_list, t_env *envp)
 	else if (ft_strncmp(cmd_list->command, "unset", ft_strlen(cmd_list->command)) == 0)
 		unset(cmd_list, envp);
 
-	envp = NULL;
 	return;
-
 }
 
 void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe

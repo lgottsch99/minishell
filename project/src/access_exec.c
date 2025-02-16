@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/14 14:12:43 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:29:57 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,7 @@ void	check_path(t_command	*cmd, t_env *envp) //TODO
 	paths = ft_split(fullpath, ':');
 	//2. get executable path if cmd not builtin
 	exec_path = get_exec_path(cmd->command, paths); //returns malloced str if exists, NULL if not
+	free_2d_char(paths);
 	//3. save exec path in cmd table
 	cmd->exec_path = exec_path;
 	if(!exec_path)
@@ -178,7 +179,6 @@ void	check_path(t_command	*cmd, t_env *envp) //TODO
 	else
 		printf("executable path found\n");
 }
-
 
 
 int	count_env_size(t_env *envp)
@@ -200,7 +200,7 @@ int	count_env_size(t_env *envp)
 	return (size);
 }
 
-char	*create_fullstr(t_env *node)
+char	*create_fullstr(t_env *node) //MALLOC
 {
 	int		fullsize;
 	char	*fullstr;
@@ -210,8 +210,8 @@ char	*create_fullstr(t_env *node)
 	fullsize = ft_strlen(node->key) + ft_strlen(node->value) + 2; //2 bc one = and one \0
 	//malloc
 	fullstr = (char *)malloc(sizeof(char) * fullsize);
-	//if (!fullstr)
-		//return (NULL);
+	if (!fullstr)
+		return (NULL);
 	//copy key
 	i = 0;
 	while (i < (int)ft_strlen(node->key))
@@ -232,7 +232,7 @@ char	*create_fullstr(t_env *node)
 	return (fullstr);
 }
 
-char **convert_env_array(t_env *envp) //The envp array must be terminated by a NULL pointer.
+char **convert_env_array(t_env *envp, t_pipeline *pipeline) //The envp array must be terminated by a NULL pointer.
 {
 	char	**array;
 	int		lstsize;
@@ -243,7 +243,8 @@ char **convert_env_array(t_env *envp) //The envp array must be terminated by a N
 	//count size list
 	lstsize = count_env_size(envp);
 	printf("size list is: %i\n", lstsize);
-		//malloc space for pointer array + 1 for NULL
+
+	//malloc space for pointer array + 1 for NULL
 	array = (char **)malloc(sizeof(char *) * (lstsize + 1));
 	if (!array)
 		return (NULL);
@@ -255,8 +256,13 @@ char **convert_env_array(t_env *envp) //The envp array must be terminated by a N
 	{
 		//for each node in envp: 
 			//create full string in form key=value
-		fullstr = create_fullstr(tmp);
-			//set full str to array[i]
+		fullstr = create_fullstr(tmp); //MALLOC
+		if (!fullstr)
+		{
+			free_2d_char(array);
+			free_everything_pipeline_exit(envp, pipeline);
+		}
+		//set full str to array[i]
 		array[i] = fullstr;
 		tmp = tmp->next;
 		i++;

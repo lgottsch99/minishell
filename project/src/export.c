@@ -104,7 +104,7 @@ void	create_new_env(char *new_var, t_env *envp) //connect to ft set env in main.
 		new_node->value = NULL;
 	}
 	else //equal in str
-		set_key_value(new_var, new_node);
+		set_key_value(new_var, new_node, envp);
 	new_node->next = NULL;
 	add_env_back(&envp, new_node);
 }
