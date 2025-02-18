@@ -46,6 +46,47 @@ typedef struct s_command {
     struct s_command *next; // Pointer to the next command in a pipeline
 } t_command;
 
+// typedef struct s_command {
+//     char **args;
+//     char *input_file;
+//     char *output_file;
+//     int append_output;
+//     int		is_builtin;
+//     struct t_command *next;
+// } t_command;
+
+t_command *create_command() {
+    t_command *cmd = malloc(sizeof(t_command));
+    cmd->args = NULL;
+    cmd->input_file = NULL;
+    cmd->output_file = NULL;
+    cmd->append_mode = 0;
+    cmd->next = NULL;
+    cmd->is_builtin = 0;
+    return cmd;
+}
+
+
+typedef enum Token_type {
+    TOKEN_WORD,              
+    TOKEN_PIPE,              
+    TOKEN_REDIRECT_IN,       
+    TOKEN_REDIRECT_OUT,      
+    TOKEN_REDIRECT_APPEND,   
+    TOKEN_REDIRECT_HEREDOC,  
+    TOKEN_SINGLE_QUOTE,      
+    TOKEN_DOUBLE_QUOTE,      
+    TOKEN_ENV_VAR,           
+    TOKEN_END                
+} Token_type;
+
+typedef struct Token {
+    char *value;
+    Token_type type;
+    struct Token *next;
+} Token;
+
+
 //env list struct
 typedef struct s_env {
 	char			*key; //eg PATH
