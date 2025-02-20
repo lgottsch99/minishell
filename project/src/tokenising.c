@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenising.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025-02-20 19:02:32 by dvasilen          #+#    #+#             */
+/*   Updated: 2025-02-20 19:02:32 by dvasilen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 Token *create_token(char *value, Token_type type) {
@@ -8,8 +20,21 @@ Token *create_token(char *value, Token_type type) {
     token->value = value;
     token->type = type;
     token->next = NULL;
-    //printf("Created token: %s, Type: %d\n", value, type); 
     return token;
+}
+
+char *ft_getenv(char *var_name, char **envp){
+    char    **env;
+    int     var_name_len;
+    if (!var_name || !*var_name || !envp)
+        return (NULL);
+    var_name_len = ft_strlen(var_name);
+	env = envp;
+    while(*env){
+        if (strncmp(*env, var_name, var_name_len) == 0 && (*env)[var_name_len] == '=')
+            return (*env + var_name_len + 1);
+    }
+    return NULL;
 }
 
 void add_token(Token **head, Token **current, Token *token) {
@@ -27,12 +52,10 @@ void handle_pipe(char **start, char **end, Token **head, Token **current) {
     if (*end > *start) {
         char *value = ft_strndup(*start, *end - *start);
         token = create_token(value, TOKEN_WORD);
-        //printf("Assigning TOKEN_WORD to token: %s\n", value); 
         add_token(head, current, token);
     }
     token = create_token(ft_strdup("|"), TOKEN_PIPE);
     *start = ++(*end);
-    //printf("Assigning TOKEN_PIPE to token: %s\n", "|"); 
     add_token(head, current, token);
 }
 
@@ -60,21 +83,32 @@ void handle_double_quote(char **start, char **end, Token **head, Token **current
 	*start = *end;
 }
 
-void handle_env_var(char **start, char **end, Token **head, Token **current) {
-    Token *token;
+void handle_env_var(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp) 
+{
+	Token	*token;
 	(*end)++;
-	char *var_start = *end;
-	while(**end && (**end == '_' || isalnum(**end))) //todo
+	char	*var_start = *end;
+	if (*var_start == '?')
+	{
+		char *exit_status_str = malloc(12);
+		if (!exit_status_str) 
+			return;
+		ft_itoa(last_exit_status);
+		token = create_token(exit_status_str, TOKEN_WORD);
+		add_token(head, current, token);
+		(*end)++;
+		*start = *end;
+		return;
+    }
+	while(**end && (**end == '_' || ft_isalnum(**end)))
 		(*end)++;
 	char *var_name = ft_strndup(var_start, *end - var_start);
-	char *var_value = getenv(var_name); //todo 
-	if (var_value){
-		token = create_token(var_value, TOKEN_WORD);
-		add_token(head, current, token);
-	} else{
+	char *var_value = ft_getenv(var_name, envp);
+	if (var_value)
+		token = create_token(ft_strdup(var_value), TOKEN_WORD);
+	else
 		token = create_token(ft_strdup(""), TOKEN_WORD);
-		add_token(head, current, token);
-	}
+	add_token(head, current, token);
 	free(var_name);
 	*start = *end;
 }
@@ -84,17 +118,14 @@ void handle_redir_more(char **start, char **end, Token **head, Token **current) 
     if (*end > *start) {
         char *value = ft_strndup(*start, *end - *start);
         token = create_token(value, TOKEN_WORD);
-        //printf("Assigning TOKEN_WORD to token: %s\n", value); 
         add_token(head, current, token);
     }
     if (*(*end + 1) == '>') {
         token = create_token(ft_strdup(">>"), TOKEN_REDIRECT_APPEND);
-        //printf("Assigning TOKEN_REDIRECT_APPEND to token: %s\n", ">>"); 
         add_token(head, current, token);
         (*end)++;
     } else {
         token = create_token(ft_strdup(">"), TOKEN_REDIRECT_OUT);
-        //printf("Assigning TOKEN_REDIRECT_OUT to token: %s\n", ">"); 
         add_token(head, current, token);
     }
     *start = ++(*end);
@@ -105,23 +136,21 @@ void handle_redir_less(char **start, char **end, Token **head, Token **current) 
     if (*end > *start) {
         char *value = ft_strndup(*start, *end - *start);
         token = create_token(value, TOKEN_WORD);
-        //printf("Assigning TOKEN_WORD to token: %s\n", value); // Debug print
         add_token(head, current, token);
     }
     if (*(*end + 1) == '<') {
         token = create_token(ft_strdup("<<"), TOKEN_REDIRECT_HEREDOC);
-        //printf("Assigning TOKEN_REDIRECT_HEREDOC to token: %s\n", "<<"); // Debug print
         add_token(head, current, token);
         (*end)++;
     } else {
         token = create_token(ft_strdup("<"), TOKEN_REDIRECT_IN);
-        //printf("Assigning TOKEN_REDIRECT_IN to token: %s\n", "<"); // Debug print
         add_token(head, current, token);
     }
     *start = ++(*end);
 }
 
-Token *tokenize(char *input) {
+Token	*tokenize(char *input, int last_exit_status, char **envp)
+{
     Token *head = NULL;
     Token *current = NULL;
     char *start = input;
@@ -132,7 +161,6 @@ Token *tokenize(char *input) {
             if (end > start) {
                 char *value = ft_strndup(start, end - start);
                 Token *token = create_token(value, TOKEN_WORD);
-                //printf("Assigning TOKEN_WORD to token: %s\n", value); // Debug print
                 add_token(&head, &current, token);
             }
             start = ++end;
@@ -147,7 +175,7 @@ Token *tokenize(char *input) {
         } else if (*end == '\'') {
             handle_single_quote(&start, &end, &head, &current);
         } else if (*end == '$') {
-			handle_env_var(&start, &end, &head, &current);
+			handle_env_var(&start, &end, &head, &current, last_exit_status, envp);
         } else 
             end++;
     }
@@ -155,11 +183,9 @@ Token *tokenize(char *input) {
     if (start != end) {
         char *value = ft_strndup(start, end - start);
         Token *token = create_token(value, TOKEN_WORD);
-        //printf("Assigning TOKEN_WORD to token: %s\n", value); // Debug print
         add_token(&head, &current, token);
     }
     Token *token = create_token(NULL, TOKEN_END);
-    //printf("Assigning TOKEN_END to token: (null)\n"); // Debug print
     add_token(&head, &current, token);
 
     return head;
@@ -177,9 +203,8 @@ void free_tokens(Token *tokens) {
     while (tokens) {
         tmp = tokens;
         tokens = tokens->next;
-        if (tmp->value) {
+        if (tmp->value)
             free(tmp->value);
-        }
         free(tmp);
     }
 }

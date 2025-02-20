@@ -1,18 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42prague.com    +#+  +:+       +#+        */
+/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/22 17:48:07 by lgottsch          #+#    #+#             */
-/*   Updated: 2024/11/15 17:40:54 by lgottsch         ###   ########.fr       */
+/*   Created: 2025-02-20 18:45:20 by dvasilen          #+#    #+#             */
+/*   Updated: 2025-02-20 18:45:20 by dvasilen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../full_libft.h"
 
-char	*ft_strdup(const char *s) 
+char	*ft_strndup(const char *s, size_t n) 
 {
-	return (ft_strndup(s, strlen(s)));
+	char	*dup;
+	size_t	len;
+	size_t	i;
+	len = 0;
+	i = 0;
+	while (len < n && s[len])
+		len++;
+	dup = (char *)malloc(len + 1);
+	if (!dup)
+		return (NULL);
+	while (i < len)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[len] = '\0';
+	return (dup);
 }

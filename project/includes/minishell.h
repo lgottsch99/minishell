@@ -55,18 +55,6 @@ typedef struct s_command {
 //     struct t_command *next;
 // } t_command;
 
-t_command *create_command() {
-    t_command *cmd = malloc(sizeof(t_command));
-    cmd->args = NULL;
-    cmd->input_file = NULL;
-    cmd->output_file = NULL;
-    cmd->append_mode = 0;
-    cmd->next = NULL;
-    cmd->is_builtin = 0;
-    return cmd;
-}
-
-
 typedef enum Token_type {
     TOKEN_WORD,              
     TOKEN_PIPE,              
@@ -119,7 +107,7 @@ t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing sh
 void	print_env(t_env *environ);
 void	echo(t_command *cmd_list);
 void	pwd(void);
-void	exit_shell(void);
+//void	exit_shell(void);
 void	cd(t_command *cmd_list);
 int		get_num_args(char **args);
 
@@ -162,6 +150,12 @@ t_env	*check_existing_env(char *arg_name,  t_env *envp);
 
 //unset.c
 void	unset(t_command *cmd, t_env *envp);
+
+//parsing.c
+Token		*tokenize(char *input, int last_exit_status, char **envp);
+t_command 	*parse_tokens(Token *tokens);
+void		print_tokens(Token *tokens);
+void		free_tokens(Token *tokens);
 
 
 #endif

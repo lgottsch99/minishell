@@ -123,19 +123,19 @@ void	echo(t_command *cmd_list)
 
 
 
-void exit_shell(t_env *envp, t_pipeline *pipeline)//TODO
-{
-	printf("exit\n"); //bash prints exit 
+// void exit_shell(t_env *envp, t_pipeline *pipeline)//TODO
+// {
+// 	printf("exit\n"); //bash prints exit 
 
-	//a number after exit can be set which refers to exit status: check $?
-	//free all necessary
-	free_everything_pipeline_exit(envp, pipeline);
+// 	//a number after exit can be set which refers to exit status: check $?
+// 	//free all necessary
+// 	free_everything_pipeline_exit(envp, pipeline);
 
 
 
-	printf("exit\n"); //bash prints exit 
-	exit(0);
-}
+// 	printf("exit\n"); //bash prints exit 
+// 	exit(0);
+// }
 
 
 void	cd(t_command *cmd_list)//TO DO

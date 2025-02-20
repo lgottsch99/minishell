@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025-02-20 19:02:40 by dvasilen          #+#    #+#             */
+/*   Updated: 2025-02-20 19:02:40 by dvasilen         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void add_argument(t_command *command, char *arg){
@@ -20,6 +32,17 @@ int is_builtin(char *arg){
 				|| strcmp(arg, "env") == 0 || strcmp(arg, "exit") == 0)
 		return (1);
 	return(0);
+}
+
+t_command *create_command() {
+    t_command *cmd = malloc(sizeof(t_command));
+    cmd->args = NULL;
+    cmd->input_file = NULL;
+    cmd->output_file = NULL;
+    cmd->append_mode = 0;
+    cmd->next = NULL;
+    cmd->is_builtin = 0;
+    return cmd;
 }
 
 t_command  *parse_tokens(Token *tokens){
