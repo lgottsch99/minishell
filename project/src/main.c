@@ -63,7 +63,7 @@ int	main (int argc, char *argv[], char *envp[])
 		printf("argv = %s\n", argv[0]);
 	}
 	free_env_list(&environ);
-	rl_clear_history();	
+	//rl_clear_history();	
 	
 	
 	return (0);

@@ -180,15 +180,15 @@ void	cd(t_command *cmd_list)//TO DO
 
 }
 
-void	print_list(t_list *envp)
-{
-	t_list	*tmp;
+// void	print_list(t_list *envp)
+// {
+// 	t_list	*tmp;
 
-	tmp = envp;
-	while(tmp)
-	{
-		printf("%s\n", (char *)tmp->content);
-		tmp = tmp->next;
-	}
-}
+// 	tmp = envp;
+// 	while(tmp)
+// 	{
+// 		printf("%s\n", (char *)tmp->content);
+// 		tmp = tmp->next;
+// 	}
+// }
 

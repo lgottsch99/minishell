@@ -19,7 +19,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>		//malloc, free
-#include "../lib/full_libft.h"
+#include "../libft/libft.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -156,6 +156,7 @@ Token		*tokenize(char *input, int last_exit_status, char **envp);
 t_command 	*parse_tokens(Token *tokens);
 void		print_tokens(Token *tokens);
 void		free_tokens(Token *tokens);
+void		free_commands(t_command *commands);
 
 
 #endif
