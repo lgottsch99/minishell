@@ -6,11 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-<<<<<<< Updated upstream
-/*   Updated: 2025/02/16 17:06:01 by lgottsch         ###   ########.fr       */
-=======
-/*   Updated: 2025/02/25 12:42:09 by Watanudon        ###   ########.fr       */
->>>>>>> Stashed changes
+/*   Updated: 2025/02/25 13:08:42 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +46,9 @@ int	run_builtin(t_command *cmd_list, t_env *envp)
 	else if (ft_strncmp(cmd_list->command, "export", ft_strlen(cmd_list->command)) == 0)
 		exit_stat = eexport(cmd_list, envp);
 	else if (ft_strncmp(cmd_list->command, "unset", ft_strlen(cmd_list->command)) == 0)
-<<<<<<< Updated upstream
-		unset(cmd_list, envp);
-
-	return;
-=======
 		exit_stat = unset(cmd_list, envp);
 
 	return (exit_stat);
->>>>>>> Stashed changes
 }
 
 void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe

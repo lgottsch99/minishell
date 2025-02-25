@@ -6,11 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-<<<<<<< Updated upstream
-/*   Updated: 2025/02/16 18:13:51 by lgottsch         ###   ########.fr       */
-=======
-/*   Updated: 2025/02/25 12:38:58 by Watanudon        ###   ########.fr       */
->>>>>>> Stashed changes
+/*   Updated: 2025/02/25 13:06:14 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +29,6 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-<<<<<<< Updated upstream
-void	print_env(t_env *environ)
-=======
 // void	print_env(t_list *envp[])//TO DO: CHANGE TO OWN ENV LIST
 // {
 // 	int	i;
@@ -50,7 +43,6 @@ void	print_env(t_env *environ)
 // }
 
 int	print_env(t_env *environ)
->>>>>>> Stashed changes
 {
 	t_env	*tmp;
 
@@ -173,12 +165,7 @@ void exit_shell(t_env *envp, t_pipeline *pipeline)//TODO
 	exit(0);
 }
 
-<<<<<<< Updated upstream
-
-void	cd(t_command *cmd_list)//TO DO
-=======
 int	cd(t_command *cmd_list)//TO DO
->>>>>>> Stashed changes
 {
 	char s[100];
 	printf("in cd\n");

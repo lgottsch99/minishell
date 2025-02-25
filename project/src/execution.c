@@ -6,11 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-<<<<<<< Updated upstream
-/*   Updated: 2025/02/16 18:14:09 by lgottsch         ###   ########.fr       */
-=======
-/*   Updated: 2025/02/25 12:47:51 by Watanudon        ###   ########.fr       */
->>>>>>> Stashed changes
+/*   Updated: 2025/02/25 13:07:59 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,11 +256,7 @@ int get_nr_cmd(t_command *cmd_list)
 
 
 
-<<<<<<< Updated upstream
-void	execute(t_env *envp) //t_command *cmd_list);
-=======
 void	execute(t_env *envp, int *exit_stat) //t_command *cmd_list);
->>>>>>> Stashed changes
 {
 	int	nr_cmd;
 	//----for developing only: create my own sample command-lists
@@ -289,11 +281,7 @@ void	execute(t_env *envp, int *exit_stat) //t_command *cmd_list);
 	{
 		free_env_list(&envp);
 		//free more?
-<<<<<<< Updated upstream
-		exit(18);
-=======
-		exit(18); //permission 
->>>>>>> Stashed changes
+		exit(1); //permission TO DO 
 	}
 	printf("access ok\n");
 	
@@ -457,11 +445,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 			else
 			{
 				printf("its a builtin\n");
-<<<<<<< Updated upstream
-				run_builtin(tmp, envp);
-=======
 				*exit_stat = run_builtin(tmp, envp); //return 0 or error nr?
->>>>>>> Stashed changes
 				
 				//close open fds
 				if (i == 0) //first cmd
@@ -476,13 +460,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				//free
 				free_everything_pipeline_exit(envp, &pipeline);
 				//free cmd_list 
-<<<<<<< Updated upstream
-				// exit p????
-				exit(0);
-=======
 
 				exit(*exit_stat); //use returned stat here? TODO
->>>>>>> Stashed changes
 			}
 
 		}
