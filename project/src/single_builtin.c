@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:08:42 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/25 13:16:04 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ typedef struct s_command {
 int	run_builtin(t_command *cmd_list, t_env *envp)
 {
 	int exit_stat;
+
+	exit_stat = 0;
 	printf("choosing builtin ft\n");
 	
 	if (ft_strncmp(cmd_list->command, "env", ft_strlen(cmd_list->command)) == 0)
@@ -51,7 +53,7 @@ int	run_builtin(t_command *cmd_list, t_env *envp)
 	return (exit_stat);
 }
 
-void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
+int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 {
 	printf("running single builtin\n");
 	int og_in;
@@ -64,6 +66,7 @@ void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 	og_out = dup(STDOUT_FILENO); //SAME
 	red_in = 0;
 	red_out = 0;
+	exit_stat = 0;
 	
 	// redirect if needed
 	if (cmd_list->input_file)

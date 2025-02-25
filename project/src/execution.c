@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:07:59 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/25 13:14:49 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp);
+void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat); //works for 2 -> n cmds 
 
 
 void	init_cd(t_command *one)
@@ -484,7 +484,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 	y = 0;
 	while (y < nr_cmd)
 	{
-		wait(&exit_stat);//save exit stat
+		wait(exit_stat);//save exit stat
 		//extract real exit_stat + save in env??
 		if (WIFEXITED(*exit_stat))
 			*exit_stat = WEXITSTATUS(*exit_stat); //check + test if ok?

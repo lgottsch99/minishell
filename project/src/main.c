@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:02:16 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/25 13:13:07 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 			//(2. parser: takes tokens (and builds commmand list))
 
 		//4. execute
-		//execute(environ, &exit_stat);
+		execute(environ, &exit_stat);
 			//creates processes, 
 			//handles redirections/pipes,
 			//decides if cmd is builtin or not etc and executes them
@@ -57,10 +57,12 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 
 		printf("argc = %i\n", argc);
 		printf("argv = %s\n", argv[0]);
+		//printf("exit stat = %i\n", exit_stat);
+
 	}
 	//6 shutdown shell (also after signal)
 	free_env_list(&environ);
-	rl_clear_history();	
+	//rl_clear_history();	
 	
 	
 	return (0);

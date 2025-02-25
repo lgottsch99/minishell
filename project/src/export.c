@@ -203,6 +203,7 @@ int	eexport(t_command *cmd, t_env *envp)
 	int 	num_args;
 	int		exit_stat;
 
+	exit_stat = 0;
 	num_args = get_num_args(cmd->args);
 	printf("nr export args is: %i\n", num_args);
 	if (num_args == 1) //only export, man export: When no arguments are given, the results are unspecified.

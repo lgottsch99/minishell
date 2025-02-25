@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:00:04 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/25 13:13:32 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing sh
 int		print_env(t_env *environ);
 int		echo(t_command *cmd_list);
 int		pwd(void);
-void	exit_shell(void);
+//void	exit_shell(void);
 int		cd(t_command *cmd_list);
 int		get_num_args(char **args);
 
@@ -87,11 +87,7 @@ int		get_num_args(char **args);
 void	execute(t_env *envp, int *exit_stat);
 
 //check_access_exec
-<<<<<<< Updated upstream
-char	**get_path(t_env *envp);
-=======
 char 	**get_path(t_env *envp);
->>>>>>> Stashed changes
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
 int		check_files(t_command *cmd);
@@ -109,12 +105,6 @@ void	redirect(int fd, int fd_to_replace);
 int	only_builtin(t_command *cmd_list, t_env *envp);
 int		run_builtin(t_command *cmd_list, t_env *envp);
 
-//alloc_free_exec
-void	free_2d_array(int **fd_pipe, int size);
-<<<<<<< Updated upstream
-=======
-int		**alloc_fd(int nr_cmd);
-int		*alloc_pid(int nr_cmd);
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);
 int		**alloc_fd(int nr_cmd, t_env *envp);
