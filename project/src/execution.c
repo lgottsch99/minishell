@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
+<<<<<<< Updated upstream
 /*   Updated: 2025/02/16 18:14:09 by lgottsch         ###   ########.fr       */
+=======
+/*   Updated: 2025/02/25 12:47:51 by Watanudon        ###   ########.fr       */
+>>>>>>> Stashed changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,10 +260,13 @@ int get_nr_cmd(t_command *cmd_list)
 
 
 
+<<<<<<< Updated upstream
 void	execute(t_env *envp) //t_command *cmd_list);
+=======
+void	execute(t_env *envp, int *exit_stat) //t_command *cmd_list);
+>>>>>>> Stashed changes
 {
 	int	nr_cmd;
-	
 	//----for developing only: create my own sample command-lists
 	t_command	one;
 	t_command	two;
@@ -282,22 +289,26 @@ void	execute(t_env *envp) //t_command *cmd_list);
 	{
 		free_env_list(&envp);
 		//free more?
+<<<<<<< Updated upstream
 		exit(18);
+=======
+		exit(18); //permission 
+>>>>>>> Stashed changes
 	}
 	printf("access ok\n");
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
-		only_builtin(cmd_list, envp);
+		*exit_stat = only_builtin(cmd_list, envp); //return and set exit stat after onlz builtin TO DO
 	// set up pipes (if cmd is builtin they are forked as well, but might have no effect on the main shell p)
 	else
-		pipeline(cmd_list, nr_cmd, envp);
+		pipeline(cmd_list, nr_cmd, envp, exit_stat);
 
 	return;
 }
 
 
-void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n cmds 
+void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //works for 2 -> n cmds 
 {
 	printf("in pipeline\n");
 
@@ -446,7 +457,11 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 			else
 			{
 				printf("its a builtin\n");
+<<<<<<< Updated upstream
 				run_builtin(tmp, envp);
+=======
+				*exit_stat = run_builtin(tmp, envp); //return 0 or error nr?
+>>>>>>> Stashed changes
 				
 				//close open fds
 				if (i == 0) //first cmd
@@ -461,8 +476,13 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 				//free
 				free_everything_pipeline_exit(envp, &pipeline);
 				//free cmd_list 
+<<<<<<< Updated upstream
 				// exit p????
 				exit(0);
+=======
+
+				exit(*exit_stat); //use returned stat here? TODO
+>>>>>>> Stashed changes
 			}
 
 		}
@@ -485,7 +505,11 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 	y = 0;
 	while (y < nr_cmd)
 	{
-		wait(NULL);
+		wait(&exit_stat);//save exit stat
+		//extract real exit_stat + save in env??
+		if (WIFEXITED(*exit_stat))
+			*exit_stat = WEXITSTATUS(*exit_stat); //check + test if ok?
+
 		y++;
 	}
 	

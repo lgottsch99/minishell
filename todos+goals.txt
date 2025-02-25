@@ -42,3 +42,10 @@ topics:
 ??here doc  << create own file??
 
 parsing: multiple redirections should work (eg cat<a2.txt (IN) >a3.txt > a4.txt (OUT))
+
+$? makes sense: create and use env var ? for $? ????? or maybe different name? - actually not needed, normal var in main ok, just access in parsing different 
+builtin exit stat how to in pipeline and no pipeline??
+lilli to do: 
+	-test exit stats, updating of exit stats
+	-change exit nr to standard error handling??
+	-here doc res.

@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   single_builtin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
+<<<<<<< Updated upstream
 /*   Updated: 2025/02/16 17:06:01 by lgottsch         ###   ########.fr       */
+=======
+/*   Updated: 2025/02/25 12:42:09 by Watanudon        ###   ########.fr       */
+>>>>>>> Stashed changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,26 +32,33 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	run_builtin(t_command *cmd_list, t_env *envp)
+int	run_builtin(t_command *cmd_list, t_env *envp)
 {
+	int exit_stat;
 	printf("choosing builtin ft\n");
 	
 	if (ft_strncmp(cmd_list->command, "env", ft_strlen(cmd_list->command)) == 0)
-		print_env(envp);
+		exit_stat = print_env(envp);
 	else if (ft_strncmp(cmd_list->command, "echo", ft_strlen(cmd_list->command)) == 0)
-		echo(cmd_list);
+		exit_stat = echo(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "pwd", ft_strlen(cmd_list->command)) == 0)
-		pwd();
+		exit_stat = pwd();
 	// else if (ft_strncmp(cmd_list->command, "exit", ft_strlen(cmd_list->command)) == 0)
 	// 	exit_shell(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "cd", ft_strlen(cmd_list->command)) == 0)
-		cd(cmd_list);
+		exit_stat = cd(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "export", ft_strlen(cmd_list->command)) == 0)
-		eexport(cmd_list, envp);
+		exit_stat = eexport(cmd_list, envp);
 	else if (ft_strncmp(cmd_list->command, "unset", ft_strlen(cmd_list->command)) == 0)
+<<<<<<< Updated upstream
 		unset(cmd_list, envp);
 
 	return;
+=======
+		exit_stat = unset(cmd_list, envp);
+
+	return (exit_stat);
+>>>>>>> Stashed changes
 }
 
 void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
@@ -57,6 +68,7 @@ void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 	int og_out;
 	int red_in;		//if 0 no red happened, if 1 yes 
 	int red_out;	//same
+	int exit_stat;
 
 	og_in = dup(STDIN_FILENO); //ADD PROTECT 
 	og_out = dup(STDOUT_FILENO); //SAME
@@ -75,7 +87,7 @@ void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 		red_out = 1;
 	}
 	//go to function and run
-	run_builtin(cmd_list, envp);
+		exit_stat = run_builtin(cmd_list, envp);
 
 	// restore og fildes
 	if (red_in == 1)
@@ -86,5 +98,5 @@ void	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 		redirect(og_out, STDOUT_FILENO);
 	// else
 	// 	close(og_out);
-	return;
+	return (exit_stat);
 }

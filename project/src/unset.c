@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 14:58:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 14:15:04 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:40:04 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,13 @@ void	remove_from_envp(t_env *existing_var, t_env **envp)
 	else
 		before->next = NULL;
 	//free existing var
+	free(existing_var->key); //CHECK IF CORRECT
+	free(existing_var->value); //CHECK IF CORRECT
 	free(existing_var);
 
 }
 
-void	unset(t_command *cmd, t_env *envp)
+int	unset(t_command *cmd, t_env *envp)
 {	
 	int 	num_args;
 	int		i;
@@ -106,4 +108,5 @@ void	unset(t_command *cmd, t_env *envp)
 		}//if no do nothing but dont exit shell
 		i++;
 	}
+	return (0);
 }
