@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/26 14:09:22 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:58:45 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef struct s_pipeline {
 //00_init_start
 void	print_start(void);
 char	*add_shlvl(char *value);
-void	set_key_value(char *env_str,t_env *new_node, t_env *environ);
+int		set_key_value(char *env_str,t_env *new_node, t_env *environ);
 void	add_env_back(t_env **environ, t_env *new_node);//add new node to end of list
 t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing shlvl by 1
 

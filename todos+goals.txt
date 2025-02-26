@@ -35,18 +35,17 @@ when to do env handling in parsing or exec? ->in parsing bc only need to handle 
 26.2.
 topics:
 
-??export quote handling possible in parsing part? export lilli=cool lilli="cool" should have same result
-
- $: int exit_stat
-
-??here doc  << create own file??
+??export: quote handling possible in parsing part? export lilli=cool lilli="cool" should have same result
 
 parsing: multiple redirections should work (eg cat<a2.txt (IN) >a3.txt > a4.txt (OUT))
 
-builtin exit stat how to in pipeline and no pipeline??
-lilli to do: 
-	-test exit stats, updating of exit stats
-	-change exit nr to standard error handling??
-	
+$?: int exit_stat
+
+??here doc  
 	-here doc: maybe needs to be implemented in parsing: 
 		if << found in input string -> separate prompt loop going on until delimiter is typed? (each line saved,...) 
+
+lilli to do:
+	-maybe change exit nr to standard error handling??
+	-freeing: final implement after putting all parts Together
+	-norm

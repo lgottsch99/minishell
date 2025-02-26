@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:43:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 17:30:00 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:59:36 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*add_shlvl(char *value)
 }
 
 
-void	set_key_value(char *env_str, t_env *new_node, t_env *environ) // = in str
+int	set_key_value(char *env_str, t_env *new_node, t_env *environ) // = in str
 {
 	char	*key;
 	char	*value;
@@ -63,7 +63,7 @@ void	set_key_value(char *env_str, t_env *new_node, t_env *environ) // = in str
 	{
 		free_env_list(&environ);
 		//fee sth else?
-		exit(95);
+		return (1);
 	}
 	value = ft_substr(env_str, index_first + 1, ft_strlen(env_str) - 1 - index_first); //MALLOC
 	//printf("value: %s\n", value);
@@ -71,18 +71,25 @@ void	set_key_value(char *env_str, t_env *new_node, t_env *environ) // = in str
 	{
 		free_env_list(&environ);
 		//fee sth else?
-		exit(95);
+		return (1);
 	}
 //for value trim " " if there
 	if (value[0] == '"' && value[ft_strlen(value)] == '"')
 	{
-		trimmed = ft_strtrim(value, "\"");
+		trimmed = ft_strtrim(value, "\""); //MALLOC
+		if (!trimmed)
+		{
+			free_env_list(&environ);
+		//fee sth else?
+			return (1);
+		}
 		free(value);
 		value = trimmed;
 	}
 	//set in new node
 	new_node->key = key;
 	new_node->value = value;
+	return (0);
 }
 
 void	add_env_back(t_env **environ, t_env *new_node)//add new node to end of list
@@ -121,7 +128,7 @@ t_env	*set_env(char *envp[]) //create linked list w all env vars, increasing shl
 		{
 			free_env_list(&environ);
 			//free anything else?
-			exit(90);
+			return (NULL);
 		}
 	//check if = in str
 		equal = ft_strchr(envp[i], '=');
@@ -131,7 +138,10 @@ t_env	*set_env(char *envp[]) //create linked list w all env vars, increasing shl
 			new_node->value = NULL;
 		}
 		else //equal in str
-			set_key_value(envp[i], new_node, environ); //MALLOC
+		{
+			if (set_key_value(envp[i], new_node, environ) == 1) //MALLOC
+				return (NULL);
+		}
 		new_node->next = NULL;
 		//if shlvl add 1
 		if (ft_strncmp(new_node->key, "SHLVL", 5) == 0)
@@ -142,7 +152,7 @@ t_env	*set_env(char *envp[]) //create linked list w all env vars, increasing shl
 			{
 				free_env_list(&environ);
 			//free anything else?
-				exit(90);
+				return (NULL);
 			}
 		}
 		//connect to list

@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/26 15:42:04 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:03:46 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -500,8 +500,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 			*exit_stat = WEXITSTATUS(*exit_stat); //check + test if ok?
 
 		y++;
-	}
-	// make sure last process exit is stored????
+	}	// make sure last process exit is stored????
 	
 	//free everything malloced for pipeline TO DO
 		//free_everything_pipeline_exit(envp, &pipeline);
