@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:13:32 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/26 14:09:22 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing sh
 int		print_env(t_env *environ);
 int		echo(t_command *cmd_list);
 int		pwd(void);
-//void	exit_shell(void);
+int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline);
 int		cd(t_command *cmd_list);
 int		get_num_args(char **args);
 
@@ -102,8 +102,8 @@ void	red_outfile(char *output_file, t_command *cmd);
 void	redirect(int fd, int fd_to_replace);
 
 //single_builtin
-int	only_builtin(t_command *cmd_list, t_env *envp);
-int		run_builtin(t_command *cmd_list, t_env *envp);
+int		only_builtin(t_command *cmd_list, t_env *envp);
+int		run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline);
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);
@@ -115,7 +115,7 @@ void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline);
 void	free_cmd_list(t_command **cmd_list);
 
 //export.c
-int	eexport(t_command *cmd, t_env *envp);
+int		eexport(t_command *cmd, t_env *envp);
 t_env	*check_existing_env(char *arg_name,  t_env *envp);
 
 //unset.c

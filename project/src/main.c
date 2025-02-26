@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:13:07 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/26 15:13:01 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 int	main (int argc, char *argv[], char *envp[]) //(void)
 {
+	(void)argc; //marking unused
+	(void)argv;
+	
 	char	*input;
 	t_env	*environ;
 	int		exit_stat;
@@ -24,8 +27,7 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 	//1. load config files, init etc
 	print_start();
 
-	/*TO DO: set up env (SHLVL increases from std.!)
-	*/
+	//set up env (SHLVL increases from std.!)
 	environ = set_env(envp); //MALLOC
 	//print_env(environ);
 
@@ -51,13 +53,9 @@ int	main (int argc, char *argv[], char *envp[]) //(void)
 			//decides if cmd is builtin or not etc and executes them
 			//special cases: $?, 
 		
-		//5. free everything needed
+		//5. free everything needed TODO
 		free(input);
 		input = NULL;
-
-		printf("argc = %i\n", argc);
-		printf("argv = %s\n", argv[0]);
-		//printf("exit stat = %i\n", exit_stat);
 
 	}
 	//6 shutdown shell (also after signal)

@@ -1,0 +1,38 @@
+What is a Here Document?
+
+It’s a way to send multiple lines of input to a command.
+Instead of typing everything on one line, you can type several lines and the shell will treat those lines as input for the command.
+How does it work?
+
+You use the << operator followed by a "delimiter" (a word you choose), like this:
+bash
+Copy
+command << delimiter
+line 1 of input
+line 2 of input
+delimiter
+The shell will keep reading lines until it sees the delimiter. Once it finds the delimiter, it stops reading and sends everything before it as input to the command.
+Details about how it's used:
+
+If you specify a number n before <<, the input is sent to file descriptor n (instead of the standard input).
+If the delimiter word is quoted (using ' or "), then things like variables or commands inside the here document won’t be expanded or substituted. It’s treated literally.
+If the delimiter word is unquoted, things like variables ($var), command substitution ($(command)), and arithmetic operations will be expanded in the here document. Special characters like \, $, and backticks (`) need to be escaped using a backslash (\).
+Example 1: Using Here Document with unquoted word
+bash
+Copy
+cat << EOF
+Hello, $USER!
+This is a test.
+EOF
+In this case, $USER will be expanded to the username.
+
+Example 2: Using Here Document with quoted word
+bash
+Copy
+cat << 'EOF'
+Hello, $USER!
+This will not expand the variable.
+EOF
+Here, $USER will not be expanded, and the output will literally show $USER.
+
+In summary, Here Documents let you send multi-line input to a command, and whether variables and commands are expanded depends on how you quote the delimiter word.

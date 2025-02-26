@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_builtin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:16:04 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/26 14:17:45 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-int	run_builtin(t_command *cmd_list, t_env *envp)
+int	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline)
 {
 	int exit_stat;
 
@@ -41,8 +41,8 @@ int	run_builtin(t_command *cmd_list, t_env *envp)
 		exit_stat = echo(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "pwd", ft_strlen(cmd_list->command)) == 0)
 		exit_stat = pwd();
-	// else if (ft_strncmp(cmd_list->command, "exit", ft_strlen(cmd_list->command)) == 0)
-	// 	exit_shell(cmd_list);
+	else if (ft_strncmp(cmd_list->command, "exit", ft_strlen(cmd_list->command)) == 0)
+	 	exit_stat = exit_shell(cmd_list, envp, pipeline);
 	else if (ft_strncmp(cmd_list->command, "cd", ft_strlen(cmd_list->command)) == 0)
 		exit_stat = cd(cmd_list);
 	else if (ft_strncmp(cmd_list->command, "export", ft_strlen(cmd_list->command)) == 0)
@@ -80,7 +80,7 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 		red_out = 1;
 	}
 	//go to function and run
-		exit_stat = run_builtin(cmd_list, envp);
+		exit_stat = run_builtin(cmd_list, envp, NULL);
 
 	// restore og fildes
 	if (red_in == 1)

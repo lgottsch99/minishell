@@ -32,20 +32,21 @@ when to do env handling in parsing or exec? ->in parsing bc only need to handle 
 
 ----------------------------------------------------------------------------------------
 
-19.2.
+26.2.
 topics:
 
 ??export quote handling possible in parsing part? export lilli=cool lilli="cool" should have same result
 
-?? $? how what etc. 
+ $: int exit_stat
 
 ??here doc  << create own file??
 
 parsing: multiple redirections should work (eg cat<a2.txt (IN) >a3.txt > a4.txt (OUT))
 
-$? makes sense: create and use env var ? for $? ????? or maybe different name? - actually not needed, normal var in main ok, just access in parsing different 
 builtin exit stat how to in pipeline and no pipeline??
 lilli to do: 
 	-test exit stats, updating of exit stats
 	-change exit nr to standard error handling??
-	-here doc res.
+	
+	-here doc: maybe needs to be implemented in parsing: 
+		if << found in input string -> separate prompt loop going on until delimiter is typed? (each line saved,...) 

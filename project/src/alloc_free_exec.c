@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   alloc_free_exec.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:01:42 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/26 14:35:08 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,23 +130,33 @@ void	free_2d_char(char **array)
 }
 
 void	free_cmd_list(t_command **cmd_list)
-{
+{printf("in free cmd list\n");
 	t_command *tmp;
 
 	while (*cmd_list)
 	{
 		tmp = *cmd_list;
 		*cmd_list = (*cmd_list)->next;
+		printf("0\n");
 		if (tmp->command)
 			free(tmp->command);
+		printf("1\n");
 		if (tmp->args)
 			free_2d_char(tmp->args);
+		printf("2\n");
+
 		if (tmp->input_file)
 			free(tmp->input_file);
+		printf("3\n");
+
 		if (tmp->output_file)
 			free(tmp->output_file);
+		printf("4\n");
+
 		if (tmp->exec_path)
 			free(tmp->exec_path);
+		printf("5\n");
+
 		free(tmp);
 		tmp = NULL;
 	}

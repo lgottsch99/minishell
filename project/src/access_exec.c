@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 17:29:57 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:42:55 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	check_files(t_command *cmd) //ret 1 if denied, 0 if ok
 
 int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access denied, 0 if ok
 {
-	printf("in check access \n");
+	//printf("in check access \n");
 
 	int			i;
 	int			builtin;
@@ -159,7 +159,7 @@ char	*ret_value_env(char *key, t_env *envp)
 
 void	check_path(t_command	*cmd, t_env *envp) //TODO
 {
-	printf("in check path \n");
+	//printf("in check path \n");
 
 	char	*fullpath; //whole path from envp
 	char	*exec_path; //path that can be exec
@@ -167,7 +167,7 @@ void	check_path(t_command	*cmd, t_env *envp) //TODO
 
 	//1. get whole path from env
 	fullpath = ret_value_env("PATH", envp);
-	printf("fullpath: %s\n", fullpath);
+	//printf("fullpath: %s\n", fullpath);
 	paths = ft_split(fullpath, ':');
 	//2. get executable path if cmd not builtin
 	exec_path = get_exec_path(cmd->command, paths); //returns malloced str if exists, NULL if not

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:06:14 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/26 14:35:57 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,18 +151,60 @@ int	echo(t_command *cmd_list)
 
 
 
-void exit_shell(t_env *envp, t_pipeline *pipeline)//TODO
-{
-	printf("exit\n"); //bash prints exit 
-
-	//a number after exit can be set which refers to exit status: check $?
-	//free all necessary
-	free_everything_pipeline_exit(envp, pipeline);
-
-
+int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
+{	//a number after exit can be set which refers to exit status
+	int	num_args;
+	int	i;
+	int no_digit;
 
 	printf("exit\n"); //bash prints exit 
-	exit(0);
+	num_args = get_num_args(cmd->args);
+	i = 0;
+	no_digit = 0;
+	
+	if (num_args == 1)//only exit but no args
+	{ 
+		//free all necessary
+		if (pipeline != NULL)
+			free_everything_pipeline_exit(envp, pipeline);
+		else //only single cmd
+		{ printf("freeing no pipeline\n");
+			// if (envp)
+			// 	free_env_list(&envp);
+			// printf("freed env\n");
+			// if (cmd)
+			// 	free_cmd_list(&cmd);
+			//anything else to free?
+			printf("freed all\n");
+
+		}
+		exit(0);
+	}
+	else if (num_args == 2) //if only one: exit with nr 
+	{
+		//check if arg nr is only digits 
+		while (cmd->args[1][i])
+		{
+			if (ft_isdigit(cmd->args[1][i]) == 0)
+				no_digit = 1;
+			i++;
+		}
+		if (no_digit == 1)//non numeric 
+		{
+			printf("exit: numeric arg required\n");
+			return (1);
+		}
+		//free all necessary
+		if (pipeline)
+			free_everything_pipeline_exit(envp, pipeline);
+		exit(ft_atoi(cmd->args[1])); //check if ok
+	}
+	else if (num_args > 2)//if more than one number: error mdg, set exit stat
+	{
+		printf("exit: too many arguments\n");
+		return (1);
+	}
+	return (1);
 }
 
 int	cd(t_command *cmd_list)//TO DO

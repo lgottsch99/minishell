@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/25 13:14:49 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/02/26 15:42:04 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,11 @@ void	init_test_export(t_command *one)
 
 void	init_test_one(t_command *one)
 {
-	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "cat";
-	one->args[0] = "cat";
-	one->args[1] = NULL;
+	one->args = (char **)malloc(sizeof(char *) * 3);
+	one->command = "exit";
+	one->args[0] = "exit";
+	one->args[1] = "34";
+	one->args[2] = NULL;
 	one->input_file = "test.txt";
 	one->output_file = NULL;
 	one->append_mode = 0;
@@ -254,22 +255,20 @@ int get_nr_cmd(t_command *cmd_list)
 	return (nr);
 }
 
-
-
 void	execute(t_env *envp, int *exit_stat) //t_command *cmd_list);
 {
 	int	nr_cmd;
 	//----for developing only: create my own sample command-lists
 	t_command	one;
 	t_command	two;
-	// t_command	three;
+	 t_command	three;
 	// t_command	four;
 
 	t_command	*cmd_list;
 	cmd_list = &one;
 	
 	//init_single_builtin(&one);//, &two);
-	init_test_two(&one, &two); //, &two, &three, &four);
+	init_test_three(&one, &two, &three);//, &four);
 	//---------------
 	
 	//get size of lists 
@@ -445,7 +444,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 			else
 			{
 				printf("its a builtin\n");
-				*exit_stat = run_builtin(tmp, envp); //return 0 or error nr?
+				*exit_stat = run_builtin(tmp, envp, &pipeline); //return 0 or error nr?
 				
 				//close open fds
 				if (i == 0) //first cmd
@@ -472,6 +471,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 		}
 	}
 	//close all open fildes
+	printf("closing fds\n");
+
 	y = 0;
 	while (y < nr_cmd - 1)
 	{
@@ -480,21 +481,31 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 		y++;
 	}
 
-	//wait for all children
+
+	//wait for all children TO DO whatif terminated by SIGNAL? WTERMSIG
 	y = 0;
 	while (y < nr_cmd)
 	{
-		wait(exit_stat);//save exit stat
+		printf("waiting\n");
+		//wait(exit_stat);//save exit stat
+		if (waitpid(pipeline.pid[y], exit_stat, 0) == -1)
+		{
+			perror("waitpid: ");
+			free_everything_pipeline_exit(envp, &pipeline);
+			//return ? or exit
+			exit(1);
+		}
 		//extract real exit_stat + save in env??
 		if (WIFEXITED(*exit_stat))
 			*exit_stat = WEXITSTATUS(*exit_stat); //check + test if ok?
 
 		y++;
 	}
+	// make sure last process exit is stored????
 	
-	//free everything malloced for pipeline 
-	free_everything_pipeline_exit(envp, &pipeline);
-	// free_cmd_list(&cmd_list);
+	//free everything malloced for pipeline TO DO
+		//free_everything_pipeline_exit(envp, &pipeline);
+
 
 	printf("waited for all ps and finished\n");
 	return;
