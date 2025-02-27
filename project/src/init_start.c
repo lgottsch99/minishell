@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:43:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/26 15:59:36 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 14:17:54 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,18 @@ printf("  ▀▀▀▀ ▀▀▀ · ▀▀▀ .▀▀▀ .▀▀▀      ▀▀�
 
 char	*add_shlvl(char *value)
 {
-	int num;
-	char * new;
+	int		num;
+	char	*new;
 	//atoi, add 1, itoa, return
 	num = ft_atoi(value);
+	free(value);
+	value = NULL;
+	
 	num = num + 1;
-
 	new = ft_itoa(num); //MALLOC
 	if (!new)
 		return (NULL);
-	free(value);
-	value = new;
-	return (value);
+	return (new);
 }
 
 

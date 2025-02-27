@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/26 14:17:45 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:24:47 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,19 @@ int	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline)
 	exit_stat = 0;
 	printf("choosing builtin ft\n");
 	
-	if (ft_strncmp(cmd_list->command, "env", ft_strlen(cmd_list->command)) == 0)
+	if (ft_strncmp(cmd_list->args[0], "env", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = print_env(envp);
-	else if (ft_strncmp(cmd_list->command, "echo", ft_strlen(cmd_list->command)) == 0)
+	else if (ft_strncmp(cmd_list->args[0], "echo", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = echo(cmd_list);
-	else if (ft_strncmp(cmd_list->command, "pwd", ft_strlen(cmd_list->command)) == 0)
+	else if (ft_strncmp(cmd_list->args[0], "pwd", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = pwd();
-	else if (ft_strncmp(cmd_list->command, "exit", ft_strlen(cmd_list->command)) == 0)
+	else if (ft_strncmp(cmd_list->args[0], "exit", ft_strlen(cmd_list->args[0])) == 0)
 	 	exit_stat = exit_shell(cmd_list, envp, pipeline);
-	else if (ft_strncmp(cmd_list->command, "cd", ft_strlen(cmd_list->command)) == 0)
+	else if (ft_strncmp(cmd_list->args[0], "cd", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = cd(cmd_list);
-	else if (ft_strncmp(cmd_list->command, "export", ft_strlen(cmd_list->command)) == 0)
+	else if (ft_strncmp(cmd_list->args[0], "export", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = eexport(cmd_list, envp);
-	else if (ft_strncmp(cmd_list->command, "unset", ft_strlen(cmd_list->command)) == 0)
+	else if (ft_strncmp(cmd_list->args[0], "unset", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = unset(cmd_list, envp);
 
 	return (exit_stat);

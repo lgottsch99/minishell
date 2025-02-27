@@ -1,0 +1,78 @@
+check:
+
+history: OK
+mem-leaks:	KO many still reachables in env TODO
+norm:
+
+parsing:
+	env_var extension
+	$? handling
+	single quotes '
+		unclosed quote
+	double quotes"
+		unclosed quote
+
+
+execution:
+	builtins: 
+		pwd OK
+		echo OK
+		echo -n OK
+		cd: OK
+			cd ~ ?? should work or not? slack:not needed
+			cd .. OK
+			cd ../.. OK
+			cd folder/folder OK
+		
+		export: TODO
+			single 
+				lilli=cool OK
+				lilli="cool" KO 	TODO (result: cool=NULL, expect: lilli=cool) parsing issue
+				lilli="" KO 		TODO (result: nothing exported, expected: lilli=) parsing issue
+				lilli 	KO?? is it supposed to init or not? TODO 
+			multiple TODO
+
+			update existing OK
+
+		unset:
+			single OK
+			multiple OK
+			non-existing OK
+
+		env OK
+		exit OK
+
+	pipeline:
+		2 cmd no red 	OK
+		2 cmd red in 	OK
+		2 cmd red out 	OK
+		2 cmd 
+
+	redirections:
+		single in 		KO what about different order (cat < test.txt OK/ test.txt < cat KO / < test.txt cat KO)
+		single OUT 		OK	(ls > out.txt OK / > out.txt ls OK / )
+		single in + OUT 	(wc < test.txt >out.txt OK / )
+		single multiple
+		
+		in pipeline: 
+			in		OK
+			out 		OK
+			in + out	OK
+			multiple
+		
+		append mode:	 KO
+			out single
+			out in pipeline
+			multiple??
+
+		exit-stat:
+
+
+signals:
+	ctrl c 
+		exit stat?
+		leaks?
+	ctrl d
+		exit stat?
+		leaks?
+	ctrl /

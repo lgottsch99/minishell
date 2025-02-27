@@ -1,0 +1,9 @@
+size list is: 64
+converted env to array
+t_command:
+  Arg 0: wc
+  Arg 1: -w
+  Input file: test.txt
+  Output file: out.txt
+  exec path: /usr/bin/wc
+3

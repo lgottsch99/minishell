@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/26 16:03:46 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:49:54 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat); //w
 void	init_cd(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 4);
-	one->command = "cd";
+	//one->command = "cd";
 	one->args[0] = "cd";
 	one->args[1] = "..";
 	one->args[2] = "hi";
@@ -53,7 +53,7 @@ void	init_cd(t_command *one)
 void	init_single_builtin(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "env";
+	//one->command = "env";
 	one->args[0] = "env";
 	one->args[1] = NULL;
 	//one->args[3] = NULL;
@@ -69,7 +69,7 @@ void	init_single_builtin(t_command *one)
 void	init_test_unset(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 3);
-	one->command = "unset";
+	//one->command = "unset";
 	one->args[0] = "unset";
 	one->args[1] = "SHLVL";
 	one->args[2] = "hiiii";
@@ -86,7 +86,7 @@ void	init_test_unset(t_command *one)
 void	init_test_export(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 5);
-	one->command = "export";
+	//one->command = "export";
 	one->args[0] = "export";
 	one->args[1] = "lilli=\"cool\"";
 	one->args[2] = "lillian=cooler=jik";
@@ -105,7 +105,7 @@ void	init_test_export(t_command *one)
 void	init_test_one(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 3);
-	one->command = "exit";
+	//one->command = "exit";
 	one->args[0] = "exit";
 	one->args[1] = "34";
 	one->args[2] = NULL;
@@ -121,7 +121,7 @@ void	init_test_one(t_command *one)
 void	init_test_four(t_command *one, t_command *two, t_command *three, t_command *four)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "ls";
+	//one->command = "ls";
 	one->args[0] = "ls";
 	one->args[1] = NULL;
 	one->input_file = NULL;
@@ -132,7 +132,7 @@ void	init_test_four(t_command *one, t_command *two, t_command *three, t_command 
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 3);
-	two->command = "wc";
+	//two->command = "wc";
 	two->args[0] = "wc";
 	two->args[1] = "-w";
 	two->args[2] = NULL;
@@ -144,7 +144,7 @@ void	init_test_four(t_command *one, t_command *two, t_command *three, t_command 
 	two->next = three;
 
 	three->args = (char **)malloc(sizeof(char *) * 2);
-	three->command = "cat";
+	//three->command = "cat";
 	three->args[0] = "cat";
 	three->args[1] = NULL;
 	three->input_file = NULL;
@@ -156,7 +156,7 @@ void	init_test_four(t_command *one, t_command *two, t_command *three, t_command 
 
 
 	four->args = (char **)malloc(sizeof(char *) * 3);
-	four->command = "cat";
+	//four->command = "cat";
 	four->args[0] = "cat";
 	four->args[1] = "wc.txt";
 	four->args[2] = NULL;
@@ -174,7 +174,7 @@ void	init_test_four(t_command *one, t_command *two, t_command *three, t_command 
 void	init_test_three(t_command *one, t_command *two, t_command *three)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "ls";
+	//one->command = "ls";
 	one->args[0] = "ls";
 	one->args[1] = NULL;
 	one->input_file = NULL;
@@ -185,7 +185,7 @@ void	init_test_three(t_command *one, t_command *two, t_command *three)
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 2);
-	two->command = "cat";
+	//two->command = "cat";
 	two->args[0] = "cat";
 	two->args[1] = NULL;
 	two->input_file = NULL;
@@ -196,7 +196,7 @@ void	init_test_three(t_command *one, t_command *two, t_command *three)
 	two->next = three;
 
 	three->args = (char **)malloc(sizeof(char *) * 2);
-	three->command = "cat";
+	//three->command = "cat";
 	three->args[0] = "cat";
 	three->args[1] = NULL;
 	three->input_file = NULL;
@@ -213,7 +213,7 @@ void	init_test_three(t_command *one, t_command *two, t_command *three)
 void	init_test_two(t_command *one, t_command *two)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "cat";
+	//one->command = "cat";
 	one->args[0] = "cat";
 	one->args[1] = NULL;
 	one->input_file = "test.txt";
@@ -224,7 +224,7 @@ void	init_test_two(t_command *one, t_command *two)
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 3);
-	two->command = "cd";
+	//two->command = "cd";
 	two->args[0] = "cd";
 	two->args[1] = "..";
 	two->args[2] = NULL;
@@ -255,20 +255,20 @@ int get_nr_cmd(t_command *cmd_list)
 	return (nr);
 }
 
-void	execute(t_env *envp, int *exit_stat) //t_command *cmd_list);
+void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 {
 	int	nr_cmd;
 	//----for developing only: create my own sample command-lists
-	t_command	one;
-	t_command	two;
-	 t_command	three;
-	// t_command	four;
+	// t_command	one;
+	// t_command	two;
+	//  t_command	three;
+	// // t_command	four;
 
-	t_command	*cmd_list;
-	cmd_list = &one;
+	// t_command	*cmd_list;
+	// cmd_list = &one;
 	
-	//init_single_builtin(&one);//, &two);
-	init_test_three(&one, &two, &three);//, &four);
+	// //init_single_builtin(&one);//, &two);
+	// init_test_three(&one, &two, &three);//, &four);
 	//---------------
 	
 	//get size of lists 
@@ -278,9 +278,11 @@ void	execute(t_env *envp, int *exit_stat) //t_command *cmd_list);
 	//check access of everything (files + cmds), creates paths, decides if builtin
 	if (check_access(cmd_list, nr_cmd, envp) != 0)
 	{
+		//printf("access error\n");
 		free_env_list(&envp);
 		//free more?
-		exit(1); //permission TO DO 
+		*exit_stat = 1;
+		return;// TO DO 
 	}
 	printf("access ok\n");
 	
@@ -432,6 +434,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				}
 				printf("converted env to array\n");
 
+				print_commands(tmp);
+				
 				if(execve(tmp->exec_path, tmp->args, pipeline.env_array) == -1) //execve closing open fds? - yes
 				{
 					perror("execve: \n");

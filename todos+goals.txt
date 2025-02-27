@@ -45,7 +45,21 @@ $?: int exit_stat
 	-here doc: maybe needs to be implemented in parsing: 
 		if << found in input string -> separate prompt loop going on until delimiter is typed? (each line saved,...) 
 
-lilli to do:
+to do:
+	-heredoc
+	-signals
 	-maybe change exit nr to standard error handling??
-	-freeing: final implement after putting all parts Together
+	-display pwd somehow?? or just use pwd to prove
+	-freeing: final implement after putting all parts Together -> should be ok
 	-norm
+
+
+
+debug: 
+		remove t_commmand -> command ??
+		parsing: 
+			input: export var="sth" 
+					-> not parsed like arg[0]: export, arg[1]:var="sth" (builtin export)
+		running minishell in minishell?
+		parsing not working with own environ list
+		LILLI get path: add function of ./ (in current dir) ../ one up or ./project/minishell with path from current dir

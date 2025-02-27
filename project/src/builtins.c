@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/26 14:35:57 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 18:22:08 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ int	print_env(t_env *environ)
 	{
 		if (printf("%s", (char *)tmp->key) < 0)
 			return (1);
-		if (printf("=\"") < 0)
+		if (printf("=") < 0)
 			return (1);
-		if (printf("%s\"\n", (char *)tmp->value) < 0)
+		if (printf("%s\n", (char *)tmp->value) < 0)
 			return (1);
 		tmp = tmp->next;
 	}
@@ -106,7 +106,6 @@ int	print_args(char **args, int start)
 		// ft_putstr_fd(" ", STDOUT_FILENO);
 		if (printf(" ") < 0)
 			return (1);
-
 		i++;
 	}
 	return (0);
@@ -171,11 +170,11 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 		{ printf("freeing no pipeline\n");
 			// if (envp)
 			// 	free_env_list(&envp);
-			// printf("freed env\n");
-			// if (cmd)
-			// 	free_cmd_list(&cmd);
+			//printf("freed env\n");
+			if (cmd)
+				free_cmd_list(&cmd);
 			//anything else to free?
-			printf("freed all\n");
+			//printf("freed all\n");
 
 		}
 		exit(0);

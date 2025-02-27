@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/26 15:58:45 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:36:47 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,27 @@
 
 //---------- Structs ------------------
 
+typedef enum Token_type {
+    TOKEN_WORD,              
+    TOKEN_PIPE,              
+    TOKEN_REDIRECT_IN,       
+    TOKEN_REDIRECT_OUT,      
+    TOKEN_REDIRECT_APPEND,   
+    TOKEN_REDIRECT_HEREDOC,  
+    TOKEN_SINGLE_QUOTE,      
+    TOKEN_DOUBLE_QUOTE,      
+    TOKEN_ENV_VAR,           
+    TOKEN_END                
+} Token_type;
+
+typedef struct Token {
+    char *value;
+    Token_type type;
+    struct Token *next;
+} Token;
+
 typedef struct s_command {
-    char	*command;       // The command name (e.g., "echo", "grep")
+   // char	*command;       // The command name (e.g., "echo", "grep")
     char	**args;         // Array of arguments (NULL-terminated) and flags
     char	*input_file;    // File for input redirection (NULL if none)
     char	*output_file;   // File for output redirection (NULL if none)
@@ -84,7 +103,7 @@ int		get_num_args(char **args);
 
 
 //execution
-void	execute(t_env *envp, int *exit_stat);
+void	execute(t_env *envp, int *exit_stat, t_command *cmd_list);
 
 //check_access_exec
 char 	**get_path(t_env *envp);
@@ -120,6 +139,16 @@ t_env	*check_existing_env(char *arg_name,  t_env *envp);
 
 //unset.c
 int	unset(t_command *cmd, t_env *envp);
+
+//parsing.c //tokenizing
+Token		*tokenize(char *input, int last_exit_status, char **envp);
+t_command 	*parse_tokens(Token *tokens);
+void		print_tokens(Token *tokens);
+void		free_tokens(Token *tokens);
+void		free_commands(t_command *commands);
+void		print_commands(t_command *commands);
+
+
 
 
 #endif

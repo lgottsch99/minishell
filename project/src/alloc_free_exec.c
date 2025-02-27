@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/26 14:35:08 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 14:09:48 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	free_2d_array(int **fd_pipe, int size)
 		size--;
 	}
 	free(fd_pipe);
+	fd_pipe = NULL;
 }
 
 
@@ -66,7 +67,7 @@ int *alloc_pid(int nr_cmd, t_env *envp)
 		free_env_list(&envp);
 		//free everything
 		perror("malloc: ");
-		exit(348);
+		exit(348); //TODO
 	}
 	return (pid);
 }
@@ -80,7 +81,9 @@ void	free_env_list(t_env **env)
 		tmp = *env;
 		*env = (*env)->next;
 		free(tmp->key);
+		tmp->key = NULL;
 		free(tmp->value);
+		tmp->value = NULL;
 		free(tmp);
 	}
 	*env = NULL;
@@ -97,6 +100,7 @@ void	free_pipe_array(int **fd_pipe)
 		i++;
 	}
 	free(fd_pipe);
+	fd_pipe = NULL;
 }
 
 void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline)	//t_env *envp, int **fd_pipe, int *pid)
@@ -112,8 +116,9 @@ void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline)	//t_env *e
 	//free cmd_list if not statically alloced
 	if (pipeline->cmd_list)
 		free_cmd_list(&pipeline->cmd_list);
-
-	exit(104);
+	envp = NULL;
+	pipeline = NULL;
+	exit(1);
 }
 
 void	free_2d_char(char **array)
@@ -127,36 +132,27 @@ void	free_2d_char(char **array)
 		i++;
 	}
 	free(array);
+	array = NULL;
 }
 
 void	free_cmd_list(t_command **cmd_list)
-{printf("in free cmd list\n");
+{	printf("in free cmd list\n");
 	t_command *tmp;
 
 	while (*cmd_list)
 	{
 		tmp = *cmd_list;
 		*cmd_list = (*cmd_list)->next;
-		printf("0\n");
-		if (tmp->command)
-			free(tmp->command);
-		printf("1\n");
+		// if (tmp->command)
+		// 	free(tmp->command);
 		if (tmp->args)
 			free_2d_char(tmp->args);
-		printf("2\n");
-
 		if (tmp->input_file)
 			free(tmp->input_file);
-		printf("3\n");
-
 		if (tmp->output_file)
 			free(tmp->output_file);
-		printf("4\n");
-
 		if (tmp->exec_path)
 			free(tmp->exec_path);
-		printf("5\n");
-
 		free(tmp);
 		tmp = NULL;
 	}
