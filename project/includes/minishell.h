@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/27 13:36:47 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 14:46:58 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int		print_env(t_env *environ);
 int		echo(t_command *cmd_list);
 int		pwd(void);
 int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline);
-int		cd(t_command *cmd_list);
+int		cd(t_command *cmd_list, t_env *envp);
 int		get_num_args(char **args);
 
 
@@ -114,6 +114,8 @@ int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp);
 void	check_path(t_command	*cmd, t_env *envp);
 char	**convert_env_array(t_env *envp, t_pipeline *pipeline); //The envp array must be terminated by a NULL pointer.
 int		count_env_size(t_env *envp);
+char	*ret_value_env(char *key, t_env *envp);
+
 
 //redirections
 void	red_infile(char	*input_file);

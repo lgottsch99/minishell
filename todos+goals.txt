@@ -71,12 +71,14 @@ dana:
 	heredoc
 	signals
 	change envp in tokenizing to environ list
+	append mode >> 
+
 
 lilli;
 	execution path thing OK
 	debug run ms from within ms: OK
 		when 2nd shell all env info lost OK
 
-	freeing env
+	freeing env, 
 	testinggggg
 

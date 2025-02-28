@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 14:03:45 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 15:21:55 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,8 +168,8 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 			free_everything_pipeline_exit(envp, pipeline);
 		else //only single cmd
 		{ printf("freeing no pipeline\n");
-			// if (envp)
-			// 	free_env_list(&envp);
+			if (envp)
+				free_env_list(&envp);
 			//printf("freed env\n");
 			if (cmd)
 				free_cmd_list(&cmd);
@@ -206,7 +206,7 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 	return (1);
 }
 
-int	cd(t_command *cmd_list)//TO DO
+int	cd(t_command *cmd_list, t_env *envp)
 {
 	char s[100];
 	printf("in cd\n");
@@ -215,7 +215,8 @@ int	cd(t_command *cmd_list)//TO DO
 	char	*home;
 	int		num_args;
 
-	home = getenv("HOME"); //change to own env //TODO
+	//home = getenv("HOME"); //change to own env //TODO
+	home = ret_value_env("HOME", envp);
 	if (!home)
 	{
 		printf("cant find home\n");

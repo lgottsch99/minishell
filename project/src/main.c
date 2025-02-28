@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 13:00:56 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 15:44:58 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,11 @@ int	main (int argc, char *argv[], char *envp[])
 		{
 			printf("readline error\n");
 			exit_stat = 1;
-			break;
+			continue;
 		}
+		if (input[0] == '\0')
+			continue;
+
 		//adding input to history
 		add_history(input);
 		printf("you typed: %s\n", input);
@@ -98,7 +101,14 @@ int	main (int argc, char *argv[], char *envp[])
 
 	}
 	//6 shutdown shell (also after signal)
-	free_env_list(&environ);
+	if (environ)
+		free_env_list(&environ);
+	if (commands)
+	{
+		free_cmd_list(&commands);
+		commands = NULL;
+	}
+
 	//rl_clear_history();	
 	
 	return (exit_stat);
