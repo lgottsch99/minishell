@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/02/27 16:49:40 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 14:22:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ t_command	*create_command()
 	cmd->append_mode = 0;
 	cmd->next = NULL;
 	cmd->is_builtin = 0;
+	cmd->exec_path = NULL;
 	return (cmd);
 }
 
@@ -124,7 +125,6 @@ void	print_commands(t_command *commands) {
 		if (commands->exec_path)
 			printf("  exec path: %s\n", commands->exec_path);
 		commands = commands->next;
-		
 	}
 }
 

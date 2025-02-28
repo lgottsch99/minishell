@@ -63,3 +63,20 @@ debug:
 		running minishell in minishell?
 		parsing not working with own environ list
 		LILLI get path: add function of ./ (in current dir) ../ one up or ./project/minishell with path from current dir
+
+----------------------------------------------------------------------------------------
+27.2
+
+dana:
+	heredoc
+	signals
+	change envp in tokenizing to environ list
+
+lilli;
+	execution path thing OK
+	debug run ms from within ms: OK
+		when 2nd shell all env info lost OK
+
+	freeing env
+	testinggggg
+

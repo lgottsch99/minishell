@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/27 18:22:08 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 14:03:45 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ int	cd(t_command *cmd_list)//TO DO
 	char	*home;
 	int		num_args;
 
-	home = getenv("HOME");
+	home = getenv("HOME"); //change to own env //TODO
 	if (!home)
 	{
 		printf("cant find home\n");

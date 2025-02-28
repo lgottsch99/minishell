@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/27 18:22:30 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 13:00:56 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ int	main (int argc, char *argv[], char *envp[])
 		//adding input to history
 		add_history(input);
 		printf("you typed: %s\n", input);
+		
+		//check if heredoc, if yes separate readline TODO 
 
 		//3. parse (and create AST), 
 		tokens = tokenize(input, exit_stat, envp); //TO DO change envp to own environ
@@ -88,8 +90,11 @@ int	main (int argc, char *argv[], char *envp[])
 		free(input);
 		input = NULL;
 
-		free_commands(commands);
-		commands = NULL;
+		if (commands)
+		{
+			free_cmd_list(&commands);
+			commands = NULL;
+		}
 
 	}
 	//6 shutdown shell (also after signal)

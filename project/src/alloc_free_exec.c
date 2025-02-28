@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/27 14:09:48 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 14:18:20 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,24 +136,33 @@ void	free_2d_char(char **array)
 }
 
 void	free_cmd_list(t_command **cmd_list)
-{	printf("in free cmd list\n");
+{	
+	printf("in free cmd list\n");
 	t_command *tmp;
 
 	while (*cmd_list)
 	{
+		printf("in loop freeing\n");
 		tmp = *cmd_list;
 		*cmd_list = (*cmd_list)->next;
 		// if (tmp->command)
 		// 	free(tmp->command);
 		if (tmp->args)
 			free_2d_char(tmp->args);
+		printf("0\n");
 		if (tmp->input_file)
 			free(tmp->input_file);
+		printf("1\n");
 		if (tmp->output_file)
 			free(tmp->output_file);
+		printf("2\n");
+
 		if (tmp->exec_path)
 			free(tmp->exec_path);
+		printf("3\n");
+
 		free(tmp);
+		printf("4\n");
 		tmp = NULL;
 	}
 	*cmd_list = NULL;

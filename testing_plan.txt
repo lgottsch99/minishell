@@ -49,7 +49,7 @@ execution:
 		2 cmd 
 
 	redirections:
-		single in 		KO what about different order (cat < test.txt OK/ test.txt < cat KO / < test.txt cat KO)
+		single in 		KO what about different order (cat < test.txt OK/ test.txt < cat OK / < test.txt cat KO) ()
 		single OUT 		OK	(ls > out.txt OK / > out.txt ls OK / )
 		single in + OUT 	(wc < test.txt >out.txt OK / )
 		single multiple

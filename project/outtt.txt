@@ -1,9 +1,0 @@
-includes
-lib
-Makefile
-minishell
-outtt.txt
-out.txt
-src
-test.txt
-valgrind.supp

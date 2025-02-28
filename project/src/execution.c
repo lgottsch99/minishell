@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/27 16:49:54 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 12:54:23 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,8 +278,8 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	//check access of everything (files + cmds), creates paths, decides if builtin
 	if (check_access(cmd_list, nr_cmd, envp) != 0)
 	{
-		//printf("access error\n");
-		free_env_list(&envp);
+		printf("access error\n");
+		//free_cmd_list(&cmd_list); 		//TODO? 
 		//free more?
 		*exit_stat = 1;
 		return;// TO DO 
