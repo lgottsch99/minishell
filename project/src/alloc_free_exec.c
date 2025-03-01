@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 14:18:20 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:32:12 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,19 @@ void	free_2d_array(int **fd_pipe, int size)
 }
 
 
-int **alloc_fd(int nr_cmd, t_env *envp)
+int **alloc_fd(int nr_cmd)
 {
 	int **fd_pipe;
 	int	i;
 
-	i = 0;
 	//malloc space for nr of pointers to pipes
 	fd_pipe = (int **)malloc((nr_cmd - 1) * sizeof(int *));
 	if (!fd_pipe)
 	{
-		free_env_list(&envp);
-		//free more?
 		perror("malloc: ");
-		exit (35498);
+		return NULL;
 	}
+	i = 0;
 	//in loop maloc space for each pipe
 	while (i < nr_cmd - 1)
 	{
@@ -46,28 +44,25 @@ int **alloc_fd(int nr_cmd, t_env *envp)
 		if (!fd_pipe[i])
 		{
 			//free 2d array before 
-			free_2d_array(fd_pipe, i);
-			free_env_list(&envp);
-			//free everything else 
+			free_2d_array(fd_pipe, i - 1);
 			perror("malloc: ");
-			exit(777);
+			return NULL;
 		}
 		i++;
 	}
 	return (fd_pipe);
 }
 
-int *alloc_pid(int nr_cmd, t_env *envp)
+int *alloc_pid(int nr_cmd)
 {
 	int *pid;
 
 	pid = (int *)malloc(sizeof(int) * nr_cmd);
 	if (!pid)
 	{
-		free_env_list(&envp);
 		//free everything
 		perror("malloc: ");
-		exit(348); //TODO
+		return NULL;
 	}
 	return (pid);
 }
@@ -80,45 +75,67 @@ void	free_env_list(t_env **env)
 	{
 		tmp = *env;
 		*env = (*env)->next;
-		free(tmp->key);
-		tmp->key = NULL;
-		free(tmp->value);
-		tmp->value = NULL;
+		if (tmp->key)
+		{
+			free(tmp->key);
+			tmp->key = NULL;
+		}
+		if (tmp->value)
+		{
+			free(tmp->value);
+			tmp->value = NULL;
+		}
 		free(tmp);
 	}
 	*env = NULL;
 }
 
-void	free_pipe_array(int **fd_pipe)
+void	free_pipe_array(int **fd_pipe, int nr_cmd)
 {
 	int	i;
 
 	i = 0;
-	while (fd_pipe[i])
+	 printf("in freeing fd array: nr cmd is %i\n", nr_cmd);
+	while (i < nr_cmd - 1)// && fd_pipe[i])
 	{
 		free(fd_pipe[i]);
+		fd_pipe[i] = NULL;
 		i++;
 	}
 	free(fd_pipe);
 	fd_pipe = NULL;
 }
 
-void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline)	//t_env *envp, int **fd_pipe, int *pid)
+void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat)	//t_env *envp, int **fd_pipe, int *pid)
 {
+	printf("freeing pipeline\n");
+
 	if (envp)
 		free_env_list(&envp);
+	printf("0\n");
+
 	if (pipeline->fd_pipe)
-		free_pipe_array(pipeline->fd_pipe);
+		free_pipe_array(pipeline->fd_pipe, pipeline->nr_cmd);
+	printf("1\n");
+
 	if (pipeline->pid)
 		free(pipeline->pid);
+	printf("2\n");
+
 	if (pipeline->env_array)
 		free_2d_char(pipeline->env_array);
+	printf("3\n");
+
 	//free cmd_list if not statically alloced
 	if (pipeline->cmd_list)
 		free_cmd_list(&pipeline->cmd_list);
+	printf("freed pipe\n");
+
 	envp = NULL;
 	pipeline = NULL;
-	exit(1);
+				printf("now exiting\n");
+
+	exit(stat);
 }
 
 void	free_2d_char(char **array)
@@ -142,27 +159,27 @@ void	free_cmd_list(t_command **cmd_list)
 
 	while (*cmd_list)
 	{
-		printf("in loop freeing\n");
+		//printf("in loop freeing\n");
 		tmp = *cmd_list;
 		*cmd_list = (*cmd_list)->next;
 		// if (tmp->command)
 		// 	free(tmp->command);
 		if (tmp->args)
 			free_2d_char(tmp->args);
-		printf("0\n");
+		//printf("0\n");
 		if (tmp->input_file)
 			free(tmp->input_file);
-		printf("1\n");
+		//printf("1\n");
 		if (tmp->output_file)
 			free(tmp->output_file);
-		printf("2\n");
+		//printf("2\n");
 
 		if (tmp->exec_path)
 			free(tmp->exec_path);
-		printf("3\n");
+		//printf("3\n");
 
 		free(tmp);
-		printf("4\n");
+		//printf("4\n");
 		tmp = NULL;
 	}
 	*cmd_list = NULL;

@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 15:21:55 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:33:56 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,6 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-// void	print_env(t_list *envp[])//TO DO: CHANGE TO OWN ENV LIST
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (envp[i])
-// 	{
-// 		printf("%s\n", envp[i]);
-// 		i++;
-// 	}
-// 	return;
-// }
 
 int	print_env(t_env *environ)
 {
@@ -155,6 +143,7 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 	int	num_args;
 	int	i;
 	int no_digit;
+	int	stat;
 
 	printf("exit\n"); //bash prints exit 
 	num_args = get_num_args(cmd->args);
@@ -165,7 +154,7 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 	{ 
 		//free all necessary
 		if (pipeline != NULL)
-			free_everything_pipeline_exit(envp, pipeline);
+			free_everything_pipeline_exit(envp, pipeline, 1);
 		else //only single cmd
 		{ printf("freeing no pipeline\n");
 			if (envp)
@@ -175,12 +164,13 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 				free_cmd_list(&cmd);
 			//anything else to free?
 			//printf("freed all\n");
-
 		}
 		exit(0);
 	}
 	else if (num_args == 2) //if only one: exit with nr 
 	{
+		printf("exit xyz checking if digits\n");
+
 		//check if arg nr is only digits 
 		while (cmd->args[1][i])
 		{
@@ -193,10 +183,27 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 			printf("exit: numeric arg required\n");
 			return (1);
 		}
+		printf("is digit\n");
+
+		stat = ft_atoi(cmd->args[1]);
+		printf("atoied\n");
+
 		//free all necessary
-		if (pipeline)
-			free_everything_pipeline_exit(envp, pipeline);
-		exit(ft_atoi(cmd->args[1])); //check if ok
+		if (pipeline != NULL)
+		{
+			printf("pipeline struct exists\n");
+			free_everything_pipeline_exit(envp, pipeline, stat);
+		}
+		else
+		{
+			printf("pipeline struct does not exist\n");
+			if (envp)
+				free_env_list(&envp);
+			//printf("freed env\n");
+			if (cmd)
+				free_cmd_list(&cmd);
+			exit(stat);
+		}
 	}
 	else if (num_args > 2)//if more than one number: error mdg, set exit stat
 	{
@@ -222,12 +229,10 @@ int	cd(t_command *cmd_list, t_env *envp)
 		printf("cant find home\n");
 		return (1);
 	}
-
 	num_args = get_num_args(cmd_list->args);
 	if (num_args > 2) //OK
 	{	
 		printf("cd: too many args\n");
-		//free nd 
 		return(1);
 	}
 	if (!cmd_list->args[1] && home) //only cd -> goes to home //OK
@@ -242,18 +247,14 @@ int	cd(t_command *cmd_list, t_env *envp)
 	else //cd fhksh/gdf/ -> goes to that dir
 	{
 		printf("going to cd hghjj\n");
-
 		if (chdir(cmd_list->args[1]) == -1)
 		{
 			perror("cd: ");
-			//free nd 
 			return (1);
 		}
 	}
 	printf("new dir: %s\n", getcwd(s, 100));
-
 	return (0);
-
 }
 
 void	print_list(t_list *envp)

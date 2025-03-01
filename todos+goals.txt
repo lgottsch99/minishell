@@ -79,6 +79,13 @@ lilli;
 	debug run ms from within ms: OK
 		when 2nd shell all env info lost OK
 
-	freeing env, 
+	freeing: 
+		freeing check every command, pipes OK 
+		free after exit OK
+		free after signal in pipe and not
 	testinggggg
+
+	norm:
+		builtins
+		
 

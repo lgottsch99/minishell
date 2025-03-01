@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 14:46:58 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:34:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ typedef struct s_pipeline {
 	int 		*pid;
 	char		**env_array;
 	t_command	*cmd_list;
+	int			nr_cmd;
 } t_pipeline;
 
 //---------- functions ------------------
@@ -128,12 +129,13 @@ int		run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline);
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);
-int		**alloc_fd(int nr_cmd, t_env *envp);
-int		*alloc_pid(int nr_cmd, t_env *envp);
+int		**alloc_fd(int nr_cmd);
+int		*alloc_pid(int nr_cmd);
 void	free_env_list(t_env **env);
 void	free_2d_char(char **array);
-void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline);
+void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat);
 void	free_cmd_list(t_command **cmd_list);
+void	free_pipe_array(int **fd_pipe, int nr_cmd);
 
 //export.c
 int		eexport(t_command *cmd, t_env *envp);

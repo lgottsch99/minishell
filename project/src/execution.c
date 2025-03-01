@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 12:54:23 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:35:18 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,7 +288,7 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
-		*exit_stat = only_builtin(cmd_list, envp); //return and set exit stat after onlz builtin TO DO
+		*exit_stat = only_builtin(cmd_list, envp);
 	// set up pipes (if cmd is builtin they are forked as well, but might have no effect on the main shell p)
 	else
 		pipeline(cmd_list, nr_cmd, envp, exit_stat);
@@ -296,6 +296,25 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	return;
 }
 
+void	init_pipeline(t_pipeline *pipeline, int nr_cmd, t_command *cmd_list)
+{
+	if (nr_cmd > 1)
+		pipeline->fd_pipe = alloc_fd(nr_cmd); //MALLOC
+	else
+		pipeline->fd_pipe = NULL;
+	//if (nr_cmd > 1)
+	pipeline->pid = alloc_pid(nr_cmd); //MALLOC
+	//else
+	//	pipeline->pid = NULL;
+	pipeline->env_array = NULL;
+	pipeline->cmd_list = cmd_list;
+	pipeline->nr_cmd = nr_cmd;
+	// if (!pipeline->fd_pipe || !pipeline->pid) //check if ok with only one cmd TODO
+	// {
+	// 	printf("Error allocating memory. Exiting minishell\n");
+	// 	free_everything_pipeline_exit(envp, pipeline, 1, nr_cmd);
+	// } 
+}
 
 void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //works for 2 -> n cmds 
 {
@@ -306,19 +325,17 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 	t_command	*tmp; //to traverse cmd list 
 	t_pipeline	pipeline;
 
-	pipeline.fd_pipe = alloc_fd(nr_cmd, envp); //MALLOC
-	pipeline.pid = alloc_pid(nr_cmd, envp); //MALLOC
-	pipeline.env_array = NULL;
-	pipeline.cmd_list = cmd_list;
+	init_pipeline(&pipeline, nr_cmd, cmd_list); //MALLOC
 
 	//1. create ALLLL pipes necessary
 	i = 0;
-	while (i < nr_cmd - 1)
+	while (i < pipeline.nr_cmd - 1)
 	{
+		printf("creating piep\n");
 		if (pipe(pipeline.fd_pipe[i]) == -1)
 		{
 			perror("pipe: ");
-			free_everything_pipeline_exit(envp, &pipeline);
+			free_everything_pipeline_exit(envp, &pipeline, 1);
 			//free more?
 		}
 		i++;
@@ -326,7 +343,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 
 	i = 0;
 	tmp = pipeline.cmd_list;
-	while (i < nr_cmd) //main loop for fork, exec 
+	while (i < pipeline.nr_cmd) //main loop for fork, exec 
 	{
 		printf("i is: %i\n", i);
 
@@ -334,7 +351,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 		if ((pipeline.pid[i] = fork()) < 0)
 		{
 			perror("fork error: ");
-			free_everything_pipeline_exit(envp, &pipeline);
+			free_everything_pipeline_exit(envp, &pipeline, 1);
 			//free more?
 		}
 		if (pipeline.pid[i] == 0) //in child to exec cmd
@@ -356,7 +373,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				if (i == 0) //first cmd
 				{
 					//close all ex [i][1]
-					while (y < nr_cmd - 1)
+					while (y < pipeline.nr_cmd - 1)
 					{
 						if (y != i)
 							close(pipeline.fd_pipe[y][1]);
@@ -364,10 +381,10 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 						y++;
 					}
 				}
-				else if (i == nr_cmd - 1) //last cmd
+				else if (i == pipeline.nr_cmd - 1) //last cmd
 				{
 					//close all except [i - 1][0]
-					while (y < nr_cmd - 1)
+					while (y < pipeline.nr_cmd - 1)
 					{
 						close(pipeline.fd_pipe[y][1]);
 						if (y != i - 1)
@@ -378,7 +395,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				else //inbetween
 				{
 					//close all except [i - 1][0]  AND [i][1]
-					while (y < nr_cmd - 1)
+					while (y < pipeline.nr_cmd - 1)
 					{
 						if (y != i)
 							close(pipeline.fd_pipe[y][1]);
@@ -391,7 +408,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 			//check in/out file
 			if (tmp->input_file) //no reading from previous pipe
 			{
-				if (nr_cmd > 1 && i > 0) //if not in first
+				if (pipeline.nr_cmd > 1 && i > 0) //if not in first
 					close(pipeline.fd_pipe[i - 1][0]);
 				
 				red_infile(tmp->input_file);
@@ -400,7 +417,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 			}
 			if (tmp->output_file) //we will not write to pipe
 			{
-				if (nr_cmd > 1 && i < nr_cmd - 1)
+				if (pipeline.nr_cmd > 1 && i < pipeline.nr_cmd - 1)
 					close(pipeline.fd_pipe[i][1]);
 
 				printf("outfile redirected\n");
@@ -413,7 +430,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				redirect(pipeline.fd_pipe[i - 1][0], STDIN_FILENO);
 				printf("input is prev pipe\n");
 			}
-			if (out == 0 && i < (nr_cmd - 1))//redirect out to be write in end of current pipe
+			if (out == 0 && i < (pipeline.nr_cmd - 1))//redirect out to be write in end of current pipe
 			{
 				printf("output is pipe\n");
 				redirect(pipeline.fd_pipe[i][1], STDOUT_FILENO);
@@ -429,7 +446,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				if (!pipeline.env_array)
 				{
 					perror("malloc env_array: ");
-					free_everything_pipeline_exit(envp, &pipeline);
+					free_everything_pipeline_exit(envp, &pipeline, 1);
 					//free more?
 				}
 				printf("converted env to array\n");
@@ -440,7 +457,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				{
 					perror("execve: \n");
 					free_2d_char(pipeline.env_array);
-					free_everything_pipeline_exit(envp, &pipeline);
+					free_everything_pipeline_exit(envp, &pipeline, 1); //1 as exit tstat ok??
 					///free more?
 				}
 			}
@@ -453,7 +470,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				//close open fds
 				if (i == 0) //first cmd
 					close(pipeline.fd_pipe[i][1]);
-				else if (i == nr_cmd - 1) //last cmd
+				else if (i == pipeline.nr_cmd - 1) //last cmd
 					close(pipeline.fd_pipe[i - 1][0]);
 				else //inbetween
 				{
@@ -461,10 +478,10 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 					close(pipeline.fd_pipe[i][1]);
 				}
 				//free
-				free_everything_pipeline_exit(envp, &pipeline);
+				free_everything_pipeline_exit(envp, &pipeline, *exit_stat);
 				//free cmd_list 
 
-				exit(*exit_stat); //use returned stat here? TODO
+				//exit(*exit_stat); //use returned stat here? TODO
 			}
 
 		}
@@ -478,26 +495,24 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 	printf("closing fds\n");
 
 	y = 0;
-	while (y < nr_cmd - 1)
+	while (y < pipeline.nr_cmd - 1)
 	{
 		close(pipeline.fd_pipe[y][1]);
 		close(pipeline.fd_pipe[y][0]);
 		y++;
 	}
 
-
 	//wait for all children TO DO whatif terminated by SIGNAL? WTERMSIG
 	y = 0;
-	while (y < nr_cmd)
+	while (y < pipeline.nr_cmd)
 	{
 		printf("waiting\n");
 		//wait(exit_stat);//save exit stat
 		if (waitpid(pipeline.pid[y], exit_stat, 0) == -1)
 		{
 			perror("waitpid: ");
-			free_everything_pipeline_exit(envp, &pipeline);
+			free_everything_pipeline_exit(envp, &pipeline, 1);
 			//return ? or exit
-			exit(1);
 		}
 		//extract real exit_stat + save in env??
 		if (WIFEXITED(*exit_stat))
@@ -507,8 +522,10 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 	}	// make sure last process exit is stored????
 	
 	//free everything malloced for pipeline TO DO
-		//free_everything_pipeline_exit(envp, &pipeline);
-
+	if (pipeline.fd_pipe)
+		free_pipe_array(pipeline.fd_pipe, pipeline.nr_cmd);
+	if (pipeline.pid)
+		free(pipeline.pid);
 
 	printf("waited for all ps and finished\n");
 	return;

@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:43:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 15:20:23 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/28 15:52:24 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void print_start(void)
 	printf(" ▄▀▀▀█▄██▀▐█▐▀▀▪▄██▪  ██▪      ██▪▐█▐▐▌▐▀▀▪▄\n");
 	printf(" ▐█▄▪▐███▌▐▀▐█▄▄▌▐█▌▐▌▐█▌▐▌    ▐█▌██▐█▌▐█▄▄▌\n");
 	printf("  ▀▀▀▀ ▀▀▀ · ▀▀▀ .▀▀▀ .▀▀▀      ▀▀▀▀ ▀▪ ▀▀▀  ??????\n");
-	printf("\n");
-	printf("Welcome to our minishell!\n");
+	//printf("\n");
+	//printf("Welcome to our minishell!\n");
 	printf("\n");
 	printf("\n");
 	return;

@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 14:38:10 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:35:34 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -362,7 +362,7 @@ char **convert_env_array(t_env *envp, t_pipeline *pipeline) //The envp array mus
 		if (!fullstr)
 		{
 			free_2d_char(array);
-			free_everything_pipeline_exit(envp, pipeline);
+			free_everything_pipeline_exit(envp, pipeline, 1);
 		}
 		//set full str to array[i]
 		array[i] = fullstr;
@@ -371,9 +371,9 @@ char **convert_env_array(t_env *envp, t_pipeline *pipeline) //The envp array mus
 	}
 	array[i] = NULL;
 
-	for (int y = 0; y <= lstsize; y++) { //debug only
-    printf("envp[%i]:%s\n", y, array[y]);
-	}
+	// for (int y = 0; y <= lstsize; y++) { //debug only
+    // printf("envp[%i]:%s\n", y, array[y]);
+	// }
 
 	return (array);
 }
