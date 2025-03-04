@@ -25,10 +25,11 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <limits.h> 
-
+#include <signal.h>
 
 //---------- Macros ------------------
 
+volatile sig_atomic_t g_signal_status;
 
 
 //---------- Structs ------------------
@@ -151,6 +152,8 @@ char		*read_heredoc(char *delimetr);
 void		clean_heredoc(t_command *cmd);
 char		**env_to_array(t_env *env);
 
-
+//signals
+void	setup_signals();
+void	handle_sigint(int sig);
 
 #endif

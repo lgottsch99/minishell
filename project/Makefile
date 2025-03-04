@@ -12,38 +12,36 @@
 
 NAME = minishell
 
-LIBFTDIR= ./lib
-LIBFTA= lib/libfull_libft.a
+LIBFTDIR = ./lib
+LIBFTA = $(LIBFTDIR)/libfull_libft.a
 
-CC = cc 
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address -lreadline
-CFMAC = -L /Users/$(USER)/.brew/opt/readline/lib
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -g -I/opt/homebrew/opt/readline/include
+LDFLAGS = -L/opt/homebrew/opt/readline/lib -lreadline -fsanitize=address
 
 SRC_FOLDER = ./src/
 SRC = $(addprefix $(SRC_FOLDER), main.c init_start.c builtins.c execution.c access_exec.c redirections.c \
-	single_builtin.c alloc_free_exec.c export.c unset.c parsing.c tokenising.c heredoc_helpers.c env_helpers.c)
+      single_builtin.c alloc_free_exec.c export.c unset.c parsing.c tokenising.c heredoc_helpers.c \
+      env_helpers.c signals_helpers.c)
 
 OBJ = $(SRC:.c=.o)
 
-$(NAME): libft
-	$(CC) $(CFLAGS) $(SRC) $(LIBFTA) -o $(NAME)
+$(NAME): $(OBJ) libft
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFTA) $(LDFLAGS) -o $(NAME)
 
 all: $(NAME)
 
 libft:
-	@make -C lib
+	@make -C $(LIBFTDIR)
 
 clean:
 	rm -f $(OBJ)
-	@cd $(LIBFTDIR) && make clean
+	@make -C $(LIBFTDIR) clean
 
 fclean: clean
 	rm -f $(NAME)
-	@cd $(LIBFTDIR) && make clean && make fclean
+	@make -C $(LIBFTDIR) fclean
 
 re: fclean all
-
-mac: libft
-	$(CC) $(CFLAGS) $(CFMAC) $(SRC) $(LIBFTA) -o $(NAME)
 
 .PHONY: all clean fclean re libft

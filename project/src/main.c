@@ -12,6 +12,7 @@
 
 #include "../includes/minishell.h"
 
+volatile sig_atomic_t g_signal_status = 0;
 
 int	main (int argc, char *argv[], char *envp[])
 {
@@ -44,15 +45,22 @@ int	main (int argc, char *argv[], char *envp[])
 	}
 	//print_env(environ);
 
+	setup_signals();
+
 	//2. main loop
 	while (1)
 	{
 		input = readline("***miniShell***$ ");
-		if (!input)
+		if (!input)  //ctrl-D handling, its not a signal but a eof detecter
 		{
-			printf("readline error\n");
 			exit_stat = 1;
-			break;
+			write(STDOUT_FILENO, "exit\n", 5);
+            exit(EXIT_SUCCESS);
+		}
+		if (g_signal_status == SIGINT)
+		{
+			g_signal_status = 0;
+			continue;
 		}
 		//adding input to history
 		add_history(input);
