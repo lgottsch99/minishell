@@ -22,6 +22,7 @@ int	main (int argc, char *argv[], char *envp[])
 	int		exit_stat;
 	Token		*tokens;
 	t_command	*commands;
+	char		**env_array;
 
 	exit_stat = 0;
 	// init protection ( like if !envp etc)
@@ -58,7 +59,14 @@ int	main (int argc, char *argv[], char *envp[])
 		printf("you typed: %s\n", input);
 
 		//3. parse (and create AST), 
-		tokens = tokenize(input, exit_stat, envp); //TO DO change envp to own environ
+		env_array = env_to_array(environ);
+		if (!env_array)
+		{
+			free(input);
+			free_env_list(&environ);
+			return (1);
+		}
+		tokens = tokenize(input, exit_stat, env_array); //TO DO change envp to own environ
 		if (tokens)
 		{
 			print_tokens(tokens);	
@@ -71,18 +79,19 @@ int	main (int argc, char *argv[], char *envp[])
 			free_tokens(tokens);
 			tokens = NULL;	
 		}
-		//print_commands(commands);
-			//0. handle special quotes ('' ""), heredoc (<<)
-			//1. lexer: create tokens
-			//(2. parser: takes tokens (and builds commmand list))
+		
+		while (*env_array)
+		{
+			free(*env_array);
+			env_array++;
+		}
 
-		//4. execute
 		execute(environ, &exit_stat, commands);
 			//creates processes, 
 			//handles redirections/pipes,
 			//decides if cmd is builtin or not etc and executes them
 			//special cases: $?, 
-		clean_heredoc(commands); //todo
+		clean_heredoc(commands); 
 
 		//5. free everything needed TODO
 		free(input);

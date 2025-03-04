@@ -21,7 +21,7 @@ CFMAC = -L /Users/$(USER)/.brew/opt/readline/lib
 
 SRC_FOLDER = ./src/
 SRC = $(addprefix $(SRC_FOLDER), main.c init_start.c builtins.c execution.c access_exec.c redirections.c \
-	single_builtin.c alloc_free_exec.c export.c unset.c parsing.c tokenising.c heredoc_helpers.c)
+	single_builtin.c alloc_free_exec.c export.c unset.c parsing.c tokenising.c heredoc_helpers.c env_helpers.c)
 
 OBJ = $(SRC:.c=.o)
 

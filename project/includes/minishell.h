@@ -33,38 +33,36 @@
 
 //---------- Structs ------------------
 
-typedef enum Token_type {
-    TOKEN_WORD,              
-    TOKEN_PIPE,              
-    TOKEN_REDIRECT_IN,       
-    TOKEN_REDIRECT_OUT,      
-    TOKEN_REDIRECT_APPEND,   
-    TOKEN_REDIRECT_HEREDOC,  
-    TOKEN_SINGLE_QUOTE,      
-    TOKEN_DOUBLE_QUOTE,      
-    TOKEN_ENV_VAR,           
-    TOKEN_END                
-} Token_type;
+typedef enum	Token_type {
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIRECT_IN,
+	TOKEN_REDIRECT_OUT,
+	TOKEN_REDIRECT_APPEND,
+	TOKEN_REDIRECT_HEREDOC,
+	TOKEN_SINGLE_QUOTE,
+	TOKEN_DOUBLE_QUOTE,
+	TOKEN_ENV_VAR,
+	TOKEN_END
+}	Token_type;
 
-typedef struct Token {
-    char *value;
-    Token_type type;
-    struct Token *next;
-} Token;
+typedef struct	Token {
+	char			*value;
+	Token_type		type;
+	struct Token	*next;
+}	Token;
 
 typedef struct s_command {
    // char	*command;       // The command name (e.g., "echo", "grep")
-    char	**args;         // Array of arguments (NULL-terminated) and flags
-    char	*input_file;    // File for input redirection (NULL if none)
-    char	*output_file;   // File for output redirection (NULL if none)
-    int		append_mode;    // 1 if output should be appended, 0 otherwise
-	//..more if needed:
-	char	*heredoc_input;
-	char	*heredoc_delimetr;
-	char 	*exec_path; // NULL for parsing, execution: saves executable path in here
-	int		is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
-
-    struct s_command *next; // Pointer to the next command in a pipeline
+	char				**args;         // Array of arguments (NULL-terminated) and flags
+	char				*input_file;    // File for input redirection (NULL if none)
+	char				*output_file;   // File for output redirection (NULL if none)
+	int					append_mode;    // 1 if output should be appended, 0 otherwise
+	char				*heredoc_input;
+	char				*heredoc_delimetr;
+	char 				*exec_path; // NULL for parsing, execution: saves executable path in here
+	int					is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
+	struct s_command 	*next; // Pointer to the next command in a pipeline
 } t_command;
 
 //env list struct
@@ -151,7 +149,7 @@ void		free_commands(t_command *commands);
 void		print_commands(t_command *commands);
 char		*read_heredoc(char *delimetr);
 void		clean_heredoc(t_command *cmd);
-
+char		**env_to_array(t_env *env);
 
 
 

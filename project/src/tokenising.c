@@ -168,84 +168,41 @@ void	handle_redir_more(char **start, char **end, Token **head, Token **current) 
 	*start = ++(*end);
 }
 
-// void handle_heredoc(char **start, char **end, Token **head, Token **current)
-// {
-// 	Token	*token;
-// 	char	*delimetr;
-
-// 	*start = *end +2;
-// 	while (**start && ft_isspace(**start))
-// 		(*start)++;
-// 	*end = *start;
-// 	while (**end && !ft_isspace(**end))
-// 		(*end)++;
-// 	delimetr = ft_strndup(*start, *end - *start);
-// 	if (!delimetr)
-// 		return;
-// 	token = create_token(ft_strdup("<<"), TOKEN_REDIRECT_HEREDOC);
-// 	if (!token)
-// 	{
-// 		free(delimetr);
-// 		return;
-// 	}
-// 	add_token(head, current, token);
-// 	token = create_token(delimetr, TOKEN_WORD);
-// 	if (!token)
-// 	{
-// 		free(delimetr);
-// 		return;
-// 	}
-// 	add_token(head, current, token);
-// 	*start = *end;
-// }
-
-void handle_heredoc(char **start, char **end, Token **head, Token **current)
+void	handle_heredoc(char **start, char **end, Token **head, Token **current)
 {
-    Token *token;
-    char *delimiter;
+	Token	*token;
+	char	*delimiter;
 
-    // Skip the '<<' characters
-    *start = *end + 2;
 
-    // Skip any leading spaces
-    while (**start && ft_isspace(**start))
-        (*start)++;
-
-    // Find the end of the delimiter
-    *end = *start;
-    while (**end && !ft_isspace(**end) && **end != '\0')
-        (*end)++;
-
-    // Extract the delimiter
-    delimiter = ft_strndup(*start, *end - *start);
-    if (!delimiter)
-    {
-        fprintf(stderr, "Error: malloc failed\n");
-        return;
-    }
-
-    // Create the heredoc token
-    token = create_token(ft_strdup("<<"), TOKEN_REDIRECT_HEREDOC);
-    if (!token)
-    {
-        free(delimiter);
-        fprintf(stderr, "Error: create_token failed\n");
-        return;
-    }
-    add_token(head, current, token);
-
-    // Create the delimiter token
-    token = create_token(delimiter, TOKEN_WORD);
-    if (!token)
-    {
-        free(delimiter);
-        fprintf(stderr, "Error: create_token failed\n");
-        return;
-    }
-    add_token(head, current, token);
-
-    // Update start and end pointers
-    *start = *end;
+	*start = *end + 2;
+	while (**start && ft_isspace(**start))
+		(*start)++;
+	*end = *start;
+	while (**end && !ft_isspace(**end) && **end != '\0')
+		(*end)++;
+	delimiter = ft_strndup(*start, *end - *start);
+	if (!delimiter)
+	{
+		fprintf(stderr, "Error: malloc failed\n");
+		return;
+	}
+	token = create_token(ft_strdup("<<"), TOKEN_REDIRECT_HEREDOC);
+	if (!token)
+	{
+		free(delimiter);
+		fprintf(stderr, "Error: create_token failed\n");
+		return;
+	}
+	add_token(head, current, token);
+	token = create_token(delimiter, TOKEN_WORD);
+	if (!token)
+	{
+		free(delimiter);
+		fprintf(stderr, "Error: create_token failed\n");
+		return;
+	}
+	add_token(head, current, token);
+	*start = *end;
 }
 
 void	handle_redir_less(char **start, char **end, Token **head, Token **current)
