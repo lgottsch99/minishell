@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 17:52:30 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:36:47 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>		//malloc, free
-#include "../libft/libft.h"
+#include "../lib/full_libft.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -32,28 +32,6 @@
 
 
 //---------- Structs ------------------
-
-typedef struct s_command {
-    char	*command;       // The command name (e.g., "echo", "grep")
-    char	**args;         // Array of arguments (NULL-terminated) and flags
-    char	*input_file;    // File for input redirection (NULL if none)
-    char	*output_file;   // File for output redirection (NULL if none)
-    int		append_mode;    // 1 if output should be appended, 0 otherwise
-	//..more if needed:
-	char 	*exec_path; // NULL for parsing, execution: saves executable path in here
-	int		is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
-
-    struct s_command *next; // Pointer to the next command in a pipeline
-} t_command;
-
-// typedef struct s_command {
-//     char **args;
-//     char *input_file;
-//     char *output_file;
-//     int append_output;
-//     int		is_builtin;
-//     struct t_command *next;
-// } t_command;
 
 typedef enum Token_type {
     TOKEN_WORD,              
@@ -74,6 +52,20 @@ typedef struct Token {
     struct Token *next;
 } Token;
 
+typedef struct s_command {
+   // char	*command;       // The command name (e.g., "echo", "grep")
+    char	**args;         // Array of arguments (NULL-terminated) and flags
+    char	*input_file;    // File for input redirection (NULL if none)
+    char	*output_file;   // File for output redirection (NULL if none)
+    int		append_mode;    // 1 if output should be appended, 0 otherwise
+	//..more if needed:
+	char	*heredoc_input;
+	char	*heredoc_delimetr;
+	char 	*exec_path; // NULL for parsing, execution: saves executable path in here
+	int		is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
+
+    struct s_command *next; // Pointer to the next command in a pipeline
+} t_command;
 
 //env list struct
 typedef struct s_env {
@@ -98,25 +90,25 @@ typedef struct s_pipeline {
 //00_init_start
 void	print_start(void);
 char	*add_shlvl(char *value);
-void	set_key_value(char *env_str,t_env *new_node, t_env *environ);
+int		set_key_value(char *env_str,t_env *new_node, t_env *environ);
 void	add_env_back(t_env **environ, t_env *new_node);//add new node to end of list
 t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing shlvl by 1
 
 
 //builtins
-void	print_env(t_env *environ);
-void	echo(t_command *cmd_list);
-void	pwd(void);
-//void	exit_shell(void);
-void	cd(t_command *cmd_list);
+int		print_env(t_env *environ);
+int		echo(t_command *cmd_list);
+int		pwd(void);
+int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline);
+int		cd(t_command *cmd_list);
 int		get_num_args(char **args);
 
 
 //execution
-void	execute(t_env *envp);
+void	execute(t_env *envp, int *exit_stat, t_command *cmd_list);
 
 //check_access_exec
-char	**get_path(t_env *envp);
+char 	**get_path(t_env *envp);
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
 int		check_files(t_command *cmd);
@@ -131,8 +123,8 @@ void	red_outfile(char *output_file, t_command *cmd);
 void	redirect(int fd, int fd_to_replace);
 
 //single_builtin
-void	only_builtin(t_command *cmd_list, t_env *envp);
-void	run_builtin(t_command *cmd_list, t_env *envp);
+int		only_builtin(t_command *cmd_list, t_env *envp);
+int		run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline);
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);
@@ -143,20 +135,24 @@ void	free_2d_char(char **array);
 void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline);
 void	free_cmd_list(t_command **cmd_list);
 
-
 //export.c
-void	eexport(t_command *cmd, t_env *envp);
+int		eexport(t_command *cmd, t_env *envp);
 t_env	*check_existing_env(char *arg_name,  t_env *envp);
 
 //unset.c
-void	unset(t_command *cmd, t_env *envp);
+int	unset(t_command *cmd, t_env *envp);
 
-//parsing.c
+//parsing.c //tokenizing
 Token		*tokenize(char *input, int last_exit_status, char **envp);
 t_command 	*parse_tokens(Token *tokens);
 void		print_tokens(Token *tokens);
 void		free_tokens(Token *tokens);
 void		free_commands(t_command *commands);
+void		print_commands(t_command *commands);
+char		*read_heredoc(char *delimetr);
+void		clean_heredoc(t_command *cmd);
+
+
 
 
 #endif

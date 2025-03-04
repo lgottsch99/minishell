@@ -6,13 +6,11 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 17:29:57 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:38:40 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-
 
 char *get_exec_path(char *cmd, char **path)
 {
@@ -101,27 +99,26 @@ int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access 
 	printf("in check access \n");
 
 	int			i;
-	int			builtin;
+//	int			builtin;
 	t_command	*tmp; //to trav list
 
 	tmp = cmd_list;
 	i = 0;
 	while (i < nr_cmd)	//for each cmd in list
 	{
-		builtin = 0;
+		//builtin = 0;
 		//CHECK IF CMD IS BUILTIN
-		builtin = check_builtin(tmp->command);
+		//builtin = check_builtin(tmp->command);
 		//IF NOT BUILTIN:
-		if (builtin == 0)
+		if (tmp->is_builtin == 0)
 			check_path(tmp, envp);
-		else if (builtin == 1)
+		else if (tmp->is_builtin == 1 && tmp->args[0])
+			printf("cmd is builtin: %s\n", tmp->args[0]);
+		// 	tmp->is_builtin = 1;
+		// }
+		if (!tmp->exec_path && tmp->is_builtin == 0) //cmd not found
 		{
-			printf("cmd is builtin: %s\n", tmp->command);
-			tmp->is_builtin = 1;
-		}
-		if (!tmp->exec_path && builtin == 0) //cmd not found
-		{
-			printf("minishell: error: cant find command\n");
+			printf("minishell error: cant find command\n");
 			return (1);
 		}
 		//check access to files
@@ -170,7 +167,7 @@ void	check_path(t_command	*cmd, t_env *envp) //TODO
 	printf("fullpath: %s\n", fullpath);
 	paths = ft_split(fullpath, ':');
 	//2. get executable path if cmd not builtin
-	exec_path = get_exec_path(cmd->command, paths); //returns malloced str if exists, NULL if not
+	exec_path = get_exec_path(cmd->args[0], paths); //returns malloced str if exists, NULL if not
 	free_2d_char(paths);
 	//3. save exec path in cmd table
 	cmd->exec_path = exec_path;

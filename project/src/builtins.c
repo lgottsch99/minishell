@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 18:13:51 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 18:22:08 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,39 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	print_env(t_env *environ)
+// void	print_env(t_list *envp[])//TO DO: CHANGE TO OWN ENV LIST
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (envp[i])
+// 	{
+// 		printf("%s\n", envp[i]);
+// 		i++;
+// 	}
+// 	return;
+// }
+
+int	print_env(t_env *environ)
 {
 	t_env	*tmp;
 
 	tmp = environ;
 	while (tmp)
 	{
-		printf("%s", (char *)tmp->key);
-		printf("=\"");
-		printf("%s\"\n", (char *)tmp->value);
+		if (printf("%s", (char *)tmp->key) < 0)
+			return (1);
+		if (printf("=") < 0)
+			return (1);
+		if (printf("%s\n", (char *)tmp->value) < 0)
+			return (1);
 		tmp = tmp->next;
 	}
-	return;
+	return (0);
 }
 
 
-void	pwd(void) //test with very long path TODO
+int	pwd(void) //test with very long path TODO
 {//if pwd hjfdh sdj  also works just like pwd ( doesnt care about args)
 	char *path = NULL;
 
@@ -54,12 +70,12 @@ void	pwd(void) //test with very long path TODO
 	{
 	 	perror("error pwd: ");
 		//free everything 
-		exit(3246);
+		return (1);
 	}
 	printf("%s\n", path);
 	if (path)
 		free(path);
-	return;
+	return (0);
 }
 
 int	get_num_args(char **args)
@@ -75,7 +91,7 @@ int	get_num_args(char **args)
 	return (i);
 }
 
-void	print_args(char **args, int start)
+int	print_args(char **args, int start)
 {
 	int		i;
 	char **tmp;
@@ -84,14 +100,18 @@ void	print_args(char **args, int start)
 	tmp = args;
 	while (tmp[i])
 	{
-		ft_putstr_fd(tmp[i], STDOUT_FILENO);
-		ft_putstr_fd(" ", STDOUT_FILENO);
+		// ft_putstr_fd(tmp[i], STDOUT_FILENO); //Change to printf TO DO
+		if (printf("%s", tmp[i]) < 0)
+			return (1);
+		// ft_putstr_fd(" ", STDOUT_FILENO);
+		if (printf(" ") < 0)
+			return (1);
 		i++;
 	}
-	return;
+	return (0);
 }
 
-void	echo(t_command *cmd_list)
+int	echo(t_command *cmd_list)
 {
 	//printf("in echo\n");
 	int num_args;
@@ -99,7 +119,10 @@ void	echo(t_command *cmd_list)
 	num_args = get_num_args(cmd_list->args);
 	//check num of args
 	if (num_args <= 1) //only echo
-		ft_putstr_fd("\n", STDOUT_FILENO);
+	{
+		if (printf("\n") < 0)
+			return (1);
+	}
 	else
 	{
 		//check if -n or not 
@@ -107,38 +130,83 @@ void	echo(t_command *cmd_list)
 		{
 			//print all other args starting at indx 2
 			if (num_args > 2)
-				print_args(cmd_list->args, 2);
+				if (print_args(cmd_list->args, 2) == 1)
+					return (1);
 			//NO NEW LINE AT END
 		}
 		else
 		{
 			//print all other args starting at indx 1
-			print_args(cmd_list->args, 1);
+			if (print_args(cmd_list->args, 1) == 1)
+				return (1);
 			//INCL NL
-			ft_putstr_fd("\n", STDOUT_FILENO);
+			// ft_putstr_fd("\n", STDOUT_FILENO);
+			if (printf("\n") < 0)
+				return (1);
 		}
 	}
-	return;
+	return (0);
 }
 
 
 
-// void exit_shell(t_env *envp, t_pipeline *pipeline)//TODO
-// {
-// 	printf("exit\n"); //bash prints exit 
+int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
+{	//a number after exit can be set which refers to exit status
+	int	num_args;
+	int	i;
+	int no_digit;
 
-// 	//a number after exit can be set which refers to exit status: check $?
-// 	//free all necessary
-// 	free_everything_pipeline_exit(envp, pipeline);
+	printf("exit\n"); //bash prints exit 
+	num_args = get_num_args(cmd->args);
+	i = 0;
+	no_digit = 0;
+	
+	if (num_args == 1)//only exit but no args
+	{ 
+		//free all necessary
+		if (pipeline != NULL)
+			free_everything_pipeline_exit(envp, pipeline);
+		else //only single cmd
+		{ printf("freeing no pipeline\n");
+			// if (envp)
+			// 	free_env_list(&envp);
+			//printf("freed env\n");
+			if (cmd)
+				free_cmd_list(&cmd);
+			//anything else to free?
+			//printf("freed all\n");
 
+		}
+		exit(0);
+	}
+	else if (num_args == 2) //if only one: exit with nr 
+	{
+		//check if arg nr is only digits 
+		while (cmd->args[1][i])
+		{
+			if (ft_isdigit(cmd->args[1][i]) == 0)
+				no_digit = 1;
+			i++;
+		}
+		if (no_digit == 1)//non numeric 
+		{
+			printf("exit: numeric arg required\n");
+			return (1);
+		}
+		//free all necessary
+		if (pipeline)
+			free_everything_pipeline_exit(envp, pipeline);
+		exit(ft_atoi(cmd->args[1])); //check if ok
+	}
+	else if (num_args > 2)//if more than one number: error mdg, set exit stat
+	{
+		printf("exit: too many arguments\n");
+		return (1);
+	}
+	return (1);
+}
 
-
-// 	printf("exit\n"); //bash prints exit 
-// 	exit(0);
-// }
-
-
-void	cd(t_command *cmd_list)//TO DO
+int	cd(t_command *cmd_list)//TO DO
 {
 	char s[100];
 	printf("in cd\n");
@@ -149,19 +217,26 @@ void	cd(t_command *cmd_list)//TO DO
 
 	home = getenv("HOME");
 	if (!home)
+	{
 		printf("cant find home\n");
+		return (1);
+	}
+
 	num_args = get_num_args(cmd_list->args);
 	if (num_args > 2) //OK
 	{	
 		printf("cd: too many args\n");
-		//free nd exit //TODO
-		exit(19);
+		//free nd 
+		return(1);
 	}
 	if (!cmd_list->args[1] && home) //only cd -> goes to home //OK
 	{
 		printf("only cd\n");
 		if (chdir(home) == -1)
+		{
 			perror("cd: ");
+			return (1);
+		}
 	}
 	else //cd fhksh/gdf/ -> goes to that dir
 	{
@@ -170,25 +245,25 @@ void	cd(t_command *cmd_list)//TO DO
 		if (chdir(cmd_list->args[1]) == -1)
 		{
 			perror("cd: ");
-			//free nd exit //TODO
-			exit(19);
+			//free nd 
+			return (1);
 		}
 	}
 	printf("new dir: %s\n", getcwd(s, 100));
 
-	return;
+	return (0);
 
 }
 
-// void	print_list(t_list *envp)
-// {
-// 	t_list	*tmp;
+void	print_list(t_list *envp)
+{
+	t_list	*tmp;
 
-// 	tmp = envp;
-// 	while(tmp)
-// 	{
-// 		printf("%s\n", (char *)tmp->content);
-// 		tmp = tmp->next;
-// 	}
-// }
+	tmp = envp;
+	while(tmp)
+	{
+		printf("%s\n", (char *)tmp->content);
+		tmp = tmp->next;
+	}
+}
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-02-20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025-02-20 19:02:40 by dvasilen         ###   ########.fr       */
+/*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
+/*   Updated: 2025/02/27 16:49:40 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	add_argument(t_command *command, char *arg)
 		while(command->args[count])
 			count++;
 	}
-	command->args = realloc(command->args, (count + 2) * sizeof(char *));
+	command->args = realloc(command->args, (count + 2) * sizeof(char *)); //TODO check ft if allowed
 	if (!command->args)
 		return;
 	command->args[count] = arg;
@@ -43,12 +43,16 @@ t_command	*create_command()
 	t_command	*cmd;
 
 	cmd = malloc(sizeof(t_command));
+	if (!cmd)
+		return (NULL);
 	cmd->args = NULL;
 	cmd->input_file = NULL;
 	cmd->output_file = NULL;
 	cmd->append_mode = 0;
 	cmd->next = NULL;
 	cmd->is_builtin = 0;
+    cmd->heredoc_input = NULL;
+    cmd->heredoc_delimetr = NULL;
 	return (cmd);
 }
 
@@ -64,7 +68,12 @@ t_command	*parse_tokens(Token *tokens)
 	command = create_command();
 	while(tokens)
 	{
-		if (tokens->type == TOKEN_WORD)
+		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
+        {
+            command->heredoc_delimetr = ft_strdup(tokens->next->value);
+            tokens = tokens->next;
+        }
+        else if (tokens->type == TOKEN_WORD)
 		{
 			arg = ft_strdup(tokens->value);
 			add_argument(command, arg);
@@ -109,17 +118,21 @@ void	print_commands(t_command *commands) {
 	while (commands)
 	{
 		printf("t_command:\n");
-		for (int i = 0; commands->args[i]; i++)
+
+		for (int i = 0; commands->args[i]; i++)	
 			printf("  Arg %d: %s\n", i, commands->args[i]);
-		if (commands->input_file)
-			printf("  Input file: %s\n", commands->input_file);
-		if (commands->output_file)
-			printf("  Output file: %s\n", commands->output_file);
+		//if (commands->input_file)
+		printf("  Input file: %s\n", commands->input_file);
+		//if (commands->output_file)
+		printf("  Output file: %s\n", commands->output_file);
 		if (commands->append_mode)
 			printf("  Append output: yes\n");
 		if (commands->is_builtin)
 			printf("  Builtin: yes\n");
+		if (commands->exec_path)
+			printf("  exec path: %s\n", commands->exec_path);
 		commands = commands->next;
+		
 	}
 }
 

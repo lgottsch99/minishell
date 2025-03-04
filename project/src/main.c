@@ -6,65 +6,95 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 17:18:23 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 18:22:30 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 
-int	main (int argc, char *argv[], char *envp[]) 
+int	main (int argc, char *argv[], char *envp[])
 {
-	char		*input;
-	t_env		*environ;
+	(void)argc; //marking unused
+	(void)argv;
+	char	*input;
+	t_env	*environ;
+	int		exit_stat;
 	Token		*tokens;
-	int			last_exit_status;
 	t_command	*commands;
 
-	
+	exit_stat = 0;
+	// init protection ( like if !envp etc)
+	if (!envp)
+	{
+		printf("Failed to receive Environment from OS\n");
+		return (1);
+	}
+
+	//1. load config files, init etc
 	print_start();
 
-	environ = set_env(envp); 
-	if (!environ) 
+	//set up env (SHLVL increases from std.!)
+	environ = set_env(envp); //MALLOC
+	if (!environ)
 	{
-        fprintf(stderr, "Failed to initialize environment.\n");
-        return 1;
-    }
+		printf("Failed to set up Environment\n");
+		return (1);
+	}
+	//print_env(environ);
 
-	last_exit_status = 0;
+	//2. main loop
 	while (1)
 	{
-		input = readline("mini_shell$ ");
-		if (!input){
-			printf("quitting minishell\n");
+		input = readline("***miniShell***$ ");
+		if (!input)
+		{
+			printf("readline error\n");
+			exit_stat = 1;
 			break;
 		}
+		//adding input to history
 		add_history(input);
 		printf("you typed: %s\n", input);
 
-		tokens = tokenize(input, last_exit_status, envp);
-		if (!tokens)
+		//3. parse (and create AST), 
+		tokens = tokenize(input, exit_stat, envp); //TO DO change envp to own environ
+		if (tokens)
 		{
-			fprintf(stderr, "tokinization failed.\n");
-			free(input);
-			continue;
+			print_tokens(tokens);	
+			commands = parse_tokens(tokens);
+			if (commands)
+			{
+				if(commands->heredoc_delimetr)
+					commands->heredoc_input = read_heredoc(commands->heredoc_delimetr);
+			}
+			free_tokens(tokens);
+			tokens = NULL;	
 		}
-		print_tokens(tokens);
+		//print_commands(commands);
+			//0. handle special quotes ('' ""), heredoc (<<)
+			//1. lexer: create tokens
+			//(2. parser: takes tokens (and builds commmand list))
 
-		commands = parse_tokens(tokens);
-		//last_exit_status = execute(environ); //todo
-		execute(environ);
-		free_tokens(tokens);
-		free_commands(commands); 
+		//4. execute
+		execute(environ, &exit_stat, commands);
+			//creates processes, 
+			//handles redirections/pipes,
+			//decides if cmd is builtin or not etc and executes them
+			//special cases: $?, 
+		clean_heredoc(commands); //todo
+
+		//5. free everything needed TODO
 		free(input);
 		input = NULL;
 
-		printf("argc = %i\n", argc);
-		printf("argv = %s\n", argv[0]);
+		free_commands(commands);
+		commands = NULL;
+
 	}
+	//6 shutdown shell (also after signal)
 	free_env_list(&environ);
 	//rl_clear_history();	
 	
-	
-	return (0);
+	return (exit_stat);
 }

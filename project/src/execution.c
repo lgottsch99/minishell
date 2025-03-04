@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/16 18:14:09 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:49:54 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp);
+void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat); //works for 2 -> n cmds 
 
 
 void	init_cd(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 4);
-	one->command = "cd";
+	//one->command = "cd";
 	one->args[0] = "cd";
 	one->args[1] = "..";
 	one->args[2] = "hi";
@@ -53,7 +53,7 @@ void	init_cd(t_command *one)
 void	init_single_builtin(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "env";
+	//one->command = "env";
 	one->args[0] = "env";
 	one->args[1] = NULL;
 	//one->args[3] = NULL;
@@ -69,7 +69,7 @@ void	init_single_builtin(t_command *one)
 void	init_test_unset(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 3);
-	one->command = "unset";
+	//one->command = "unset";
 	one->args[0] = "unset";
 	one->args[1] = "SHLVL";
 	one->args[2] = "hiiii";
@@ -86,7 +86,7 @@ void	init_test_unset(t_command *one)
 void	init_test_export(t_command *one)
 {
 	one->args = (char **)malloc(sizeof(char *) * 5);
-	one->command = "export";
+	//one->command = "export";
 	one->args[0] = "export";
 	one->args[1] = "lilli=\"cool\"";
 	one->args[2] = "lillian=cooler=jik";
@@ -104,10 +104,11 @@ void	init_test_export(t_command *one)
 
 void	init_test_one(t_command *one)
 {
-	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "cat";
-	one->args[0] = "cat";
-	one->args[1] = NULL;
+	one->args = (char **)malloc(sizeof(char *) * 3);
+	//one->command = "exit";
+	one->args[0] = "exit";
+	one->args[1] = "34";
+	one->args[2] = NULL;
 	one->input_file = "test.txt";
 	one->output_file = NULL;
 	one->append_mode = 0;
@@ -120,7 +121,7 @@ void	init_test_one(t_command *one)
 void	init_test_four(t_command *one, t_command *two, t_command *three, t_command *four)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "ls";
+	//one->command = "ls";
 	one->args[0] = "ls";
 	one->args[1] = NULL;
 	one->input_file = NULL;
@@ -131,7 +132,7 @@ void	init_test_four(t_command *one, t_command *two, t_command *three, t_command 
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 3);
-	two->command = "wc";
+	//two->command = "wc";
 	two->args[0] = "wc";
 	two->args[1] = "-w";
 	two->args[2] = NULL;
@@ -143,7 +144,7 @@ void	init_test_four(t_command *one, t_command *two, t_command *three, t_command 
 	two->next = three;
 
 	three->args = (char **)malloc(sizeof(char *) * 2);
-	three->command = "cat";
+	//three->command = "cat";
 	three->args[0] = "cat";
 	three->args[1] = NULL;
 	three->input_file = NULL;
@@ -155,7 +156,7 @@ void	init_test_four(t_command *one, t_command *two, t_command *three, t_command 
 
 
 	four->args = (char **)malloc(sizeof(char *) * 3);
-	four->command = "cat";
+	//four->command = "cat";
 	four->args[0] = "cat";
 	four->args[1] = "wc.txt";
 	four->args[2] = NULL;
@@ -173,7 +174,7 @@ void	init_test_four(t_command *one, t_command *two, t_command *three, t_command 
 void	init_test_three(t_command *one, t_command *two, t_command *three)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "ls";
+	//one->command = "ls";
 	one->args[0] = "ls";
 	one->args[1] = NULL;
 	one->input_file = NULL;
@@ -184,7 +185,7 @@ void	init_test_three(t_command *one, t_command *two, t_command *three)
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 2);
-	two->command = "cat";
+	//two->command = "cat";
 	two->args[0] = "cat";
 	two->args[1] = NULL;
 	two->input_file = NULL;
@@ -195,7 +196,7 @@ void	init_test_three(t_command *one, t_command *two, t_command *three)
 	two->next = three;
 
 	three->args = (char **)malloc(sizeof(char *) * 2);
-	three->command = "cat";
+	//three->command = "cat";
 	three->args[0] = "cat";
 	three->args[1] = NULL;
 	three->input_file = NULL;
@@ -212,7 +213,7 @@ void	init_test_three(t_command *one, t_command *two, t_command *three)
 void	init_test_two(t_command *one, t_command *two)
 {
 	one->args = (char **)malloc(sizeof(char *) * 2);
-	one->command = "cat";
+	//one->command = "cat";
 	one->args[0] = "cat";
 	one->args[1] = NULL;
 	one->input_file = "test.txt";
@@ -223,7 +224,7 @@ void	init_test_two(t_command *one, t_command *two)
 	one->next = two;
 
 	two->args = (char **)malloc(sizeof(char *) * 3);
-	two->command = "cd";
+	//two->command = "cd";
 	two->args[0] = "cd";
 	two->args[1] = "..";
 	two->args[2] = NULL;
@@ -254,23 +255,20 @@ int get_nr_cmd(t_command *cmd_list)
 	return (nr);
 }
 
-
-
-void	execute(t_env *envp) //t_command *cmd_list);
+void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 {
 	int	nr_cmd;
-	
 	//----for developing only: create my own sample command-lists
-	t_command	one;
-	t_command	two;
-	// t_command	three;
-	// t_command	four;
+	// t_command	one;
+	// t_command	two;
+	//  t_command	three;
+	// // t_command	four;
 
-	t_command	*cmd_list;
-	cmd_list = &one;
+	// t_command	*cmd_list;
+	// cmd_list = &one;
 	
-	//init_single_builtin(&one);//, &two);
-	init_test_two(&one, &two); //, &two, &three, &four);
+	// //init_single_builtin(&one);//, &two);
+	// init_test_three(&one, &two, &three);//, &four);
 	//---------------
 	
 	//get size of lists 
@@ -280,24 +278,26 @@ void	execute(t_env *envp) //t_command *cmd_list);
 	//check access of everything (files + cmds), creates paths, decides if builtin
 	if (check_access(cmd_list, nr_cmd, envp) != 0)
 	{
+		//printf("access error\n");
 		free_env_list(&envp);
 		//free more?
-		exit(18);
+		*exit_stat = 1;
+		return;// TO DO 
 	}
 	printf("access ok\n");
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
-		only_builtin(cmd_list, envp);
+		*exit_stat = only_builtin(cmd_list, envp); //return and set exit stat after onlz builtin TO DO
 	// set up pipes (if cmd is builtin they are forked as well, but might have no effect on the main shell p)
 	else
-		pipeline(cmd_list, nr_cmd, envp);
+		pipeline(cmd_list, nr_cmd, envp, exit_stat);
 
 	return;
 }
 
 
-void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n cmds 
+void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //works for 2 -> n cmds 
 {
 	printf("in pipeline\n");
 
@@ -434,6 +434,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 				}
 				printf("converted env to array\n");
 
+				print_commands(tmp);
+				
 				if(execve(tmp->exec_path, tmp->args, pipeline.env_array) == -1) //execve closing open fds? - yes
 				{
 					perror("execve: \n");
@@ -446,7 +448,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 			else
 			{
 				printf("its a builtin\n");
-				run_builtin(tmp, envp);
+				*exit_stat = run_builtin(tmp, envp, &pipeline); //return 0 or error nr?
 				
 				//close open fds
 				if (i == 0) //first cmd
@@ -461,8 +463,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 				//free
 				free_everything_pipeline_exit(envp, &pipeline);
 				//free cmd_list 
-				// exit p????
-				exit(0);
+
+				exit(*exit_stat); //use returned stat here? TODO
 			}
 
 		}
@@ -473,6 +475,8 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 		}
 	}
 	//close all open fildes
+	printf("closing fds\n");
+
 	y = 0;
 	while (y < nr_cmd - 1)
 	{
@@ -481,17 +485,30 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp) //works for 2 -> n c
 		y++;
 	}
 
-	//wait for all children
+
+	//wait for all children TO DO whatif terminated by SIGNAL? WTERMSIG
 	y = 0;
 	while (y < nr_cmd)
 	{
-		wait(NULL);
+		printf("waiting\n");
+		//wait(exit_stat);//save exit stat
+		if (waitpid(pipeline.pid[y], exit_stat, 0) == -1)
+		{
+			perror("waitpid: ");
+			free_everything_pipeline_exit(envp, &pipeline);
+			//return ? or exit
+			exit(1);
+		}
+		//extract real exit_stat + save in env??
+		if (WIFEXITED(*exit_stat))
+			*exit_stat = WEXITSTATUS(*exit_stat); //check + test if ok?
+
 		y++;
-	}
+	}	// make sure last process exit is stored????
 	
-	//free everything malloced for pipeline 
-	free_everything_pipeline_exit(envp, &pipeline);
-	// free_cmd_list(&cmd_list);
+	//free everything malloced for pipeline TO DO
+		//free_everything_pipeline_exit(envp, &pipeline);
+
 
 	printf("waited for all ps and finished\n");
 	return;

@@ -1,30 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42prague.com    +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/16 16:11:53 by lgottsch          #+#    #+#             */
-/*   Updated: 2024/11/15 17:41:28 by lgottsch         ###   ########.fr       */
+/*   Created: 2025/02/27 12:29:12 by lgottsch          #+#    #+#             */
+/*   Updated: 2025/02/27 12:30:17 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../full_libft.h"
 
-size_t	ft_strlen(const char *s)
+int		ft_isspace(int c)
 {
-	// int	i;
-
-	// i = 0;
-	// while (s[i])
-	// 	i++;
-	// return (i);
-	if (!s)  // Handle NULL pointer
-        return 0;
-
-    size_t len = 0;
-    while (s[len] != '\0')
-        len++;
-    return len;
+	if (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' ||
+		c == '\r')
+		return (1);
+	return (0);
 }
