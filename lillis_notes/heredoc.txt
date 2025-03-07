@@ -36,3 +36,9 @@ EOF
 Here, $USER will not be expanded, and the output will literally show $USER.
 
 In summary, Here Documents let you send multi-line input to a command, and whether variables and commands are expanded depends on how you quote the delimiter word.
+
+
+in pipes: 
+Heredoc only affects the command that directly receives it.
+✅ If the command is the first one in the pipeline → Heredoc works.
+🟥 If the command is after | → Heredoc is ignored (because stdin comes from the pipe).

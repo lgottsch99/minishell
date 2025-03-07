@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/07 14:11:48 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 17:59:48 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_command	*create_command()
 	cmd->append_mode = 0;
 	cmd->next = NULL;
 	cmd->is_builtin = 0;
-    cmd->heredoc_input = NULL;
+    cmd->heredoc_file = NULL;
     cmd->heredoc_delimetr = NULL;
 	return (cmd);
 }
@@ -71,6 +71,9 @@ t_command	*parse_tokens(Token *tokens)
 		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
         {
             command->heredoc_delimetr = ft_strdup(tokens->next->value);
+
+			//go and directly read here doc?
+
             tokens = tokens->next;
         }
         else if (tokens->type == TOKEN_WORD)
@@ -125,6 +128,10 @@ void	print_commands(t_command *commands) {
 		printf("  Input file: %s\n", commands->input_file);
 		//if (commands->output_file)
 		printf("  Output file: %s\n", commands->output_file);
+		if (commands->heredoc_delimetr)
+			printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
+		if (commands->heredoc_file)
+			printf("Heredoc filename: %s\n", commands->heredoc_file);
 		if (commands->append_mode)
 			printf("  Append output: yes\n");
 		if (commands->is_builtin)
@@ -132,7 +139,8 @@ void	print_commands(t_command *commands) {
 		if (commands->exec_path)
 			printf("  exec path: %s\n", commands->exec_path);
 		commands = commands->next;
-		
+		printf("\n");
+
 	}
 }
 

@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 12:12:58 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/03 16:26:44 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/07 17:55:58 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+
 
 void	red_infile(char	*input_file)
 {

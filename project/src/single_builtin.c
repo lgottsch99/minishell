@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 14:10:55 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 18:33:54 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,21 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 	int red_out;	//same
 	int exit_stat;
 
-	og_in = dup(STDIN_FILENO); //ADD PROTECT 
+	og_in = dup(STDIN_FILENO); //ADD PROTECT  TODO 
 	og_out = dup(STDOUT_FILENO); //SAME
 	red_in = 0;
 	red_out = 0;
 	exit_stat = 0;
 	
 	// redirect if needed
-	if (cmd_list->input_file)
+	if (cmd_list->heredoc_file)
+	{
+		red_infile(cmd_list->heredoc_file);
+		unlink (cmd_list->heredoc_file);
+		cmd_list->heredoc_file = NULL;
+		red_in = 1;
+	}
+	else if (cmd_list->input_file && red_in == 0)
 	{
 		red_infile(cmd_list->input_file);
 		red_in = 1;

@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 14:11:21 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 18:33:09 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,8 @@ void	free_cmd_list(t_command **cmd_list)
 		if (tmp->args)
 			free_2d_char(tmp->args);
 		//printf("0\n");
+		if (tmp->heredoc_file)
+			unlink (tmp->heredoc_file);
 		if (tmp->input_file)
 			free(tmp->input_file);
 		//printf("1\n");

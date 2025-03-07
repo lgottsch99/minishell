@@ -6,7 +6,7 @@
 #    By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 15:57:29 by lgottsch          #+#    #+#              #
-#    Updated: 2025/03/07 14:20:41 by Watanudon        ###   ########.fr        #
+#    Updated: 2025/03/07 17:18:15 by Watanudon        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,9 +26,9 @@ SRC = $(addprefix $(SRC_FOLDER), main.c init_start.c builtins.c execution.c acce
 
 OBJ = $(SRC:.c=.o)
 
-$(NAME): $(OBJ) libft
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFTA) $(LDFLAGS) -o $(NAME)
-	make clean
+$(NAME): $(OBJ) #libft
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFTA) $(LDFLAGS) -o $(NAME)
+	@make clean
 
 all: $(NAME)
 
@@ -36,11 +36,11 @@ libft:
 	@make -C $(LIBFTDIR)
 
 clean:
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
 	@make -C $(LIBFTDIR) clean
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 	@make -C $(LIBFTDIR) fclean
 
 re: fclean all

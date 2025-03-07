@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 14:08:56 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 18:20:09 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int	echo(t_command *cmd_list)
 	}
 	else
 	{
+			
 		//check if -n or not 
 		if (ft_strncmp(cmd_list->args[1], "-n", ft_strlen(cmd_list->args[1])) == 0)
 		{

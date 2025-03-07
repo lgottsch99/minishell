@@ -68,7 +68,8 @@ debug:
 27.2
 
 dana:
-	heredoc
+	heredoc:
+		make check for if it really only is delimiter before going to execution
 	signals
 	change envp in tokenizing to environ list
 	append mode >> 
@@ -82,10 +83,26 @@ lilli;
 	freeing: 
 		freeing check every command, pipes OK 
 		free after exit OK
+
+	here doc
+	some signal testing
+
 		free after signal in pipe and not
 	testinggggg
 
 	norm:
 		builtins
 		
+
+questions + issues: 
+ 	- freeing: include input, rl history etc in execution to free before exit
+	- cmd: export lilli="cool" doesnt recognize lilli="cool" as whole thing 
+		( you typed: export lilli="cool"
+		Token: export, Type: 0
+		Token: cool, Type: 0		
+		Token: (null), Type: 9)
+	-heredoc: 
+	-append mode:
+	-
+	
 

@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 13:05:39 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 17:58:46 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,10 @@ typedef struct s_command {
 	char				*input_file;    // File for input redirection (NULL if none)
 	char				*output_file;   // File for output redirection (NULL if none)
 	int					append_mode;    // 1 if output should be appended, 0 otherwise
-	char				*heredoc_input;
-	char				*heredoc_delimetr;
+
+	char				*heredoc_file; //name of heredoc file
+	
+	char				*heredoc_delimetr; 
 	char 				*exec_path; // NULL for parsing, execution: saves executable path in here
 	int					is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
 	struct s_command 	*next; // Pointer to the next command in a pipeline
@@ -153,7 +155,7 @@ void		print_tokens(Token *tokens);
 void		free_tokens(Token *tokens);
 void		free_commands(t_command *commands);
 void		print_commands(t_command *commands);
-char		*read_heredoc(char *delimetr);
+char		*read_heredoc(char *delimetr, int count);
 void		clean_heredoc(t_command *cmd);
 char		**env_to_array(t_env *env);
 

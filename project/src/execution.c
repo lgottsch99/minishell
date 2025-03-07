@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 14:09:55 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 18:33:30 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,6 +275,9 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	nr_cmd = get_nr_cmd(cmd_list);
 	printf("\n\nsize cmd list: %i\n\n", nr_cmd);
 
+	print_commands(cmd_list);
+	printf("\n\n\n");
+
 	//check access of everything (files + cmds), creates paths, decides if builtin
 	if (check_access(cmd_list, nr_cmd, envp) != 0)
 	{
@@ -404,9 +407,21 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 						y++;
 					}
 				}
-				
+			//check if heredoc, if yes normal input red. gets ignored
+			if (tmp->heredoc_file)
+			{
+				if (pipeline.nr_cmd > 1 && i > 0) //if not in first
+					close(pipeline.fd_pipe[i - 1][0]);
+
+				red_infile(tmp->heredoc_file);
+				unlink(tmp->heredoc_file);
+				tmp->heredoc_file = NULL;
+				in = 1;
+				printf("heredoc redirected\n");
+
+			}
 			//check in/out file
-			if (tmp->input_file) //no reading from previous pipe
+			if (tmp->input_file && in == 0) //no reading from previous pipe
 			{
 				if (pipeline.nr_cmd > 1 && i > 0) //if not in first
 					close(pipeline.fd_pipe[i - 1][0]);
@@ -492,7 +507,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 		}
 	}
 	//close all open fildes
-	printf("closing fds\n");
+	printf("closing pipe fds\n");
 
 	y = 0;
 	while (y < pipeline.nr_cmd - 1)
@@ -520,6 +535,7 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 
 		y++;
 	}	// make sure last process exit is stored????
+
 	
 	//free everything malloced for pipeline TO DO
 	if (pipeline.fd_pipe)

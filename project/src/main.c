@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 13:14:01 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 17:53:26 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,19 @@ int	main (int argc, char *argv[], char *envp[])
 		{
 			exit_stat = 1;
 			write(STDOUT_FILENO, "exit\n", 5);
-            exit(EXIT_SUCCESS);
+			free(input);
+			free_env_list(&environ);
+            exit(EXIT_SUCCESS); //free before  rl history etc  TODO
 		}
-		if (g_signal_status == SIGINT)
+		if (g_signal_status == SIGINT)//ctrl c handling
 		{
 			g_signal_status = 0;
+			free(input);
+			continue;
+		}
+		if (input[0] == '\0') //just typing enter at prompt
+		{
+			free(input);
 			continue;
 		}
 		//adding input to history
@@ -68,7 +76,7 @@ int	main (int argc, char *argv[], char *envp[])
 		
 		//check if heredoc, if yes separate readline TODO 
 
-		//3. parse (and create AST), 
+		//3. parse (and create AST), ------------------------
 		env_array = env_to_array(environ);
 		if (!env_array)
 		{
@@ -81,11 +89,25 @@ int	main (int argc, char *argv[], char *envp[])
 		{
 			print_tokens(tokens);	
 			commands = parse_tokens(tokens);
-			if (commands)
+			//go thru cmd list and check for each cmd: 
+			t_command *current_command;
+			int count;
+
+			count = 0;
+			current_command = commands;
+			while (current_command) //handling here doc within pipeline
 			{
-				if(commands->heredoc_delimetr)
-					commands->heredoc_input = read_heredoc(commands->heredoc_delimetr);
+				// Read the heredoc for each command that needs it
+				if (current_command->heredoc_delimetr)
+					current_command->heredoc_file = read_heredoc(current_command->heredoc_delimetr, ++count);
+					
+				current_command = current_command->next;
 			}
+			// if (commands)
+			// {
+			// 	if(commands->heredoc_delimetr)
+			// 		commands->heredoc_input = read_heredoc(commands->heredoc_delimetr);
+			// }
 			free_tokens(tokens);
 			tokens = NULL;	
 		}
@@ -95,6 +117,7 @@ int	main (int argc, char *argv[], char *envp[])
 			free(*env_array);
 			env_array++;
 		}
+		// parsing end ------------------------
 
 		execute(environ, &exit_stat, commands);
 			//creates processes, 
