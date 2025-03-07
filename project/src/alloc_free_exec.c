@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   alloc_free_exec.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/01 18:32:12 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/07 13:08:12 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,11 @@ int *alloc_pid(int nr_cmd)
 	{
 		//free everything
 		perror("malloc: ");
+<<<<<<< HEAD
 		return NULL;
+=======
+		exit(348); //TODO
+>>>>>>> minishell_dana/dana_parsing
 	}
 	return (pid);
 }
@@ -75,6 +79,7 @@ void	free_env_list(t_env **env)
 	{
 		tmp = *env;
 		*env = (*env)->next;
+<<<<<<< HEAD
 		if (tmp->key)
 		{
 			free(tmp->key);
@@ -85,6 +90,12 @@ void	free_env_list(t_env **env)
 			free(tmp->value);
 			tmp->value = NULL;
 		}
+=======
+		free(tmp->key);
+		tmp->key = NULL;
+		free(tmp->value);
+		tmp->value = NULL;
+>>>>>>> minishell_dana/dana_parsing
 		free(tmp);
 	}
 	*env = NULL;
@@ -129,6 +140,7 @@ void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat)	
 	//free cmd_list if not statically alloced
 	if (pipeline->cmd_list)
 		free_cmd_list(&pipeline->cmd_list);
+<<<<<<< HEAD
 	printf("freed pipe\n");
 
 	envp = NULL;
@@ -136,6 +148,11 @@ void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat)	
 				printf("now exiting\n");
 
 	exit(stat);
+=======
+	envp = NULL;
+	pipeline = NULL;
+	exit(1);
+>>>>>>> minishell_dana/dana_parsing
 }
 
 void	free_2d_char(char **array)
@@ -153,8 +170,12 @@ void	free_2d_char(char **array)
 }
 
 void	free_cmd_list(t_command **cmd_list)
+<<<<<<< HEAD
 {	
 	printf("in free cmd list\n");
+=======
+{	printf("in free cmd list\n");
+>>>>>>> minishell_dana/dana_parsing
 	t_command *tmp;
 
 	while (*cmd_list)

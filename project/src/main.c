@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/28 15:44:58 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/07 13:14:01 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+volatile sig_atomic_t g_signal_status = 0;
 
 int	main (int argc, char *argv[], char *envp[])
 {
@@ -20,9 +21,9 @@ int	main (int argc, char *argv[], char *envp[])
 	char	*input;
 	t_env	*environ;
 	int		exit_stat;
-
 	Token		*tokens;
 	t_command	*commands;
+	char		**env_array;
 
 	exit_stat = 0;
 	// init protection ( like if !envp etc)
@@ -44,19 +45,23 @@ int	main (int argc, char *argv[], char *envp[])
 	}
 	//print_env(environ);
 
+	setup_signals();
+
 	//2. main loop
 	while (1)
 	{
 		input = readline("***miniShell***$ ");
-		if (!input)
+		if (!input)  //ctrl-D handling, its not a signal but a eof detecter
 		{
-			printf("readline error\n");
 			exit_stat = 1;
+			write(STDOUT_FILENO, "exit\n", 5);
+            exit(EXIT_SUCCESS);
+		}
+		if (g_signal_status == SIGINT)
+		{
+			g_signal_status = 0;
 			continue;
 		}
-		if (input[0] == '\0')
-			continue;
-
 		//adding input to history
 		add_history(input);
 		printf("you typed: %s\n", input);
@@ -64,30 +69,39 @@ int	main (int argc, char *argv[], char *envp[])
 		//check if heredoc, if yes separate readline TODO 
 
 		//3. parse (and create AST), 
-		tokens = tokenize(input, exit_stat, envp); //TO DO change envp to own environ
-		if (!tokens)
+		env_array = env_to_array(environ);
+		if (!env_array)
 		{
-			fprintf(stderr, "tokenization failed.\n"); //TODO check function
 			free(input);
-			continue;
+			free_env_list(&environ);
+			return (1);
 		}
-		print_tokens(tokens);
+		tokens = tokenize(input, exit_stat, env_array); //TO DO change envp to own environ
+		if (tokens)
+		{
+			print_tokens(tokens);	
+			commands = parse_tokens(tokens);
+			if (commands)
+			{
+				if(commands->heredoc_delimetr)
+					commands->heredoc_input = read_heredoc(commands->heredoc_delimetr);
+			}
+			free_tokens(tokens);
+			tokens = NULL;	
+		}
+		
+		while (*env_array)
+		{
+			free(*env_array);
+			env_array++;
+		}
 
-		commands = parse_tokens(tokens);
-		free_tokens(tokens);
-		tokens = NULL;
-
-		print_commands(commands);
-			//0. handle special quotes ('' ""), heredoc (<<)
-			//1. lexer: create tokens
-			//(2. parser: takes tokens (and builds commmand list))
-
-		//4. execute
 		execute(environ, &exit_stat, commands);
 			//creates processes, 
 			//handles redirections/pipes,
 			//decides if cmd is builtin or not etc and executes them
 			//special cases: $?, 
+		clean_heredoc(commands); 
 
 		//5. free everything needed TODO
 		free(input);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenising.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-02-20 19:02:32 by dvasilen          #+#    #+#             */
-/*   Updated: 2025-02-20 19:02:32 by dvasilen         ###   ########.fr       */
+/*   Created: 2025/02/20 19:02:32 by dvasilen          #+#    #+#             */
+/*   Updated: 2025/03/07 13:20:46 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,45 @@ void	handle_redir_more(char **start, char **end, Token **head, Token **current) 
 	*start = ++(*end);
 }
 
-void	handle_redir_less(char **start, char **end, Token **head, Token **current) {
+void	handle_heredoc(char **start, char **end, Token **head, Token **current)
+{
+	Token	*token;
+	char	*delimiter;
+
+
+	*start = *end + 2;
+	while (**start && ft_isspace(**start))
+		(*start)++;
+	*end = *start;
+	while (**end && !ft_isspace(**end) && **end != '\0')
+		(*end)++;
+	delimiter = ft_strndup(*start, *end - *start);
+	if (!delimiter)
+	{
+		fprintf(stderr, "Error: malloc failed\n");
+		return;
+	}
+	token = create_token(ft_strdup("<<"), TOKEN_REDIRECT_HEREDOC);
+	if (!token)
+	{
+		free(delimiter);
+		fprintf(stderr, "Error: create_token failed\n");
+		return;
+	}
+	add_token(head, current, token);
+	token = create_token(delimiter, TOKEN_WORD);
+	if (!token)
+	{
+		free(delimiter);
+		fprintf(stderr, "Error: create_token failed\n");
+		return;
+	}
+	add_token(head, current, token);
+	*start = *end;
+}
+
+void	handle_redir_less(char **start, char **end, Token **head, Token **current)
+{
 	Token	*token;
 	if (*end > *start)
 	{
@@ -178,9 +216,7 @@ void	handle_redir_less(char **start, char **end, Token **head, Token **current) 
 	}
 	if (*(*end + 1) == '<')
 	{
-		token = create_token(ft_strdup("<<"), TOKEN_REDIRECT_HEREDOC);
-		add_token(head, current, token);
-		(*end)++;
+		handle_heredoc(start, end, head, current);
 	}
 	else
 	{

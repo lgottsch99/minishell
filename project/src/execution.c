@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/01 18:35:18 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/07 13:08:26 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,8 +278,13 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	//check access of everything (files + cmds), creates paths, decides if builtin
 	if (check_access(cmd_list, nr_cmd, envp) != 0)
 	{
+<<<<<<< HEAD
 		printf("access error\n");
 		//free_cmd_list(&cmd_list); 		//TODO? 
+=======
+		//printf("access error\n");
+		free_env_list(&envp);
+>>>>>>> minishell_dana/dana_parsing
 		//free more?
 		*exit_stat = 1;
 		return;// TO DO 
@@ -288,7 +293,11 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
+<<<<<<< HEAD
 		*exit_stat = only_builtin(cmd_list, envp);
+=======
+		*exit_stat = only_builtin(cmd_list, envp); //return and set exit stat after onlz builtin TO DO
+>>>>>>> minishell_dana/dana_parsing
 	// set up pipes (if cmd is builtin they are forked as well, but might have no effect on the main shell p)
 	else
 		pipeline(cmd_list, nr_cmd, envp, exit_stat);
@@ -481,7 +490,11 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 				free_everything_pipeline_exit(envp, &pipeline, *exit_stat);
 				//free cmd_list 
 
+<<<<<<< HEAD
 				//exit(*exit_stat); //use returned stat here? TODO
+=======
+				exit(*exit_stat); //use returned stat here? TODO
+>>>>>>> minishell_dana/dana_parsing
 			}
 
 		}
@@ -502,6 +515,10 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 		y++;
 	}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> minishell_dana/dana_parsing
 	//wait for all children TO DO whatif terminated by SIGNAL? WTERMSIG
 	y = 0;
 	while (y < pipeline.nr_cmd)
@@ -511,8 +528,14 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 		if (waitpid(pipeline.pid[y], exit_stat, 0) == -1)
 		{
 			perror("waitpid: ");
+<<<<<<< HEAD
 			free_everything_pipeline_exit(envp, &pipeline, 1);
 			//return ? or exit
+=======
+			free_everything_pipeline_exit(envp, &pipeline);
+			//return ? or exit
+			exit(1);
+>>>>>>> minishell_dana/dana_parsing
 		}
 		//extract real exit_stat + save in env??
 		if (WIFEXITED(*exit_stat))
@@ -522,10 +545,15 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 	}	// make sure last process exit is stored????
 	
 	//free everything malloced for pipeline TO DO
+<<<<<<< HEAD
 	if (pipeline.fd_pipe)
 		free_pipe_array(pipeline.fd_pipe, pipeline.nr_cmd);
 	if (pipeline.pid)
 		free(pipeline.pid);
+=======
+		//free_everything_pipeline_exit(envp, &pipeline);
+
+>>>>>>> minishell_dana/dana_parsing
 
 	printf("waited for all ps and finished\n");
 	return;

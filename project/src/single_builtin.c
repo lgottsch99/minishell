@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_builtin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/01 18:34:38 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/07 13:14:19 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,11 @@ int	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline)
 	else if (ft_strncmp(cmd_list->args[0], "exit", ft_strlen(cmd_list->args[0])) == 0)
 	 	exit_stat = exit_shell(cmd_list, envp, pipeline);
 	else if (ft_strncmp(cmd_list->args[0], "cd", ft_strlen(cmd_list->args[0])) == 0)
+<<<<<<< HEAD
 		exit_stat = cd(cmd_list, envp);
+=======
+		exit_stat = cd(cmd_list);
+>>>>>>> minishell_dana/dana_parsing
 	else if (ft_strncmp(cmd_list->args[0], "export", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = eexport(cmd_list, envp);
 	else if (ft_strncmp(cmd_list->args[0], "unset", ft_strlen(cmd_list->args[0])) == 0)

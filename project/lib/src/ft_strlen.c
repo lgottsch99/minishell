@@ -14,10 +14,17 @@
 
 size_t	ft_strlen(const char *s)
 {
-	int	i;
+	// int	i;
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+	// i = 0;
+	// while (s[i])
+	// 	i++;
+	// return (i);
+	if (!s)  // Handle NULL pointer
+        return 0;
+
+    size_t len = 0;
+    while (s[len] != '\0')
+        len++;
+    return len;
 }
