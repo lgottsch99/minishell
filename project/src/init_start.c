@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:43:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 13:08:39 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 14:04:38 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,29 +31,18 @@ void print_start(void)
 char	*add_shlvl(char *value)
 {
 	int		num;
-<<<<<<< HEAD
 	//char	*new;
-=======
-	char	*new;
->>>>>>> minishell_dana/dana_parsing
 	//atoi, add 1, itoa, return
 	num = ft_atoi(value);
 	free(value);
 	value = NULL;
 	
 	num = num + 1;
-<<<<<<< HEAD
 	// new = ft_itoa(num); //MALLOC
 	// if (!new)
 	// 	return (NULL);
 	//return (new);
 	return (ft_itoa(num));
-=======
-	new = ft_itoa(num); //MALLOC
-	if (!new)
-		return (NULL);
-	return (new);
->>>>>>> minishell_dana/dana_parsing
 }
 
 

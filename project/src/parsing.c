@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/07 13:14:30 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 14:11:48 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,16 @@ t_command	*create_command()
 	t_command	*cmd;
 
 	cmd = malloc(sizeof(t_command));
-<<<<<<< HEAD
-=======
 	if (!cmd)
 		return (NULL);
->>>>>>> minishell_dana/dana_parsing
 	cmd->args = NULL;
 	cmd->input_file = NULL;
 	cmd->output_file = NULL;
 	cmd->append_mode = 0;
 	cmd->next = NULL;
 	cmd->is_builtin = 0;
-<<<<<<< HEAD
-	cmd->exec_path = NULL;
-=======
     cmd->heredoc_input = NULL;
     cmd->heredoc_delimetr = NULL;
->>>>>>> minishell_dana/dana_parsing
 	return (cmd);
 }
 
@@ -75,16 +68,12 @@ t_command	*parse_tokens(Token *tokens)
 	command = create_command();
 	while(tokens)
 	{
-<<<<<<< HEAD
-		if (tokens->type == TOKEN_WORD)
-=======
 		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
         {
             command->heredoc_delimetr = ft_strdup(tokens->next->value);
             tokens = tokens->next;
         }
         else if (tokens->type == TOKEN_WORD)
->>>>>>> minishell_dana/dana_parsing
 		{
 			arg = ft_strdup(tokens->value);
 			add_argument(command, arg);
@@ -129,10 +118,6 @@ void	print_commands(t_command *commands) {
 	while (commands)
 	{
 		printf("t_command:\n");
-<<<<<<< HEAD
-		//printf("command: %s\n", commands->command);
-=======
->>>>>>> minishell_dana/dana_parsing
 
 		for (int i = 0; commands->args[i]; i++)	
 			printf("  Arg %d: %s\n", i, commands->args[i]);
@@ -147,10 +132,7 @@ void	print_commands(t_command *commands) {
 		if (commands->exec_path)
 			printf("  exec path: %s\n", commands->exec_path);
 		commands = commands->next;
-<<<<<<< HEAD
-=======
 		
->>>>>>> minishell_dana/dana_parsing
 	}
 }
 

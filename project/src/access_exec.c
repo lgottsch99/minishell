@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 13:08:01 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 14:10:24 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,16 +112,9 @@ int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access 
 		//IF NOT BUILTIN:
 		if (tmp->is_builtin == 0)
 			check_path(tmp, envp);
-<<<<<<< HEAD
 		else if (tmp->is_builtin == 1 && tmp->args[0])
 			printf("cmd is builtin: %s\n", tmp->args[0]);
 
-=======
-		//else if (tmp->is_builtin == 1 && tmp->args[0])
-			//printf("cmd is builtin: %s\n", tmp->args[0]);
-		// 	tmp->is_builtin = 1;
-		// }
->>>>>>> minishell_dana/dana_parsing
 		if (!tmp->exec_path && tmp->is_builtin == 0) //cmd not found
 		{
 			printf("minishell error: cant find command\n");
@@ -248,7 +241,6 @@ void	check_path(t_command *cmd, t_env *envp) //TODO
 	char	*fullpath; //whole path from envp
 	char	*exec_path; //path that can be exec
 	char	**paths;
-<<<<<<< HEAD
 	
 	//0. check if ./ or ../
 	if (cmd->args[0][0] == '.' && cmd->args[0][1] == '.' && cmd->args[0][2] == '/') // ../
@@ -262,20 +254,6 @@ void	check_path(t_command *cmd, t_env *envp) //TODO
 		printf("exec path: %s\n", cmd->exec_path);
 		return;
 	}
-=======
-
-	//1. get whole path from env
-	fullpath = ret_value_env("PATH", envp);
-	//printf("fullpath: %s\n", fullpath);
-	paths = ft_split(fullpath, ':');
-	//2. get executable path if cmd not builtin
-	exec_path = get_exec_path(cmd->args[0], paths); //returns malloced str if exists, NULL if not
-	free_2d_char(paths);
-	//3. save exec path in cmd table
-	cmd->exec_path = exec_path;
-	if(!exec_path)
-		printf("nooo executable path found\n");
->>>>>>> minishell_dana/dana_parsing
 	else
 	{
 		//1. get whole path from env

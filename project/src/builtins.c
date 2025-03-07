@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 13:08:20 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 14:08:56 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ typedef struct s_command {
 
 #include "../includes/minishell.h"
 
-<<<<<<< HEAD
-=======
 // void	print_env(t_list *envp[])//TO DO: CHANGE TO OWN ENV LIST
 // {
 // 	int	i;
@@ -43,7 +41,6 @@ typedef struct s_command {
 // 	}
 // 	return;
 // }
->>>>>>> minishell_dana/dana_parsing
 
 int	print_env(t_env *environ)
 {
@@ -158,10 +155,7 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 	int	num_args;
 	int	i;
 	int no_digit;
-<<<<<<< HEAD
 	int	stat;
-=======
->>>>>>> minishell_dana/dana_parsing
 
 	printf("exit\n"); //bash prints exit 
 	num_args = get_num_args(cmd->args);
@@ -172,38 +166,23 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 	{ 
 		//free all necessary
 		if (pipeline != NULL)
-<<<<<<< HEAD
 			free_everything_pipeline_exit(envp, pipeline, 1);
 		else //only single cmd
 		{ printf("freeing no pipeline\n");
 			if (envp)
 				free_env_list(&envp);
-=======
-			free_everything_pipeline_exit(envp, pipeline);
-		else //only single cmd
-		{ printf("freeing no pipeline\n");
-			// if (envp)
-			// 	free_env_list(&envp);
->>>>>>> minishell_dana/dana_parsing
 			//printf("freed env\n");
 			if (cmd)
 				free_cmd_list(&cmd);
 			//anything else to free?
 			//printf("freed all\n");
-<<<<<<< HEAD
-=======
-
->>>>>>> minishell_dana/dana_parsing
 		}
 		exit(0);
 	}
 	else if (num_args == 2) //if only one: exit with nr 
 	{
-<<<<<<< HEAD
 		printf("exit xyz checking if digits\n");
 
-=======
->>>>>>> minishell_dana/dana_parsing
 		//check if arg nr is only digits 
 		while (cmd->args[1][i])
 		{
@@ -216,7 +195,6 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 			printf("exit: numeric arg required\n");
 			return (1);
 		}
-<<<<<<< HEAD
 		printf("is digit\n");
 
 		stat = ft_atoi(cmd->args[1]);
@@ -238,12 +216,6 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 				free_cmd_list(&cmd);
 			exit(stat);
 		}
-=======
-		//free all necessary
-		if (pipeline)
-			free_everything_pipeline_exit(envp, pipeline);
-		exit(ft_atoi(cmd->args[1])); //check if ok
->>>>>>> minishell_dana/dana_parsing
 	}
 	else if (num_args > 2)//if more than one number: error mdg, set exit stat
 	{
@@ -253,11 +225,7 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline)//TODO
 	return (1);
 }
 
-<<<<<<< HEAD
 int	cd(t_command *cmd_list, t_env *envp)
-=======
-int	cd(t_command *cmd_list)//TO DO
->>>>>>> minishell_dana/dana_parsing
 {
 	char s[100];
 	printf("in cd\n");
@@ -273,18 +241,10 @@ int	cd(t_command *cmd_list)//TO DO
 		printf("cant find home\n");
 		return (1);
 	}
-<<<<<<< HEAD
-=======
-
->>>>>>> minishell_dana/dana_parsing
 	num_args = get_num_args(cmd_list->args);
 	if (num_args > 2) //OK
 	{	
 		printf("cd: too many args\n");
-<<<<<<< HEAD
-=======
-		//free nd 
->>>>>>> minishell_dana/dana_parsing
 		return(1);
 	}
 	if (!cmd_list->args[1] && home) //only cd -> goes to home //OK
@@ -302,21 +262,11 @@ int	cd(t_command *cmd_list)//TO DO
 		if (chdir(cmd_list->args[1]) == -1)
 		{
 			perror("cd: ");
-<<<<<<< HEAD
-=======
-			//free nd 
->>>>>>> minishell_dana/dana_parsing
 			return (1);
 		}
 	}
 	printf("new dir: %s\n", getcwd(s, 100));
-<<<<<<< HEAD
 	return (0);
-=======
-
-	return (0);
-
->>>>>>> minishell_dana/dana_parsing
 }
 
 void	print_list(t_list *envp)
