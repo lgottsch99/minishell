@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   alloc_free_exec.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 12:22:54 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 18:32:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,9 @@ void	free_cmd_list(t_command **cmd_list)
 		if (tmp->args)
 			free_2d_char(tmp->args);
 		if (tmp->heredoc_file)
-			unlink (tmp->heredoc_file);
+		 	free (tmp->heredoc_file);
+		if (tmp->heredoc_delimetr)
+			free (tmp->heredoc_delimetr);
 		if (tmp->input_file)
 			free(tmp->input_file);
 		if (tmp->output_file)

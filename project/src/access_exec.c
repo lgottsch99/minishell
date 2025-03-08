@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   access_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 23:57:36 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 16:50:28 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	check_files(t_command *cmd) //ret 1 if denied, 0 if ok
 
 int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access denied, 0 if ok
 {
-	//printf("in check access \n");
+	printf("in check access \n");
 
 	int			i;
 //	int			builtin;

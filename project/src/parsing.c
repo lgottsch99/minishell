@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/07 17:59:48 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 16:57:32 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,13 @@ t_command	*create_command()
 	cmd->is_builtin = 0;
     cmd->heredoc_file = NULL;
     cmd->heredoc_delimetr = NULL;
+	cmd->exec_path = NULL;
 	return (cmd);
 }
 
 t_command	*parse_tokens(Token *tokens)
 {
+	printf("in parse token\n");
 	t_command	*head;
 	t_command	*current;
 	t_command	*command;
@@ -124,11 +126,11 @@ void	print_commands(t_command *commands) {
 
 		for (int i = 0; commands->args[i]; i++)	
 			printf("  Arg %d: %s\n", i, commands->args[i]);
-		//if (commands->input_file)
+		//	if (commands->input_file)
 		printf("  Input file: %s\n", commands->input_file);
 		//if (commands->output_file)
 		printf("  Output file: %s\n", commands->output_file);
-		if (commands->heredoc_delimetr)
+		//if (commands->heredoc_delimetr)
 			printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
 		if (commands->heredoc_file)
 			printf("Heredoc filename: %s\n", commands->heredoc_file);

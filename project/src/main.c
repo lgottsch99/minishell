@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 00:06:01 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 16:49:23 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,12 @@ int	main (int argc, char *argv[], char *envp[])
 			return (1);
 		}
 		tokens = tokenize(input, exit_stat, env_array); //TO DO change envp to own environ
+		free_2d_char(env_array);//freeing env array
 		if (tokens)
 		{
 			print_tokens(tokens);	
 			commands = parse_tokens(tokens);
+
 			//go thru cmd list and check for each cmd: 
 			t_command *current_command;
 			int count;
@@ -97,9 +99,13 @@ int	main (int argc, char *argv[], char *envp[])
 			current_command = commands;
 			while (current_command) //handling here doc within pipeline
 			{
+				printf("checking heredoc\n");
 				// Read the heredoc for each command that needs it
 				if (current_command->heredoc_delimetr)
+				{
+					printf("found heredoc del\n");
 					current_command->heredoc_file = read_heredoc(current_command->heredoc_delimetr, ++count);
+				}
 					
 				current_command = current_command->next;
 			}
@@ -112,13 +118,14 @@ int	main (int argc, char *argv[], char *envp[])
 			tokens = NULL;	
 		}
 		
-		while (*env_array)
-		{
-			free(*env_array);
-			env_array++;
-		}
+		// while (*env_array)
+		// {
+		// 	free(*env_array);
+		// 	env_array++;
+		// }
+		
 		// parsing end ------------------------
-
+		printf("finished parsing\n");
 		execute(environ, &exit_stat, commands);
 			//creates processes, 
 			//handles redirections/pipes,

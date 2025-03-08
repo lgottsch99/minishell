@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_builtin.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 12:26:45 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 18:11:09 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,19 +61,35 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 	// redirect if needed
 	if (cmd_list->heredoc_file)
 	{
-		red_infile(cmd_list->heredoc_file);
-		unlink (cmd_list->heredoc_file);
+		if (red_infile(cmd_list->heredoc_file) == 1)
+		{
+			perror("redirection error: ");
+			return 1;
+		}
+
+		//unlink (cmd_list->heredoc_file);
 		cmd_list->heredoc_file = NULL;
 		io.red_in = 1;
 	}
 	else if (cmd_list->input_file && io.red_in == 0)
 	{
-		red_infile(cmd_list->input_file);
+		if (red_infile(cmd_list->input_file) == 1)
+		{
+			perror("redirection error: ");
+			return 1;
+			//free + return ;
+		}
 		io.red_in = 1;
 	}
 	if (cmd_list->output_file)
 	{
-		red_outfile(cmd_list->output_file, cmd_list);
+		if (red_outfile(cmd_list->output_file, cmd_list) == 1)
+		{
+			perror("redirection error: ");
+			return 1;
+			//free + return ;
+		}
+
 		io.red_out = 1;
 	}
 	//go to function and run
@@ -81,12 +97,28 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 
 	// restore og fildes
 	if (io.red_in == 1)
-		redirect(io.og_in, STDIN_FILENO);
+	{
+		if (redirect(io.og_in, STDIN_FILENO) == 1)
+		{
+			perror("redirection error: ");
+			return 1;
+			//free + return ;
+		}
+	}
+
 	// else
 	// 	close(og_in);
 	if (io.red_out == 1)
-		redirect(io.og_out, STDOUT_FILENO);
-	// else
+	{
+		if (redirect(io.og_out, STDOUT_FILENO) == 1)
+		{
+			perror("redirection error: ");
+			return 1;
+			//free + return ;
+		}
+
+	}
+		// else
 	// 	close(og_out);
 	return (exit_stat);
 }

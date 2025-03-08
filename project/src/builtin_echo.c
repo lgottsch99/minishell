@@ -1,4 +1,14 @@
-//HEADER
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_echo.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/08 16:29:09 by lgottsch          #+#    #+#             */
+/*   Updated: 2025/03/08 17:07:07 by lgottsch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -38,7 +48,7 @@ static int echo_with_n(t_command *cmd_list, int num_args)
 	int skip;
 
 	skip = 2;
-	while (ft_strncmp(cmd_list->args[skip], "-n", ft_strlen(cmd_list->args[skip])) == 0)
+	while (cmd_list->args[skip] && (ft_strncmp(cmd_list->args[skip], "-n", ft_strlen(cmd_list->args[skip])) == 0))
 		skip++;
 	//print all other args starting at indx 2
 	if (num_args > skip)
@@ -56,13 +66,22 @@ int	echo(t_command *cmd_list)
 	num_args = get_num_args(cmd_list->args);
 	if (num_args <= 1) //only echo
 	{
+		printf("only echo\n");
 		if (printf("\n") < 0)
 			return (1);
 	}
-	else
-	{	//check if -n or not 
+	else if (cmd_list->args[1] &&cmd_list->args[1][0])
+	{
+		printf("not only echo\n");
+
+		if (cmd_list->args[1][0] != '\0')
+		{
+
+	//check if -n or not 
 		if (ft_strncmp(cmd_list->args[1], "-n", ft_strlen(cmd_list->args[1])) == 0)
 		{
+			printf(" echo with -n\n");
+
 			if (echo_with_n(cmd_list, num_args) == 1)
 				return (1);
 		}
@@ -74,6 +93,8 @@ int	echo(t_command *cmd_list)
 				return (1);
 		}
 	}
+}
+	// }
 	return (0);
 }
 

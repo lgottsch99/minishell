@@ -13,6 +13,7 @@ void	heredoc_input(int fd, char *delimetr)
 	  	if (ft_strcmp(line, delimetr) == 0 && (ft_strlen(line) == ft_strlen(delimetr)))
 	  	{
 			free(line);
+			close (fd);
 			break;
 	  	}
 
@@ -37,7 +38,7 @@ char	*read_heredoc(char *delimetr, int count) //TODO signals +freeing
 	printf("\n\nheredoc filename: %s\n", heredoc_filename);
 
 	//open tmp here doc file 
-	fd = open(heredoc_filename, O_RDWR | O_CREAT | O_EXCL, 0600); // O_EXCL: if file with same name exists error, 0600 access rights: only owner can access
+	fd = open(heredoc_filename, O_RDWR | O_CREAT | O_EXCL, 0666); // O_EXCL: if file with same name exists error, 0600 access rights: only owner can access
 	if (fd == -1)
 	{
 		free(heredoc_filename);

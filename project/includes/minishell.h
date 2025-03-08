@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 12:26:11 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 18:11:40 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 
 //---------- Macros ------------------
 
-volatile sig_atomic_t g_signal_status;
+extern volatile sig_atomic_t g_signal_status;
 
 
 //---------- Structs ------------------
@@ -129,9 +129,9 @@ char	*ret_value_env(char *key, t_env *envp);
 
 
 //redirections
-void	red_infile(char	*input_file);
-void	red_outfile(char *output_file, t_command *cmd);
-void	redirect(int fd, int fd_to_replace);
+int	red_infile(char	*input_file);
+int	red_outfile(char *output_file, t_command *cmd);
+int	redirect(int fd, int fd_to_replace);
 
 //single_builtin
 int		only_builtin(t_command *cmd_list, t_env *envp);

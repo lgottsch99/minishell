@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 12:29:07 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 18:37:51 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,12 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	printf("\n\nsize cmd list: %i\n\n", nr_cmd);
 
 	print_commands(cmd_list);
-	printf("\n\n\n");
+	printf("\n\n");
+
+	// printf("envp: %p\n", envp);
+	// printf("cmd : %p\n", cmd_list);
+	// printf("nr_cmd : %i\n", nr_cmd);
+
 
 	//check access of everything (files + cmds), creates paths, decides if builtin
 	if (check_access(cmd_list, nr_cmd, envp) != 0)
@@ -194,21 +199,32 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 			{
 				if (pipeline.nr_cmd > 1 && i > 0) //if not in first
 					close(pipeline.fd_pipe[i - 1][0]);
-
-				red_infile(tmp->heredoc_file);
+				
+				printf("cmd heredoc file: %s\n", tmp->heredoc_file);
+				if (red_infile(tmp->heredoc_file) == 1)
+				{
+					perror("redirection error: ");
+					free_everything_pipeline_exit(envp, &pipeline, 1);
+				}
+				
 				unlink(tmp->heredoc_file);
-				tmp->heredoc_file = NULL;
+
 				in = 1;
 				printf("heredoc redirected\n");
 
 			}
 			//check in/out file
-			if (tmp->input_file && in == 0) //no reading from previous pipe
+			else if (tmp->input_file && in == 0) //no reading from previous pipe
 			{
 				if (pipeline.nr_cmd > 1 && i > 0) //if not in first
 					close(pipeline.fd_pipe[i - 1][0]);
 				
-				red_infile(tmp->input_file);
+				if (red_infile(tmp->input_file) == 1)
+				{
+					perror("redirection error: ");
+					free_everything_pipeline_exit(envp, &pipeline, 1);
+				}
+
 				in = 1;
 				printf("infile redirected\n");
 			}
@@ -218,19 +234,33 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat) //wo
 					close(pipeline.fd_pipe[i][1]);
 
 				printf("outfile redirected\n");
-				red_outfile(tmp->output_file, tmp);
+				if (red_outfile(tmp->output_file, tmp) == 1)
+				{
+					perror("redirection error: ");
+					free_everything_pipeline_exit(envp, &pipeline, 1);
+				}
+
 				out = 1;
 			}
 			//redirect in/out to next pipe (if not already by file, file > pipe redirection)
 			if (in == 0 && i > 0) //redirect in to be read out end of prev pipe
 			{
-				redirect(pipeline.fd_pipe[i - 1][0], STDIN_FILENO);
+				if (redirect(pipeline.fd_pipe[i - 1][0], STDIN_FILENO) == 1)
+				{
+					perror("redirection error: ");
+					free_everything_pipeline_exit(envp, &pipeline, 1);
+				}
+ 
 				printf("input is prev pipe\n");
 			}
 			if (out == 0 && i < (pipeline.nr_cmd - 1))//redirect out to be write in end of current pipe
 			{
 				printf("output is pipe\n");
-				redirect(pipeline.fd_pipe[i][1], STDOUT_FILENO);
+				if (redirect(pipeline.fd_pipe[i][1], STDOUT_FILENO) == 1)
+				{
+					perror("redirection error: ");
+					free_everything_pipeline_exit(envp, &pipeline, 1);
+				}
 			}
 
 			//exec and leave process 

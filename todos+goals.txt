@@ -95,14 +95,36 @@ lilli;
 		
 
 questions + issues: 
+	- buitlitn | heredoc hanging
+
  	- freeing: include input, rl history etc in execution to free before exit
 	- cmd: export lilli="cool" doesnt recognize lilli="cool" as whole thing 
 		( you typed: export lilli="cool"
 		Token: export, Type: 0
 		Token: cool, Type: 0		
 		Token: (null), Type: 9)
-	-heredoc: 
+
+	- 	
+	- 	you typed: echo ""  -> possible to not create another arg for empty str?? would prevent a lot of work later ('' and "")
+		Token: echo, Type: 0
+		Token: , Type: 0
+		Token: (null), Type: 9
+
+	- ***miniShell***$ echo hi | cat << k --> sometimes weird tokens appearing in combination with here doc
+you typed: echo hi | cat << k
+Token: echo, Type: 0
+Token: hi, Type: 0
+Token: |, Type: 1
+Token: cat, Type: 0
+Token: <<, Type: 5
+Token: k, Type: 0
+Token: (, Type: 0
+Token: (null), Type: 9
+
 	-append mode:
-	-
+	-check fts not allowed
+	-check leaks in token. + parsing
+	- signals working? everywhere (single cmd, pipeline, builtins, not builtins, here doc)? no leaks?
+
 	
 
