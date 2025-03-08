@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+         #
+#    By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/02 14:43:32 by lgottsch          #+#    #+#              #
-#    Updated: 2025/02/27 12:31:03 by lgottsch         ###   ########.fr        #
+#    Updated: 2025/03/08 00:08:03 by Watanudon        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ SRC= 	$(addprefix $(SRC_FOLDER), \
 					./printf/pf_putchar.c ./printf/pf_putnbr.c \
 					./printf/ft_putnbr_base.c ./printf/pf_putstr.c \
 					./printf/ft_putuint.c \
-					./gnl/get_next_line.c ./gnl/get_next_line_utils.c )
+					./gnl/get_next_line.c ./gnl/get_next_line_utils.c ft_strcmp.c)
 									
 
 OBJ = $(SRC:.c=.o)

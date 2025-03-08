@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 17:58:46 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 12:26:11 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,13 @@ typedef struct s_pipeline {
 	t_command	*cmd_list;
 	int			nr_cmd;
 } t_pipeline;
+
+typedef struct s_single_red {
+	int og_in;
+	int og_out;
+	int red_in;		//if 0 no red happened, if 1 yes 
+	int red_out;
+} t_single_red; 
 
 //---------- functions ------------------
 

@@ -6,22 +6,20 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 12:12:58 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 17:55:58 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 00:25:00 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-
-
 void	red_infile(char	*input_file)
 {
 	int infile_fd;
 
-	if ((infile_fd = open(input_file, O_RDONLY)) == -1) //open infile
+	if ((infile_fd = open(input_file, O_RDONLY)) == -1)
 	{
 		perror("error open infile\n");
-		return; //???
+		return; //TO DO check if error code?
 	}
 	redirect(infile_fd, STDIN_FILENO);
 	close(infile_fd);

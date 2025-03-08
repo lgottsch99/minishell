@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 17:53:26 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 00:06:01 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,6 @@ int	main (int argc, char *argv[], char *envp[])
 			//handles redirections/pipes,
 			//decides if cmd is builtin or not etc and executes them
 			//special cases: $?, 
-		clean_heredoc(commands); 
 
 		//5. free everything needed TODO
 		free(input);

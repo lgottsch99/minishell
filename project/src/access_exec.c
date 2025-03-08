@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 14:10:24 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/07 23:57:36 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,9 +147,7 @@ char	*ret_value_env(char *key, t_env *envp)
 	tmp = envp;
 	//go thru list until we find key
 	while (ft_strncmp(tmp->key, key, ft_strlen(key)) != 0)
-	{
 		tmp = tmp->next;
-	}
 	//return value at node
 	if (tmp)
 		return ((char *)tmp->value);
@@ -159,6 +157,7 @@ char	*ret_value_env(char *key, t_env *envp)
 		return (NULL);
 	}
 }
+
 char	*extend_upper_dir(t_command *cmd) // ../
 {
 	char	*cwd;
@@ -268,7 +267,6 @@ void	check_path(t_command *cmd, t_env *envp) //TODO
 	}
 }
 
-
 int	count_env_size(t_env *envp)
 {
 	int		size;
@@ -308,29 +306,6 @@ char	*create_fullstr(t_env *node) //MALLOC
 	// printf("full: %s\n", joined);
 
 	free(equal);
-	// //get size of full
-	// fullsize = ft_strlen(node->key) + ft_strlen(node->value) + 2; //2 bc one = and one \0
-	// //malloc
-	// fullstr = (char *)malloc(sizeof(char) * fullsize);
-	// if (!fullstr)
-	// 	return (NULL);
-	// //copy key
-	// i = 0;
-	// while (i < (int)ft_strlen(node->key))
-	// {
-	// 	fullstr[i] = node->key[i];
-	// 	i++;
-	// }
-	// //copy =
-	// fullstr[i] = '=';
-	// i++;
-	// //copy value
-	// while (i < fullsize - 1)
-	// {
-	// 	fullstr[i] = node->value[i];
-	// 	i++;
-	// }
-	// fullstr[i] = '\0';
 	return (joined);
 }
 

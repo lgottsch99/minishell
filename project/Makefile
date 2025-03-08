@@ -6,7 +6,7 @@
 #    By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 15:57:29 by lgottsch          #+#    #+#              #
-#    Updated: 2025/03/07 17:18:15 by Watanudon        ###   ########.fr        #
+#    Updated: 2025/03/08 00:13:27 by Watanudon        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,8 @@ LDFLAGS = -L/opt/homebrew/opt/readline/lib -lreadline # -fsanitize=address
 
 SRC_FOLDER = ./src/
 SRC = $(addprefix $(SRC_FOLDER), main.c init_start.c builtins.c execution.c access_exec.c redirections.c \
-      single_builtin.c alloc_free_exec.c export.c unset.c parsing.c tokenising.c heredoc_helpers.c \
-      env_helpers.c signals_helpers.c)
+      single_builtin.c alloc_free_exec.c builtin_export.c builtin_unset.c parsing.c tokenising.c heredoc_helpers.c \
+      env_helpers.c signals_helpers.c builtin_echo.c builtin_exit.c)
 
 OBJ = $(SRC:.c=.o)
 

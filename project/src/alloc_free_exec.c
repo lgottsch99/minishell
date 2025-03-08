@@ -6,7 +6,7 @@
 /*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 18:33:09 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 12:22:54 by Watanudon        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,29 +112,16 @@ void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat)	
 
 	if (envp)
 		free_env_list(&envp);
-	printf("0\n");
-
 	if (pipeline->fd_pipe)
 		free_pipe_array(pipeline->fd_pipe, pipeline->nr_cmd);
-	printf("1\n");
-
 	if (pipeline->pid)
 		free(pipeline->pid);
-	printf("2\n");
-
 	if (pipeline->env_array)
 		free_2d_char(pipeline->env_array);
-	printf("3\n");
-
-	//free cmd_list if not statically alloced
 	if (pipeline->cmd_list)
 		free_cmd_list(&pipeline->cmd_list);
-	printf("freed pipe\n");
-
 	envp = NULL;
 	pipeline = NULL;
-				printf("now exiting\n");
-
 	exit(stat);
 }
 
@@ -162,26 +149,17 @@ void	free_cmd_list(t_command **cmd_list)
 		//printf("in loop freeing\n");
 		tmp = *cmd_list;
 		*cmd_list = (*cmd_list)->next;
-		// if (tmp->command)
-		// 	free(tmp->command);
 		if (tmp->args)
 			free_2d_char(tmp->args);
-		//printf("0\n");
 		if (tmp->heredoc_file)
 			unlink (tmp->heredoc_file);
 		if (tmp->input_file)
 			free(tmp->input_file);
-		//printf("1\n");
 		if (tmp->output_file)
 			free(tmp->output_file);
-		//printf("2\n");
-
 		if (tmp->exec_path)
 			free(tmp->exec_path);
-		//printf("3\n");
-
 		free(tmp);
-		//printf("4\n");
 		tmp = NULL;
 	}
 	*cmd_list = NULL;

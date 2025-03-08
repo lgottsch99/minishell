@@ -135,8 +135,7 @@ char	*get_value_only(char *arg)
 	return(value);
 }
 
-
-int	update_existing(t_env	*existing_var, char *arg)
+static int	update_existing(t_env	*existing_var, char *arg)
 {			//check if need to update
 			//update existing node
 
@@ -158,7 +157,7 @@ int	update_existing(t_env	*existing_var, char *arg)
 	return (0);
 }
 
-int	update_or_create_env(t_command *cmd, t_env *envp)
+static int	update_or_create_env(t_command *cmd, t_env *envp)
 {		//for each arg check: (all args valid at this point)
 		//1.if already exists
 			//if yes (get list node)
@@ -224,9 +223,7 @@ int	eexport(t_command *cmd, t_env *envp)
 	}
 	else
 		printf("sth wrong with cmd list or cmd args\n");
-	
 	return (exit_stat);
-
 }
 //SHELL VAR RULES:  A variable name could contain any alphabet (a-z, A-Z), any digits (0-9), and an underscore ( _ ). However, a variable name must start with an alphabet or underscore. It can never start with a number. 
 
