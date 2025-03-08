@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 18:11:09 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:25:30 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,20 @@ int	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline)
 }
 
 
-static void	init_io(t_single_red *io)
+static int	init_io(t_single_red *io)
 {
-	io->og_in = dup(STDIN_FILENO); //ADD PROTECT  TODO 
+	io->og_in = dup(STDIN_FILENO); //ADD PROTECT  TODO
+	if (io->og_in == -1)
+		return -1;
 	io->og_out = dup(STDOUT_FILENO); //SAME
+	if (io->og_out == -1)
+	{
+		close ( io->og_in);
+		return -1;
+	}
 	io->red_in = 0;
 	io->red_out = 0;
+	return 0;
 }
 
 int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
@@ -64,6 +72,8 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 		if (red_infile(cmd_list->heredoc_file) == 1)
 		{
 			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
 			return 1;
 		}
 
@@ -76,6 +86,8 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 		if (red_infile(cmd_list->input_file) == 1)
 		{
 			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
 			return 1;
 			//free + return ;
 		}
@@ -86,6 +98,8 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 		if (red_outfile(cmd_list->output_file, cmd_list) == 1)
 		{
 			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
 			return 1;
 			//free + return ;
 		}
@@ -98,27 +112,32 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 	// restore og fildes
 	if (io.red_in == 1)
 	{
+
 		if (redirect(io.og_in, STDIN_FILENO) == 1)
 		{
 			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
 			return 1;
 			//free + return ;
 		}
 	}
-
-	// else
-	// 	close(og_in);
+	//else
+	//close(io.og_in);
 	if (io.red_out == 1)
 	{
+	
 		if (redirect(io.og_out, STDOUT_FILENO) == 1)
 		{
 			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
 			return 1;
 			//free + return ;
 		}
 
 	}
-		// else
-	// 	close(og_out);
+	//else
+	//close(io.og_out);
 	return (exit_stat);
 }

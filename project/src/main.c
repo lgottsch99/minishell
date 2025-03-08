@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 16:49:23 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:06:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,11 @@ int	main (int argc, char *argv[], char *envp[])
 			return (1);
 		}
 		tokens = tokenize(input, exit_stat, env_array); //TO DO change envp to own environ
-		free_2d_char(env_array);//freeing env array
+		//freeing everything not needed from now 
+		free_2d_char(env_array);
+		free(input);
+		input = NULL;
+		
 		if (tokens)
 		{
 			print_tokens(tokens);	
@@ -109,20 +113,9 @@ int	main (int argc, char *argv[], char *envp[])
 					
 				current_command = current_command->next;
 			}
-			// if (commands)
-			// {
-			// 	if(commands->heredoc_delimetr)
-			// 		commands->heredoc_input = read_heredoc(commands->heredoc_delimetr);
-			// }
 			free_tokens(tokens);
 			tokens = NULL;	
 		}
-		
-		// while (*env_array)
-		// {
-		// 	free(*env_array);
-		// 	env_array++;
-		// }
 		
 		// parsing end ------------------------
 		printf("finished parsing\n");
@@ -133,8 +126,8 @@ int	main (int argc, char *argv[], char *envp[])
 			//special cases: $?, 
 
 		//5. free everything needed TODO
-		free(input);
-		input = NULL;
+		// free(input);
+		// input = NULL;
 
 		if (commands)
 		{
@@ -151,8 +144,7 @@ int	main (int argc, char *argv[], char *envp[])
 		free_cmd_list(&commands);
 		commands = NULL;
 	}
-
-	//rl_clear_history();	
+	rl_clear_history();
 	
 	return (exit_stat);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_start.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:43:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/07 14:04:38 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/08 19:09:04 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ void print_start(void)
 	printf(" ▄▀▀▀█▄██▀▐█▐▀▀▪▄██▪  ██▪      ██▪▐█▐▐▌▐▀▀▪▄\n");
 	printf(" ▐█▄▪▐███▌▐▀▐█▄▄▌▐█▌▐▌▐█▌▐▌    ▐█▌██▐█▌▐█▄▄▌\n");
 	printf("  ▀▀▀▀ ▀▀▀ · ▀▀▀ .▀▀▀ .▀▀▀      ▀▀▀▀ ▀▪ ▀▀▀  ??????\n");
-	//printf("\n");
-	//printf("Welcome to our minishell!\n");
 	printf("\n");
 	printf("\n");
 	return;
