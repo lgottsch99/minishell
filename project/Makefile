@@ -6,7 +6,7 @@
 #    By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/26 15:57:29 by lgottsch          #+#    #+#              #
-#    Updated: 2025/03/08 16:15:15 by lgottsch         ###   ########.fr        #
+#    Updated: 2025/03/09 16:49:54 by lgottsch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,7 +56,8 @@ CFMAC = -L /Users/$(USER)/.brew/opt/readline/lib
 SRC_FOLDER = ./src/
 SRC = $(addprefix $(SRC_FOLDER), main.c init_start.c builtins.c execution.c access_exec.c redirections.c \
       single_builtin.c alloc_free_exec.c builtin_export.c builtin_unset.c parsing.c tokenising.c heredoc_helpers.c \
-      env_helpers.c signals_helpers.c builtin_echo.c builtin_exit.c)
+      env_helpers.c signals_helpers.c builtin_echo.c builtin_exit.c pipeline_helpers.c child.c child_helpers.c child_redirection.c \
+	  env_setup.c)
 OBJ = $(SRC:.c=.o)
 
 $(NAME): libft

@@ -95,7 +95,7 @@ lilli;
 		
 
 questions + issues: 
-	-leaking fds
+	-leaking fds OK
 
 	- cmd: export lilli="cool" doesnt recognize lilli="cool" as whole thing 
 		( you typed: export lilli="cool"
@@ -122,5 +122,6 @@ questions + issues:
 		lgottsch@c1r8s3:~/core/minishell$
 
 
-	
+----------------------------------------------------------------------------------------
+
 

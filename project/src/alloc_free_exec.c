@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 18:51:02 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/09 14:15:20 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat)	
 		free_2d_char(pipeline->env_array);
 	if (pipeline->cmd_list)
 		free_cmd_list(&pipeline->cmd_list);
+	//exit stat?
+
 	rl_clear_history();
 	envp = NULL;
 	pipeline = NULL;

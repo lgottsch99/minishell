@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 18:11:40 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/09 17:13:51 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ typedef struct s_pipeline {
 	char		**env_array;
 	t_command	*cmd_list;
 	int			nr_cmd;
+	int			*exit_stat;
 } t_pipeline;
 
 typedef struct s_single_red {
@@ -98,11 +99,14 @@ typedef struct s_single_red {
 
 //00_init_start
 void	print_start(void);
-char	*add_shlvl(char *value);
 int		set_key_value(char *env_str,t_env *new_node, t_env *environ);
 void	add_env_back(t_env **environ, t_env *new_node);//add new node to end of list
 t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing shlvl by 1
 
+//env_setup
+int		shlvl(t_env	*new_node, t_env *environ);
+char	*add_shlvl(char *value);
+int		set_more(char **equal, char *envp, t_env *new_node, t_env *environ);
 
 //builtins
 int		print_env(t_env *environ);
@@ -111,10 +115,38 @@ int		pwd(void);
 int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline);
 int		cd(t_command *cmd_list, t_env *envp);
 int		get_num_args(char **args);
+int		run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline);
 
 
 //execution
 void	execute(t_env *envp, int *exit_stat, t_command *cmd_list);
+void	free_everything_malloced_pipe(t_pipeline *pipeline);
+void	pipeline_loop(t_pipeline *pipeline, t_env *envp);
+
+//pipeline helpers
+int 	get_nr_cmd(t_command *cmd_list);
+void	close_child_fds(t_pipeline *pipeline, int i);
+void	init_pipeline(t_pipeline *pipeline, int nr_cmd, t_command *cmd_list, int *exit_stat);
+void	create_pipes(t_pipeline *pipeline, t_env *envp);
+void	close_parent_fds(t_pipeline *pipeline);
+void	wait_children(t_pipeline *pipeline,t_env *envp);
+
+//child
+void	child_process(t_pipeline *pipeline, t_env *envp, int i, t_command *tmp);
+void	pipeline_builtin(t_pipeline *pipeline, t_command *tmp, int i, t_env *envp);
+void	pipeline_exec(t_pipeline *pipeline, t_command *tmp, t_env *envp);
+
+//child helpers
+void	close_not_needed_pipe(int i, t_pipeline *pipeline);
+void	child_redirection(t_command *tmp, int i, t_pipeline *pipeline, t_env *envp);
+
+//child redirection
+void	redirect_heredoc(t_pipeline *pipeline, int i, t_command *tmp, t_env *envp);
+void	red_pipeline_in(t_pipeline *pipeline, int i, t_command *tmp, t_env *envp);
+void	red_pipeline_out(t_pipeline *pipeline, int i, t_command *tmp, t_env *envp);
+void	red_pipeline_pipe_in(t_pipeline *pipeline, int i, t_env *envp);
+void	red_pipeline_pipe_out(t_pipeline *pipeline, int i, t_env *envp);
+
 
 //check_access_exec
 char 	**get_path(t_env *envp);
@@ -135,7 +167,6 @@ int	redirect(int fd, int fd_to_replace);
 
 //single_builtin
 int		only_builtin(t_command *cmd_list, t_env *envp);
-int		run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline);
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);

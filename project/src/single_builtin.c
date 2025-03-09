@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 19:25:30 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/09 13:55:17 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,6 @@
 */
 
 #include "../includes/minishell.h"
-
-int	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline)
-{
-	int exit_stat;
-
-	exit_stat = 0;
-	printf("choosing builtin ft\n");
-	
-	if (ft_strncmp(cmd_list->args[0], "env", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = print_env(envp);
-	else if (ft_strncmp(cmd_list->args[0], "echo", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = echo(cmd_list);
-	else if (ft_strncmp(cmd_list->args[0], "pwd", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = pwd();
-	else if (ft_strncmp(cmd_list->args[0], "exit", ft_strlen(cmd_list->args[0])) == 0)
-	 	exit_stat = exit_shell(cmd_list, envp, pipeline);
-	else if (ft_strncmp(cmd_list->args[0], "cd", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = cd(cmd_list, envp);
-	else if (ft_strncmp(cmd_list->args[0], "export", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = eexport(cmd_list, envp);
-	else if (ft_strncmp(cmd_list->args[0], "unset", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = unset(cmd_list, envp);
-	return (exit_stat);
-}
-
 
 static int	init_io(t_single_red *io)
 {
@@ -106,6 +81,12 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 
 		io.red_out = 1;
 	}
+	//if builtin is exit close fds
+	if (ft_strncmp(cmd_list->args[0], "exit", ft_strlen(cmd_list->args[0])) == 0)
+	{
+		close (io.og_in);
+		close (io.og_out);
+	}
 	//go to function and run
 	exit_stat = run_builtin(cmd_list, envp, NULL);
 
@@ -139,5 +120,7 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 	}
 	//else
 	//close(io.og_out);
+	close (io.og_in);
+	close (io.og_out);
 	return (exit_stat);
 }
