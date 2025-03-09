@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/02/27 16:49:40 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/08 16:57:32 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void	add_argument(t_command *command, char *arg)
 {
-	int	count;
+	int		count;
+	char	**new_args;
 	
 	count = 0;
 	if (command->args)
@@ -22,9 +23,10 @@ void	add_argument(t_command *command, char *arg)
 		while(command->args[count])
 			count++;
 	}
-	command->args = realloc(command->args, (count + 2) * sizeof(char *)); //TODO check ft if allowed
-	if (!command->args)
+	new_args = realloc(command->args, (count + 2) * sizeof(char *));
+	if (!new_args)
 		return;
+	command->args = new_args;
 	command->args[count] = arg;
 	command->args[count + 1] = NULL;
 }
@@ -51,13 +53,15 @@ t_command	*create_command()
 	cmd->append_mode = 0;
 	cmd->next = NULL;
 	cmd->is_builtin = 0;
-    cmd->heredoc_input = NULL;
+    cmd->heredoc_file = NULL;
     cmd->heredoc_delimetr = NULL;
+	cmd->exec_path = NULL;
 	return (cmd);
 }
 
 t_command	*parse_tokens(Token *tokens)
 {
+	printf("in parse token\n");
 	t_command	*head;
 	t_command	*current;
 	t_command	*command;
@@ -66,16 +70,28 @@ t_command	*parse_tokens(Token *tokens)
 	head = NULL;
 	current = NULL;
 	command = create_command();
+	if (!command)
+		return (NULL);
 	while(tokens)
 	{
 		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
         {
             command->heredoc_delimetr = ft_strdup(tokens->next->value);
-            tokens = tokens->next;
+            if (!command->heredoc_delimetr)
+			{
+				free_commands(head);
+				return (NULL);
+			}
+			tokens = tokens->next;
         }
         else if (tokens->type == TOKEN_WORD)
 		{
 			arg = ft_strdup(tokens->value);
+			if (!arg)
+			{
+				free_commands(head);
+				return(NULL);
+			}
 			add_argument(command, arg);
 			if (command->args[0] && is_builtin(command->args[0])) 
 				command->is_builtin = 1;
@@ -88,13 +104,23 @@ t_command	*parse_tokens(Token *tokens)
 				current->next = command;
 			current = command;
 			command = create_command();
+			if (!command)
+			{
+				free_commands(head);
+				return(NULL);
+			}
 		}
 		else if(tokens->type == TOKEN_REDIRECT_IN)
 		{
 			if (tokens->next && tokens->next->type == TOKEN_WORD)
 			{
 				command->input_file = ft_strdup(tokens->next->value);
- 				tokens = tokens->next;
+				if (!command->input_file)
+				{
+					free_commands(head);
+					return(NULL);
+				}
+				tokens = tokens->next;
 			}
 		}
 		else if(tokens->type == TOKEN_REDIRECT_OUT)
@@ -102,8 +128,26 @@ t_command	*parse_tokens(Token *tokens)
 			if (tokens->next && tokens->next->type == TOKEN_WORD)
 			{
 				command->output_file = ft_strdup(tokens->next->value);
+				if (!command->output_file)
+				{
+					free_commands(head);
+					return(NULL);
+				}
 				tokens = tokens->next;
 			}
+		}
+		else if(tokens->type == TOKEN_REDIRECT_APPEND)
+		{
+			if (tokens->next && tokens->next->type == TOKEN_WORD)
+			{
+				command->append_mode = 1;
+				command->output_file = ft_strdup(tokens->next->value);
+				if (!command->output_file)
+				{
+					free_commands(head);
+					return(NULL);
+				}
+				tokens = tokens->next;			}
 		}
 		tokens = tokens->next;
 	}
@@ -121,10 +165,14 @@ void	print_commands(t_command *commands) {
 
 		for (int i = 0; commands->args[i]; i++)	
 			printf("  Arg %d: %s\n", i, commands->args[i]);
-		//if (commands->input_file)
+		//	if (commands->input_file)
 		printf("  Input file: %s\n", commands->input_file);
 		//if (commands->output_file)
 		printf("  Output file: %s\n", commands->output_file);
+		//if (commands->heredoc_delimetr)
+			printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
+		if (commands->heredoc_file)
+			printf("Heredoc filename: %s\n", commands->heredoc_file);
 		if (commands->append_mode)
 			printf("  Append output: yes\n");
 		if (commands->is_builtin)
@@ -132,26 +180,39 @@ void	print_commands(t_command *commands) {
 		if (commands->exec_path)
 			printf("  exec path: %s\n", commands->exec_path);
 		commands = commands->next;
-		
+		printf("\n");
+
 	}
 }
 
 void	free_commands(t_command *commands)
 {
 	t_command	*tmp;
+	int			i;
 	while (commands)
 	{
 		tmp = commands;
 		commands = commands->next;
-		if (tmp->args){
-			for (int i = 0; tmp->args[i]; i++)
+		if (tmp->args)
+		{
+			i = 0;
+			while (tmp->args[i])
+			{
 				free(tmp->args[i]);
+				i++;
+			}
 			free(tmp->args);
 		}
 		if (tmp->input_file)
 			free(tmp->input_file);
 		if (tmp->output_file)
 			free(tmp->output_file);
+		if (tmp->heredoc_delimetr)
+			free(tmp->heredoc_delimetr);
+		if (tmp->heredoc_file)
+			free(tmp->heredoc_file);
+		if (tmp->exec_path)
+			free(tmp->exec_path);
 		free(tmp);
 	}
 }

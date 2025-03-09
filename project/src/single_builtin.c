@@ -6,24 +6,11 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/27 13:24:47 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:25:30 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
-typedef struct s_command {
-    char	*command;       // The command name (e.g., "echo", "grep")
-    char	**args;         // Array of arguments (NULL-terminated)
-    char	*input_file;    // File for input redirection (NULL if none)
-    char	*output_file;   // File for output redirection (NULL if none)
-    int		append_mode;     // 1 if output should be appended, 0 otherwise
-	//..more if needed:
-	char 	*exec_path; // NULL for parsing, execution: saves executable path in here
-	int		is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
-
-    struct s_command *next; // Pointer to the next command in a pipeline
-} t_command;
-
 */
 
 #include "../includes/minishell.h"
@@ -44,52 +31,113 @@ int	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline)
 	else if (ft_strncmp(cmd_list->args[0], "exit", ft_strlen(cmd_list->args[0])) == 0)
 	 	exit_stat = exit_shell(cmd_list, envp, pipeline);
 	else if (ft_strncmp(cmd_list->args[0], "cd", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = cd(cmd_list);
+		exit_stat = cd(cmd_list, envp);
 	else if (ft_strncmp(cmd_list->args[0], "export", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = eexport(cmd_list, envp);
 	else if (ft_strncmp(cmd_list->args[0], "unset", ft_strlen(cmd_list->args[0])) == 0)
 		exit_stat = unset(cmd_list, envp);
-
 	return (exit_stat);
+}
+
+
+static int	init_io(t_single_red *io)
+{
+	io->og_in = dup(STDIN_FILENO); //ADD PROTECT  TODO
+	if (io->og_in == -1)
+		return -1;
+	io->og_out = dup(STDOUT_FILENO); //SAME
+	if (io->og_out == -1)
+	{
+		close ( io->og_in);
+		return -1;
+	}
+	io->red_in = 0;
+	io->red_out = 0;
+	return 0;
 }
 
 int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 {
 	printf("running single builtin\n");
-	int og_in;
-	int og_out;
-	int red_in;		//if 0 no red happened, if 1 yes 
-	int red_out;	//same
-	int exit_stat;
+	
+	t_single_red	io;
+	int 			exit_stat;
 
-	og_in = dup(STDIN_FILENO); //ADD PROTECT 
-	og_out = dup(STDOUT_FILENO); //SAME
-	red_in = 0;
-	red_out = 0;
+	init_io(&io);
 	exit_stat = 0;
 	
 	// redirect if needed
-	if (cmd_list->input_file)
+	if (cmd_list->heredoc_file)
 	{
-		red_infile(cmd_list->input_file);
-		red_in = 1;
+		if (red_infile(cmd_list->heredoc_file) == 1)
+		{
+			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
+			return 1;
+		}
+
+		//unlink (cmd_list->heredoc_file);
+		cmd_list->heredoc_file = NULL;
+		io.red_in = 1;
+	}
+	else if (cmd_list->input_file && io.red_in == 0)
+	{
+		if (red_infile(cmd_list->input_file) == 1)
+		{
+			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
+			return 1;
+			//free + return ;
+		}
+		io.red_in = 1;
 	}
 	if (cmd_list->output_file)
 	{
-		red_outfile(cmd_list->output_file, cmd_list);
-		red_out = 1;
+		if (red_outfile(cmd_list->output_file, cmd_list) == 1)
+		{
+			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
+			return 1;
+			//free + return ;
+		}
+
+		io.red_out = 1;
 	}
 	//go to function and run
-		exit_stat = run_builtin(cmd_list, envp, NULL);
+	exit_stat = run_builtin(cmd_list, envp, NULL);
 
 	// restore og fildes
-	if (red_in == 1)
-		redirect(og_in, STDIN_FILENO);
-	// else
-	// 	close(og_in);
-	if (red_out == 1)
-		redirect(og_out, STDOUT_FILENO);
-	// else
-	// 	close(og_out);
+	if (io.red_in == 1)
+	{
+
+		if (redirect(io.og_in, STDIN_FILENO) == 1)
+		{
+			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
+			return 1;
+			//free + return ;
+		}
+	}
+	//else
+	//close(io.og_in);
+	if (io.red_out == 1)
+	{
+	
+		if (redirect(io.og_out, STDOUT_FILENO) == 1)
+		{
+			perror("redirection error: ");
+			close (io.og_in);
+			close (io.og_out);
+			return 1;
+			//free + return ;
+		}
+
+	}
+	//else
+	//close(io.og_out);
 	return (exit_stat);
 }

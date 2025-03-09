@@ -6,27 +6,29 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 12:12:58 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/02/03 16:26:44 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/08 17:40:13 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	red_infile(char	*input_file)
+int	red_infile(char	*input_file)
 {
 	int infile_fd;
 
-	if ((infile_fd = open(input_file, O_RDONLY)) == -1) //open infile
+	if ((infile_fd = open(input_file, O_RDONLY)) == -1)
 	{
 		perror("error open infile\n");
-		return; //???
+		return 1; //TO DO check if error code?
 	}
-	redirect(infile_fd, STDIN_FILENO);
+	if (redirect(infile_fd, STDIN_FILENO) == 1)
+		return 1;
 	close(infile_fd);
+	return 0;
 }
 
 
-void	red_outfile(char *output_file, t_command *cmd)
+int	red_outfile(char *output_file, t_command *cmd)
 {
 	int outfile_fd;
 
@@ -36,7 +38,7 @@ void	red_outfile(char *output_file, t_command *cmd)
 		if ((outfile_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1)
 		{
 			perror("error open outfile\n");
-			return;
+			return 1;
 		}
 	}
 	//open outfile or create (>>), append
@@ -45,20 +47,22 @@ void	red_outfile(char *output_file, t_command *cmd)
 		if ((outfile_fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR)) == -1)
 		{
 			perror("error open outfile\n");
-			return;
+			return 1;
 		}
 	}
-	redirect(outfile_fd, STDOUT_FILENO);
+	if (redirect(outfile_fd, STDOUT_FILENO) == 1)
+		return 1;
 	close(outfile_fd);
+	return 0;
 }
 
-void	redirect(int fd, int fd_to_replace)
+int	redirect(int fd, int fd_to_replace)
 {
 	if((dup2(fd, fd_to_replace)) == -1)
 	{
 		perror("error dup2\n");
-		return;
+		return 1;
 	}
-	return;
+	return 0;
 }
 
