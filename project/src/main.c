@@ -92,7 +92,7 @@ int	main (int argc, char *argv[], char *envp[])
 		
 		if (tokens)
 		{
-			//print_tokens(tokens);	
+			print_tokens(tokens);	
 			commands = parse_tokens(tokens);
 
 			//go thru cmd list and check for each cmd: 
