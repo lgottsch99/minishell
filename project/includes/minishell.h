@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/11 18:44:41 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/11 20:05:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,10 +113,13 @@ int		set_more(char **equal, char *envp, t_env *new_node, t_env *environ);
 int		print_env(t_env *environ);
 int		echo(t_command *cmd_list);
 int		pwd(void);
-int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline);
+// int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline);
+int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline, int *exit_stat); //TODO double check valgrind
+
 int		cd(t_command *cmd_list, t_env *envp);
 int		get_num_args(char **args);
-int		run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline);
+// int		run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline);
+void	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline, int *exit_stat);
 
 
 //execution
@@ -167,7 +170,9 @@ int	red_outfile(char *output_file, t_command *cmd);
 int	redirect(int fd, int fd_to_replace);
 
 //single_builtin
-int		only_builtin(t_command *cmd_list, t_env *envp);
+// int		only_builtin(t_command *cmd_list, t_env *envp);
+void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat); //no need to fork + pipe
+
 
 //alloc_free_exec
 void	free_2d_array(int **fd_pipe, int size);

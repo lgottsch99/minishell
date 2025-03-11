@@ -134,7 +134,13 @@ tokenizing?parsing:
 exec:
 	/usr/bin/ls nees to work same as ls Ok
 	/usr/bin/ls -l same as ls -l OK 
+	complex relative path: /../../.. OK
 	?switch access X OK path logic to after getting the path. not in get_exec_path
-	return values needed to be same as bash??
+	
+	TO DO return values needed to be same as bash??: 
+		mostly ok but TODO: check i/o redirection errors
 
-	complex relative path: /../../..
+	exit : arg + exit stat OK
+	
+	TO DO input like <<<<<<<<<<< or ||||| etc -> crash !!! handle in execution
+

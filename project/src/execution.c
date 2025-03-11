@@ -22,7 +22,7 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	nr_cmd = get_nr_cmd(cmd_list);
 	printf("\n\nsize cmd list: %i\n\n", nr_cmd);
 
-	print_commands(cmd_list);
+	//print_commands(cmd_list);
 	printf("\n\n");
 	//check access of everything (files + cmds), creates paths, decides if builtin
 	if (check_access(cmd_list, nr_cmd, envp, exit_stat) != 0)
@@ -34,7 +34,8 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	
 	//SPECIAL CASE nur ein cmd + builtin: dann kein fork!
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
-		*exit_stat = only_builtin(cmd_list, envp);
+		only_builtin(cmd_list, envp, exit_stat);
+		// *exit_stat = only_builtin(cmd_list, envp);
 	// set up pipes (if cmd is builtin they are forked as well, but might have no effect on the main shell p)
 	else
 		pipeline(cmd_list, nr_cmd, envp, exit_stat);

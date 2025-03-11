@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/09 13:55:17 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/11 19:37:15 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,20 @@ static int	init_io(t_single_red *io)
 	return 0;
 }
 
-int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
+void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat) //no need to fork + pipe
 {
 	printf("running single builtin\n");
 	
 	t_single_red	io;
-	int 			exit_stat;
+	//int 			exit_stat;
 
-	init_io(&io);
-	exit_stat = 0;
+	if (init_io(&io)!= 0)
+	{
+		perror("duplicating fd error: ");
+		*exit_stat = 1;
+		return ;
+	}
+	//exit_stat = 0;
 	
 	// redirect if needed
 	if (cmd_list->heredoc_file)
@@ -49,7 +54,8 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 			perror("redirection error: ");
 			close (io.og_in);
 			close (io.og_out);
-			return 1;
+			*exit_stat = 1;
+			return ;
 		}
 
 		//unlink (cmd_list->heredoc_file);
@@ -63,8 +69,8 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 			perror("redirection error: ");
 			close (io.og_in);
 			close (io.og_out);
-			return 1;
-			//free + return ;
+			*exit_stat = 1;
+			return ;
 		}
 		io.red_in = 1;
 	}
@@ -75,8 +81,8 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 			perror("redirection error: ");
 			close (io.og_in);
 			close (io.og_out);
-			return 1;
-			//free + return ;
+			*exit_stat = 1;
+			return;
 		}
 
 		io.red_out = 1;
@@ -88,8 +94,9 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 		close (io.og_out);
 	}
 	//go to function and run
-	exit_stat = run_builtin(cmd_list, envp, NULL);
-
+	// exit_stat = run_builtin(cmd_list, envp, NULL, exit_stat);
+	run_builtin(cmd_list, envp, NULL, exit_stat);
+	
 	// restore og fildes
 	if (io.red_in == 1)
 	{
@@ -99,7 +106,8 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 			perror("redirection error: ");
 			close (io.og_in);
 			close (io.og_out);
-			return 1;
+			*exit_stat = 1;
+			return;
 			//free + return ;
 		}
 	}
@@ -113,7 +121,8 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 			perror("redirection error: ");
 			close (io.og_in);
 			close (io.og_out);
-			return 1;
+			*exit_stat = 1;
+			return;
 			//free + return ;
 		}
 
@@ -122,5 +131,5 @@ int	only_builtin(t_command *cmd_list, t_env *envp) //no need to fork + pipe
 	//close(io.og_out);
 	close (io.og_in);
 	close (io.og_out);
-	return (exit_stat);
+	//return (exit_stat);
 }

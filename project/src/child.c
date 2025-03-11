@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 14:05:26 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/09 16:38:41 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/11 21:02:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	pipeline_builtin(t_pipeline *pipeline, t_command *tmp, int i, t_env *envp)
 		printf("clsoing fds before exit\n");
 		close_child_fds(pipeline, i);
 	}
-	*pipeline->exit_stat = run_builtin(tmp, envp, pipeline); //return 0 or error nr?
-			
+	run_builtin(tmp, envp, pipeline, pipeline->exit_stat); //return 0 or error nr?
+	//*pipeline->exit_stat = run_builtin(tmp, envp, pipeline		
 	//close open fds
 	close_child_fds(pipeline, i);
 
@@ -67,7 +67,7 @@ void	pipeline_exec(t_pipeline *pipeline, t_command *tmp, t_env *envp)
 	}
 	
 	printf("converted env to array\n");
-	print_commands(tmp);//remove
+	//print_commands(tmp);//remove
 	if(execve(tmp->exec_path, tmp->args, pipeline->env_array) == -1) //execve closing open fds? - yes
 	{
 		perror("execve: \n");

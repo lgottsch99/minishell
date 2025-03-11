@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/09 13:54:50 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/11 19:49:21 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,28 @@ typedef struct s_env {
 
 #include "../includes/minishell.h"
 
-int	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline)
+void	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline, int *exit_stat)
 {
-	int exit_stat;
+	// int exit_stat;
 
-	exit_stat = 0;
+	// exit_stat = 0;
 	printf("choosing builtin ft\n");
 	
 	if (ft_strncmp(cmd_list->args[0], "env", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = print_env(envp);
+		*exit_stat = print_env(envp);
 	else if (ft_strncmp(cmd_list->args[0], "echo", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = echo(cmd_list);
+		*exit_stat = echo(cmd_list);
 	else if (ft_strncmp(cmd_list->args[0], "pwd", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = pwd();
+		*exit_stat = pwd();
 	else if (ft_strncmp(cmd_list->args[0], "exit", ft_strlen(cmd_list->args[0])) == 0)
-	 	exit_stat = exit_shell(cmd_list, envp, pipeline);
+	 	*exit_stat = exit_shell(cmd_list, envp, pipeline, exit_stat);
 	else if (ft_strncmp(cmd_list->args[0], "cd", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = cd(cmd_list, envp);
+		*exit_stat = cd(cmd_list, envp);
 	else if (ft_strncmp(cmd_list->args[0], "export", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = eexport(cmd_list, envp);
+		*exit_stat = eexport(cmd_list, envp);
 	else if (ft_strncmp(cmd_list->args[0], "unset", ft_strlen(cmd_list->args[0])) == 0)
-		exit_stat = unset(cmd_list, envp);
-	return (exit_stat);
+		*exit_stat = unset(cmd_list, envp);
+	//return (exit_stat);
 }
 
 int	print_env(t_env *environ)
