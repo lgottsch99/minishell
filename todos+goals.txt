@@ -123,5 +123,18 @@ questions + issues:
 
 
 ----------------------------------------------------------------------------------------
+tokenizing?parsing:  
+	need to implement syntax errors?? like: "ls < > "
+	need more safety checks:
+		check if input only space 
+		or empty commands(enter)OK 
+		or empty "" 					 if any yes just return to next loop iteration
+		input like . or .. only?
 
+exec:
+	/usr/bin/ls nees to work same as ls Ok
+	/usr/bin/ls -l same as ls -l OK 
+	?switch access X OK path logic to after getting the path. not in get_exec_path
+	return values needed to be same as bash??
 
+	complex relative path: /../../..

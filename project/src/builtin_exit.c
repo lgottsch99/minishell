@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:07:51 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 19:07:54 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/11 19:26:13 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,14 @@ int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline) //TODO double 
 
 	printf("exit\n"); //bash prints exit 
 	num_args = get_num_args(cmd->args);
-	if (num_args == 1)//only exit but no args
+	if (num_args == 1)//only exit but no args OK
 		only_exit(cmd, envp, pipeline);
+
+
+
+	//TODO check bash behavior
+	
+	
 	else if (num_args == 2) //if only one: exit with nr 
 	{
 		if (exit_with_nr(cmd, envp, pipeline) == 1)

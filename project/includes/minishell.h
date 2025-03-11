@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/09 17:13:51 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/11 18:44:41 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ typedef struct s_single_red {
 	int red_out;
 } t_single_red; 
 
+
 //---------- functions ------------------
 
 //main.c
@@ -153,7 +154,7 @@ char 	**get_path(t_env *envp);
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
 int		check_files(t_command *cmd);
-int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp);
+int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat);//ret 1 if access denied, 0 if ok
 void	check_path(t_command	*cmd, t_env *envp);
 char	**convert_env_array(t_env *envp, t_pipeline *pipeline); //The envp array must be terminated by a NULL pointer.
 int		count_env_size(t_env *envp);
@@ -179,7 +180,7 @@ void	free_cmd_list(t_command **cmd_list);
 void	free_pipe_array(int **fd_pipe, int nr_cmd);
 
 //export.c
-int	eexport(t_command *cmd, t_env *envp);
+int		eexport(t_command *cmd, t_env *envp);
 t_env	*check_existing_env(char *arg_name,  t_env *envp);
 
 //unset.c

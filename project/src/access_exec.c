@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 16:50:28 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/11 19:08:41 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char *get_exec_path(char *cmd, char **path)
 {
-	//printf("in get exec path \n");
+	printf("in get exec path \n");
 
     char *tmp;
     char *commandpath; //zb /usr/bin/ls
@@ -34,46 +34,32 @@ char *get_exec_path(char *cmd, char **path)
     return(NULL);
 }
 
-int	check_builtin(char *cmd) //ret 1 if yes, 0 if no
-{	//int	ft_strncmp(const char *s1, const char *s2, size_t n) //ret 0 if the same
+// int	check_builtin(char *cmd) //ret 1 if yes, 0 if no
+// {	//int	ft_strncmp(const char *s1, const char *s2, size_t n) //ret 0 if the same
 	
-	if ((ft_strncmp(cmd, "echo", 4) == 0) && ft_strlen(cmd) == 4) //dont want to treat echooo as same as echo!
-		return (1);
-	if ((ft_strncmp(cmd, "cd", 2) == 0) && ft_strlen(cmd) == 2)
-		return (1);
-	if ((ft_strncmp(cmd, "pwd", 3) == 0) && ft_strlen(cmd) == 3)
-		return (1);
-	if ((ft_strncmp(cmd, "export", 6) == 0) && ft_strlen(cmd) == 6)
-		return (1);
-	if ((ft_strncmp(cmd, "unset", 5) == 0) && ft_strlen(cmd) == 5)
-		return (1);
-	if ((ft_strncmp(cmd, "env", 3) == 0) && ft_strlen(cmd) == 3)
-		return (1);
-	if ((ft_strncmp(cmd, "exit", 4) == 0) && ft_strlen(cmd) == 4)
-		return (1);
-	return (0);
-}
+// 	if ((ft_strncmp(cmd, "echo", 4) == 0) && ft_strlen(cmd) == 4) //dont want to treat echooo as same as echo!
+// 		return (1);
+// 	if ((ft_strncmp(cmd, "cd", 2) == 0) && ft_strlen(cmd) == 2)
+// 		return (1);
+// 	if ((ft_strncmp(cmd, "pwd", 3) == 0) && ft_strlen(cmd) == 3)
+// 		return (1);
+// 	if ((ft_strncmp(cmd, "export", 6) == 0) && ft_strlen(cmd) == 6)
+// 		return (1);
+// 	if ((ft_strncmp(cmd, "unset", 5) == 0) && ft_strlen(cmd) == 5)
+// 		return (1);
+// 	if ((ft_strncmp(cmd, "env", 3) == 0) && ft_strlen(cmd) == 3)
+// 		return (1);
+// 	if ((ft_strncmp(cmd, "exit", 4) == 0) && ft_strlen(cmd) == 4)
+// 		return (1);
+// 	return (0);
+// }
 
-/*
-typedef struct s_command {
-    char	*command;       // The command name (e.g., "echo", "grep")
-    char	**args;         // Array of arguments (NULL-terminated)
-    char	*input_file;    // File for input redirection (NULL if none)
-    char	*output_file;   // File for output redirection (NULL if none)
-    int		append_mode;     // 1 if output should be appended, 0 otherwise
-	//..more if needed:
-	char 	*exec_path; // NULL for parsing, execution: saves executable path in here
-	int		is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
-
-    struct s_command *next; // Pointer to the next command in a pipeline
-} t_command;
-*/
 
 int	check_files(t_command *cmd) //ret 1 if denied, 0 if ok
 {
 	int	infile;
 
-	//printf("in check files\n");
+	printf("in check files\n");
 	
 	infile = 1;
 
@@ -94,7 +80,7 @@ int	check_files(t_command *cmd) //ret 1 if denied, 0 if ok
 	return (infile);
 }
 
-int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access denied, 0 if ok
+int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat)//ret 1 if access denied, 0 if ok
 {
 	printf("in check access \n");
 
@@ -109,7 +95,8 @@ int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access 
 		//builtin = 0;
 		//CHECK IF CMD IS BUILTIN
 		//builtin = check_builtin(tmp->command);
-		//IF NOT BUILTIN:
+		
+		//IF NOT BUILTIN get path
 		if (tmp->is_builtin == 0)
 			check_path(tmp, envp);
 		else if (tmp->is_builtin == 1 && tmp->args[0])
@@ -118,6 +105,7 @@ int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access 
 		if (!tmp->exec_path && tmp->is_builtin == 0) //cmd not found
 		{
 			printf("minishell error: cant find command\n");
+			*exit_stat = 127;
 			return (1);
 		}
 		if (tmp->is_builtin == 0 && (!tmp->exec_path || access(tmp->exec_path, X_OK) != 0))//check executability of path
@@ -140,22 +128,24 @@ int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access 
 
 char	*ret_value_env(char *key, t_env *envp)
 {
-	//printf("searching env\n");
+	printf("searching env\n");
+	printf("key: %s\n", key);
 	
 	t_env	*tmp;
 
+	if (!key || !envp)
+		return NULL;
+
 	tmp = envp;
 	//go thru list until we find key
-	while (ft_strncmp(tmp->key, key, ft_strlen(key)) != 0)
-		tmp = tmp->next;
-	//return value at node
-	if (tmp)
-		return ((char *)tmp->value);
-	else
+	while (tmp)
 	{
-		printf("no key in env found\n");
-		return (NULL);
+		if (ft_strncmp(tmp->key, key, ft_strlen(key)) == 0)
+			return ((char *)tmp->value);	
+		tmp = tmp->next;
 	}
+	printf("no key in env found\n");
+	return (NULL);
 }
 
 char	*extend_upper_dir(t_command *cmd) // ../
@@ -221,9 +211,8 @@ char	*extend_current_dir(t_command *cmd) // ./
 	//substr to get rid of .
 	sub = ft_substr(cmd->args[0], 1, ft_strlen(cmd->args[0]) - 1);
 	if (!sub)
-	{
 		return (NULL);
-	}
+
 	printf("sub: %s\n", sub);
 	//strjoin
 	joined = ft_strjoin(cwd, sub);
@@ -233,14 +222,54 @@ char	*extend_current_dir(t_command *cmd) // ./
 }
 
 
+
+int	check_absolute(t_command *cmd)
+{	//1. check if absolute path (no . or .. and starting with /
+		//rules: start with / and only / or alphanumeric
+	int		i;
+	char	*dup;
+
+	dup = NULL;
+	i = 0;
+	if (cmd->args[0][0] == '/')
+	{
+		// printf("first is /\n");
+		//go thru whole str and check if rest only / and alphanumeric
+		while (cmd->args[0][i])
+		{
+			// printf("in loop\n");
+			if (cmd->args[0][i] == '/' || ft_isalnum(cmd->args[0][i]) == 1)
+				i++;
+			else
+				break;
+		}
+		// printf("strlen cmd arg 0: %i\n", (int)ft_strlen(cmd->args[0]));
+		// printf("i from loop: %i\n", i);
+		if ((int)ft_strlen(cmd->args[0]) == i)//went thru whole str all absolute
+		{
+			dup = ft_strdup(cmd->args[0]);
+			if (!dup)
+				return (1);
+			cmd->exec_path = dup;
+			return (0);
+		}
+	}
+	return (1);
+}
+
+
+
+
 void	check_path(t_command *cmd, t_env *envp) //TODO
 {
-	//printf("in check path \n");
+	printf("in check path \n");
 
 	char	*fullpath; //whole path from envp
 	char	*exec_path; //path that can be exec
 	char	**paths;
-	
+	char	*dup;
+
+	dup = NULL;
 	//0. check if ./ or ../
 	if (cmd->args[0][0] == '.' && cmd->args[0][1] == '.' && cmd->args[0][2] == '/') // ../
 	{		printf("extending ../ \n");
@@ -253,10 +282,18 @@ void	check_path(t_command *cmd, t_env *envp) //TODO
 		printf("exec path: %s\n", cmd->exec_path);
 		return;
 	}
+	if (cmd->args[0][0] == '/')
+	{
+		dup = ft_strdup(cmd->args[0]);
+		cmd->exec_path = dup;
+	}
 	else
 	{
 		//1. get whole path from env
 		fullpath = ret_value_env("PATH", envp);
+		
+		if (!fullpath) //env PATH was unset
+			return;
 		printf("fullpath: %s\n", fullpath);
 		paths = ft_split(fullpath, ':');
 		//2. get executable path if cmd not builtin
@@ -266,6 +303,7 @@ void	check_path(t_command *cmd, t_env *envp) //TODO
 		cmd->exec_path = exec_path;
 	}
 }
+
 
 int	count_env_size(t_env *envp)
 {
@@ -285,6 +323,7 @@ int	count_env_size(t_env *envp)
 	}
 	return (size);
 }
+
 
 char	*create_fullstr(t_env *node) //MALLOC
 {
@@ -352,3 +391,6 @@ char **convert_env_array(t_env *envp, t_pipeline *pipeline) //The envp array mus
 
 	return (array);
 }
+
+
+

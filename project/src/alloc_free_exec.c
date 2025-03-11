@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/09 14:15:20 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/11 18:34:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,12 +133,13 @@ void	free_2d_char(char **array)
 	int	i;
 
 	i = 0;
-	while(array[i])
+	while (array[i])
 	{
 		free(array[i]);
 		i++;
 	}
-	free(array);
+	if (array)
+		free(array);
 	array = NULL;
 }
 
@@ -169,3 +170,5 @@ void	free_cmd_list(t_command **cmd_list)
 	}
 	*cmd_list = NULL;
 }
+
+

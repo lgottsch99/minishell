@@ -25,10 +25,9 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	print_commands(cmd_list);
 	printf("\n\n");
 	//check access of everything (files + cmds), creates paths, decides if builtin
-	if (check_access(cmd_list, nr_cmd, envp) != 0)
+	if (check_access(cmd_list, nr_cmd, envp, exit_stat) != 0)
 	{
 		printf("access error\n");
-		*exit_stat = 1;
 		return;
 	}
 	printf("access ok\n");
