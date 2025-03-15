@@ -12,9 +12,6 @@
 
 #include "../includes/minishell.h"
 
-void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat); //works for 2 -> n cmds 
-
-
 void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 {
 	int	nr_cmd;

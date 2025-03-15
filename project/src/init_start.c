@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:43:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/09 17:15:44 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/15 17:23:15 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	set_key_value(char *env_str, t_env *new_node, t_env *environ) // = in str
 	char	*value;
 	char	*trimmed;
 	int		index_first;
-
 	//split by =
 	index_first = 0;
 	while (env_str[index_first] != '=')

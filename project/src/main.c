@@ -6,13 +6,31 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 19:06:53 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/15 17:41:21 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
 volatile sig_atomic_t g_signal_status = 0;
+
+
+int init_shell(t_env **environ, char *envp[])
+{
+	print_start();
+	//set up env (SHLVL increases from std.!)
+	*environ = set_env(envp); //MALLOC
+	if (!environ)
+	{
+		printf("Failed to set up Environment\n");
+		return (1);
+	}
+	//print_env(environ);
+
+	setup_signals();
+	return (0);
+}
+
 
 int	main (int argc, char *argv[], char *envp[])
 {
@@ -34,18 +52,9 @@ int	main (int argc, char *argv[], char *envp[])
 	}
 
 	//1. load config files, init etc
-	print_start();
-
-	//set up env (SHLVL increases from std.!)
-	environ = set_env(envp); //MALLOC
-	if (!environ)
-	{
-		printf("Failed to set up Environment\n");
+	if (init_shell(&environ, envp) == 1)
 		return (1);
-	}
-	//print_env(environ);
 
-	setup_signals();
 
 	//2. main loop
 	while (1)
@@ -76,12 +85,13 @@ int	main (int argc, char *argv[], char *envp[])
 		
 		//check if heredoc, if yes separate readline TODO 
 
-		//3. parse (and create AST), ------------------------
+		//3. parse ------------------------
 		env_array = env_to_array(environ);
 		if (!env_array)
 		{
 			free(input);
 			free_env_list(&environ);
+			rl_clear_history();
 			return (1);
 		}
 		tokens = tokenize(input, exit_stat, env_array); //TO DO change envp to own environ
@@ -119,11 +129,9 @@ int	main (int argc, char *argv[], char *envp[])
 		
 		// parsing end ------------------------
 		printf("finished parsing\n");
+		
+		//4. execute
 		execute(environ, &exit_stat, commands);
-			//creates processes, 
-			//handles redirections/pipes,
-			//decides if cmd is builtin or not etc and executes them
-			//special cases: $?, 
 
 		//5. free everything needed TODO
 		// free(input);
@@ -136,15 +144,15 @@ int	main (int argc, char *argv[], char *envp[])
 		}
 
 	}
-	//6 shutdown shell (also after signal)
-	if (environ)
-		free_env_list(&environ);
-	if (commands)
-	{
-		free_cmd_list(&commands);
-		commands = NULL;
-	}
-	rl_clear_history();
+	//6 shutdown shell (also after signal) DO WE EVER ENTER AFTER MAIN LOOP?
+	// if (environ)
+	// 	free_env_list(&environ);
+	// if (commands)
+	// {
+	// 	free_cmd_list(&commands);
+	// 	commands = NULL;
+	// }
+	// rl_clear_history();
 	
-	return (exit_stat);
+	// return (exit_stat);
 }

@@ -137,10 +137,9 @@ exec:
 	complex relative path: /../../.. OK
 	?switch access X OK path logic to after getting the path. not in get_exec_path
 	
+	exit : arg + exit stat OK
+	input like <<<<<<<<<<< or ||||| etc -> crash !!! handle in execution OK
+
 	TO DO return values needed to be same as bash??: 
 		mostly ok but TODO: check i/o redirection errors
-
-	exit : arg + exit stat OK
 	
-	TO DO input like <<<<<<<<<<< or ||||| etc -> crash !!! handle in execution
-

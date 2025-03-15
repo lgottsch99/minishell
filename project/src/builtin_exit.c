@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:07:51 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/11 20:35:48 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/15 17:23:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ void	exit_one_arg(t_command *cmd, t_env *envp, t_pipeline *pipeline)
 		else
 		{
 			free_rest(cmd, envp);
+			rl_clear_history();
 			exit(2);
 		}
 	}
@@ -129,6 +130,7 @@ void	exit_one_arg(t_command *cmd, t_env *envp, t_pipeline *pipeline)
 		else
 		{
 			free_rest(cmd, envp);
+			rl_clear_history();
 			exit(stat);
 		}
 	}
@@ -162,6 +164,7 @@ void	many_args(t_command *cmd, t_env *envp, t_pipeline *pipeline)
 		else
 		{
 			free_rest(cmd, envp);
+			rl_clear_history();
 			exit(2);
 		}	
 	}

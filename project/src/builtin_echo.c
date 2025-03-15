@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 16:29:09 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 17:07:07 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/15 16:27:32 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,43 +58,65 @@ static int echo_with_n(t_command *cmd_list, int num_args)
 	return (0);
 }
 
+int	do_echo(t_command *cmd_list, int num_args)
+{
+	//check if -n or not 
+	if (ft_strncmp(cmd_list->args[1], "-n", ft_strlen(cmd_list->args[1])) == 0)
+	{
+		printf(" echo with -n\n");
+
+		if (echo_with_n(cmd_list, num_args) == 1)
+			return (1);
+	}
+	else //print all other args starting at indx 1
+	{
+		if (print_args(cmd_list->args, 1) == 1)
+			return (1);
+		if (printf("\n") < 0) //INCL NL
+			return (1);
+	}
+	return (0);
+}
+
 int	echo(t_command *cmd_list)
 {
 	//printf("in echo\n");
 	int num_args;
 
 	num_args = get_num_args(cmd_list->args);
-	if (num_args <= 1) //only echo
+	if (num_args <= 1 || (cmd_list->args && cmd_list->args[1] && cmd_list->args[1][0] == '\0')) //only echo
 	{
 		printf("only echo\n");
 		if (printf("\n") < 0)
 			return (1);
 	}
-	else if (cmd_list->args[1] &&cmd_list->args[1][0])
+	else if (cmd_list &&  cmd_list->args && cmd_list->args[1] && cmd_list->args[1][0])
 	{
 		printf("not only echo\n");
 
 		if (cmd_list->args[1][0] != '\0')
 		{
 
-	//check if -n or not 
-		if (ft_strncmp(cmd_list->args[1], "-n", ft_strlen(cmd_list->args[1])) == 0)
-		{
-			printf(" echo with -n\n");
+			if (do_echo(cmd_list, num_args) == 1)
+				return (1);
 
-			if (echo_with_n(cmd_list, num_args) == 1)
-				return (1);
-		}
-		else //print all other args starting at indx 1
-		{
-			if (print_args(cmd_list->args, 1) == 1)
-				return (1);
-			if (printf("\n") < 0) //INCL NL
-				return (1);
+	// //check if -n or not 
+	// 		if (ft_strncmp(cmd_list->args[1], "-n", ft_strlen(cmd_list->args[1])) == 0)
+	// 		{
+	// 			printf(" echo with -n\n");
+
+	// 			if (echo_with_n(cmd_list, num_args) == 1)
+	// 				return (1);
+	// 		}
+	// 		else //print all other args starting at indx 1
+	// 		{
+	// 			if (print_args(cmd_list->args, 1) == 1)
+	// 				return (1);
+	// 			if (printf("\n") < 0) //INCL NL
+	// 				return (1);
+	// 		}
 		}
 	}
-}
-	// }
 	return (0);
 }
 

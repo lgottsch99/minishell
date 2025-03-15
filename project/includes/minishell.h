@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/11 20:05:53 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/15 16:48:43 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,12 +156,13 @@ void	red_pipeline_pipe_out(t_pipeline *pipeline, int i, t_env *envp);
 char 	**get_path(t_env *envp);
 char 	*get_exec_path(char *cmd, char **path);
 int		check_builtin(char *cmd);
-int		check_files(t_command *cmd);
+int	check_files(t_command *cmd, int *exit_stat); //ret 1 if denied, 0 if ok
 int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat);//ret 1 if access denied, 0 if ok
 void	check_path(t_command	*cmd, t_env *envp);
 char	**convert_env_array(t_env *envp, t_pipeline *pipeline); //The envp array must be terminated by a NULL pointer.
 int		count_env_size(t_env *envp);
 char	*ret_value_env(char *key, t_env *envp);
+char	*create_fullstr(t_env *node); //MALLOC
 
 
 //redirections
@@ -190,6 +191,13 @@ t_env	*check_existing_env(char *arg_name,  t_env *envp);
 
 //unset.c
 int			unset(t_command *cmd, t_env *envp);
+
+void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat); //works for 2 -> n cmds 
+
+
+char	*extend_upper_dir(t_command *cmd); // ../
+char	*extend_current_dir(t_command *cmd); // ./
+
 
 
 //parsing.c //tokenizing

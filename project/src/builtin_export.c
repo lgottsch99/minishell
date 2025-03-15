@@ -92,6 +92,9 @@ int	create_new_env(char *new_var, t_env *envp) //connect to ft set env in main.c
 {
 	t_env	*new_node;
 	char	*equal;
+	char *dup;
+
+	dup = NULL;
 
 	new_node = (t_env *)malloc(sizeof(t_env) * 1);
 	if (!new_node)
@@ -103,7 +106,8 @@ int	create_new_env(char *new_var, t_env *envp) //connect to ft set env in main.c
 	equal = ft_strchr(new_var, '=');
 	if (!equal)//no = in envp str
 	{//assign str as key
-		new_node->key = new_var;
+		dup = ft_strdup(new_var);
+		new_node->key = dup;
 		new_node->value = NULL;
 	}
 	else //equal in str

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenising.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Watanudon <Watanudon@student.42.fr>        +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:32 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/07 13:20:46 by Watanudon        ###   ########.fr       */
+/*   Updated: 2025/03/15 17:39:08 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,6 @@ void	handle_heredoc(char **start, char **end, Token **head, Token **current)
 {
 	Token	*token;
 	char	*delimiter;
-
 
 	*start = *end + 2;
 	while (**start && ft_isspace(**start))
