@@ -140,6 +140,9 @@ exec:
 	exit : arg + exit stat OK
 	input like <<<<<<<<<<< or ||||| etc -> crash !!! handle in execution OK
 
+
+----------------------------------------------------------------------------------------
+
 	TO DO return values needed to be same as bash??: 
 		mostly ok but TODO: check i/o redirection errors
 	

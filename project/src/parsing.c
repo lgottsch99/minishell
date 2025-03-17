@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/17 19:30:48 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:40:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ t_command	*parse_tokens(Token *tokens)
 	return (head);
 }
 
-void	print_commands(t_command *commands) {
+void	print_commands(t_command *commands) { //remove whole ft later
 	while (commands)
 	{
 		printf("t_command:\n");
@@ -142,12 +142,9 @@ void	print_commands(t_command *commands) {
 		{	for (int i = 0; commands->args[i]; i++)	
 				printf("  Arg %d: %s\n", i, commands->args[i]);
 		}
-				//	if (commands->input_file)
 		printf("  Input file: %s\n", commands->input_file);
-		//if (commands->output_file)
 		printf("  Output file: %s\n", commands->output_file);
-		//if (commands->heredoc_delimetr)
-			printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
+		printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
 		if (commands->heredoc_file)
 			printf("Heredoc filename: %s\n", commands->heredoc_file);
 		if (commands->append_mode)
@@ -161,7 +158,7 @@ void	print_commands(t_command *commands) {
 	}
 }
 
-void	free_commands(t_command *commands)
+void	free_commands(t_command *commands)//used? bc it is not freeing whole cmd
 {
 	t_command	*tmp;
 	while (commands)
