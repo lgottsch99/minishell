@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 13:10:53 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 13:19:22 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,4 +93,14 @@ void	free_cmd_list(t_command **cmd_list)
 		tmp = NULL;
 	}
 	*cmd_list = NULL;
+}
+
+void	remove_heredoc(char *heredoc_file)
+{
+	if (heredoc_file)
+	{
+		unlink(heredoc_file);
+		free(heredoc_file);
+		heredoc_file = NULL;
+	}
 }

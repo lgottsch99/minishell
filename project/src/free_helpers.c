@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free1.c                                            :+:      :+:    :+:   */
+/*   free_helpers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 15:42:18 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/15 15:44:38 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 15:30:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	free_2d_array(int **fd_pipe, int size)
 
 void	free_env_list(t_env **env)
 {
-	t_env *tmp;
+	t_env	*tmp;
 
 	while (*env)
 	{
@@ -66,8 +66,7 @@ void	free_pipe_array(int **fd_pipe, int nr_cmd)
 	int	i;
 
 	i = 0;
-	 printf("in freeing fd array: nr cmd is %i\n", nr_cmd);
-	while (i < nr_cmd - 1)// && fd_pipe[i])
+	while (i < nr_cmd - 1)
 	{
 		free(fd_pipe[i]);
 		fd_pipe[i] = NULL;

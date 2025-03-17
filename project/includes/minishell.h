@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 13:06:57 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 15:41:19 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,40 +106,113 @@ int		**alloc_fd(int nr_cmd);
 int 	*alloc_pid(int nr_cmd);
 void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat);
 void	free_cmd_list(t_command **cmd_list);
+void	remove_heredoc(char *heredoc_file);
+//free helpers
+void	free_2d_array(int **fd_pipe, int size);
+void	free_env_list(t_env **env);
+void	free_2d_char(char **array);
+void	free_pipe_array(int **fd_pipe, int nr_cmd);
+
+
 
 //builtin_echo
 int		get_num_args(char **args); //maybe move to other file?
 int		echo(t_command *cmd_list);
 
+//builtin exit
+int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline, int *exit_stat);
+	//builtin exit helpers
+int		check_only_digits(t_command *cmd);
+void	free_rest_exit(t_command *cmd, t_env *envp, int stat);
+int		check_first_arg(char *arg);
 
-//00_init_start
-void	print_start(void);
-int		set_key_value(char *env_str,t_env *new_node, t_env *environ);
-void	add_env_back(t_env **environ, t_env *new_node);//add new node to end of list
-t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing shlvl by 1
+//builtin export
+int		eexport(t_command *cmd, t_env *envp);
+t_env	*check_existing_env(char *arg_name, t_env *envp);
+	//buitlin export helpers
+char	*get_value_only(char *arg);
+char	*get_name_only(char *str);
+int		check_shellvar_rules(t_command *cmd);
 
-//env_setup
-int		shlvl(t_env	*new_node, t_env *environ);
-char	*add_shlvl(char *value);
-int		set_more(char **equal, char *envp, t_env *new_node, t_env *environ);
+//builtin unset
+int		unset(t_command *cmd, t_env *envp);
 
 //builtins
+void	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline,
+int *exit_stat);
 int		print_env(t_env *environ);
-int		echo(t_command *cmd_list);
 int		pwd(void);
-// int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline);
-int		exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline, int *exit_stat); //TODO double check valgrind
-
 int		cd(t_command *cmd_list, t_env *envp);
-int		get_num_args(char **args);
-// int		run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline);
-void	run_builtin(t_command *cmd_list, t_env *envp, t_pipeline *pipeline, int *exit_stat);
 
+
+//child.c
+void	child_process(t_pipeline *pipeline, t_env *envp, int i, t_command *tmp);
+void	pipeline_builtin(t_pipeline *pipeline, t_command *tmp, int i, t_env *envp);
+void	pipeline_exec(t_pipeline *pipeline, t_command *tmp, t_env *envp);
+
+//child redirections
+void	redirect_heredoc(t_pipeline *pipeline, int i, t_command *tmp,
+	t_env *envp);
+void	red_pipeline_in(t_pipeline *pipeline, int i, t_command *tmp,
+	t_env *envp);
+void	red_pipeline_out(t_pipeline *pipeline, int i, t_command *tmp,
+	t_env *envp);
+void	red_pipeline_pipe_in(t_pipeline *pipeline, int i, t_env *envp);
+void	red_pipeline_pipe_out(t_pipeline *pipeline, int i, t_env *envp);
+
+//child helpers
+void	close_child_fds(t_pipeline *pipeline, int i);
+void	close_not_needed_pipe(int i, t_pipeline *pipeline);
+
+//env setup
+t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing shlvl by 1
+int		set_key_value(char *env_str, t_env *new_node, t_env *environ);
+char	*add_shlvl(char *value);
+//env helpers2
+int		shlvl(t_env	*new_node, t_env *environ);
+void	add_env_back(t_env **environ, t_env *new_node);
+char	**convert_env_array(t_env *envp, t_pipeline *pipeline);
+char	*ret_value_env(char *key, t_env *envp);
+int		count_env_size(t_env *envp);
+
+//exec-path
+void	check_path(t_command *cmd, t_env *envp);
+char	*create_fullstr(t_env *node);
+void	search_path(t_command *cmd, t_env *envp);
+char	*get_exec_path(char *cmd, char **path);
+//exec path helpers
+char	*extend_upper_dir(t_command *cmd);
+char	*extend_current_dir(t_command *cmd);
 
 //execution
 void	execute(t_env *envp, int *exit_stat, t_command *cmd_list);
-void	free_everything_malloced_pipe(t_pipeline *pipeline);
-void	pipeline_loop(t_pipeline *pipeline, t_env *envp);
+void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat);
+//execution helpers
+int		get_nr_cmd(t_command *cmd_list);
+void	init_pipeline(t_pipeline *pipeline, int nr_cmd, t_command *cmd_list, int *exit_stat);
+void	create_pipes(t_pipeline *pipeline, t_env *envp);
+void	close_parent_fds(t_pipeline *pipeline);
+void	wait_children(t_pipeline *pipeline,t_env *envp);
+
+//heredoc_helpers
+void	heredoc_input(int fd, char *delimetr);
+char	*read_heredoc(char *delimetr, int count);
+
+//init_start
+void	print_start(void);
+int		init_shell(t_env **environ, char *envp[]);
+
+
+
+
+
+
+
+
+// //execution
+// void	execute(t_env *envp, int *exit_stat, t_command *cmd_list);
+// void	free_everything_malloced_pipe(t_pipeline *pipeline);
+// void	pipeline_loop(t_pipeline *pipeline, t_env *envp);
 
 //pipeline helpers
 int 	get_nr_cmd(t_command *cmd_list);
@@ -167,16 +240,16 @@ void	red_pipeline_pipe_out(t_pipeline *pipeline, int i, t_env *envp);
 
 
 //check_access_exec
-char 	**get_path(t_env *envp);
-char 	*get_exec_path(char *cmd, char **path);
-int		check_builtin(char *cmd);
-int	check_files(t_command *cmd, int *exit_stat); //ret 1 if denied, 0 if ok
-int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat);//ret 1 if access denied, 0 if ok
-void	check_path(t_command	*cmd, t_env *envp);
-char	**convert_env_array(t_env *envp, t_pipeline *pipeline); //The envp array must be terminated by a NULL pointer.
-int		count_env_size(t_env *envp);
-char	*ret_value_env(char *key, t_env *envp);
-char	*create_fullstr(t_env *node); //MALLOC
+// char 	**get_path(t_env *envp);
+// char 	*get_exec_path(char *cmd, char **path);
+// int		check_builtin(char *cmd);
+// int	check_files(t_command *cmd, int *exit_stat); //ret 1 if denied, 0 if ok
+// int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat);//ret 1 if access denied, 0 if ok
+// void	check_path(t_command	*cmd, t_env *envp);
+// char	**convert_env_array(t_env *envp, t_pipeline *pipeline); //The envp array must be terminated by a NULL pointer.
+// int		count_env_size(t_env *envp);
+// char	*ret_value_env(char *key, t_env *envp);
+// char	*create_fullstr(t_env *node); //MALLOC
 
 
 //redirections
@@ -187,18 +260,17 @@ int	redirect(int fd, int fd_to_replace);
 //single_builtin
 // int		only_builtin(t_command *cmd_list, t_env *envp);
 void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat); //no need to fork + pipe
-void	remove_heredoc(char *heredoc_file);
 
 
 //alloc_free_exec
-void	free_2d_array(int **fd_pipe, int size);
-int		**alloc_fd(int nr_cmd);
-int		*alloc_pid(int nr_cmd);
-void	free_env_list(t_env **env);
-void	free_2d_char(char **array);
-void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat);
-void	free_cmd_list(t_command **cmd_list);
-void	free_pipe_array(int **fd_pipe, int nr_cmd);
+// void	free_2d_array(int **fd_pipe, int size);
+// int		**alloc_fd(int nr_cmd);
+// int		*alloc_pid(int nr_cmd);
+// void	free_env_list(t_env **env);
+// void	free_2d_char(char **array);
+// void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat);
+// void	free_cmd_list(t_command **cmd_list);
+// void	free_pipe_array(int **fd_pipe, int nr_cmd);
 
 //export.c
 int		eexport(t_command *cmd, t_env *envp);
