@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 15:41:19 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:49:59 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,88 +202,16 @@ char	*read_heredoc(char *delimetr, int count);
 void	print_start(void);
 int		init_shell(t_env **environ, char *envp[]);
 
-
-
-
-
-
-
-
-// //execution
-// void	execute(t_env *envp, int *exit_stat, t_command *cmd_list);
-// void	free_everything_malloced_pipe(t_pipeline *pipeline);
-// void	pipeline_loop(t_pipeline *pipeline, t_env *envp);
-
-//pipeline helpers
-int 	get_nr_cmd(t_command *cmd_list);
-void	close_child_fds(t_pipeline *pipeline, int i);
-void	init_pipeline(t_pipeline *pipeline, int nr_cmd, t_command *cmd_list, int *exit_stat);
-void	create_pipes(t_pipeline *pipeline, t_env *envp);
-void	close_parent_fds(t_pipeline *pipeline);
-void	wait_children(t_pipeline *pipeline,t_env *envp);
-
-//child
-void	child_process(t_pipeline *pipeline, t_env *envp, int i, t_command *tmp);
-void	pipeline_builtin(t_pipeline *pipeline, t_command *tmp, int i, t_env *envp);
-void	pipeline_exec(t_pipeline *pipeline, t_command *tmp, t_env *envp);
-
-//child helpers
-void	close_not_needed_pipe(int i, t_pipeline *pipeline);
-void	child_redirection(t_command *tmp, int i, t_pipeline *pipeline, t_env *envp);
-
-//child redirection
-void	redirect_heredoc(t_pipeline *pipeline, int i, t_command *tmp, t_env *envp);
-void	red_pipeline_in(t_pipeline *pipeline, int i, t_command *tmp, t_env *envp);
-void	red_pipeline_out(t_pipeline *pipeline, int i, t_command *tmp, t_env *envp);
-void	red_pipeline_pipe_in(t_pipeline *pipeline, int i, t_env *envp);
-void	red_pipeline_pipe_out(t_pipeline *pipeline, int i, t_env *envp);
-
-
-//check_access_exec
-// char 	**get_path(t_env *envp);
-// char 	*get_exec_path(char *cmd, char **path);
-// int		check_builtin(char *cmd);
-// int	check_files(t_command *cmd, int *exit_stat); //ret 1 if denied, 0 if ok
-// int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat);//ret 1 if access denied, 0 if ok
-// void	check_path(t_command	*cmd, t_env *envp);
-// char	**convert_env_array(t_env *envp, t_pipeline *pipeline); //The envp array must be terminated by a NULL pointer.
-// int		count_env_size(t_env *envp);
-// char	*ret_value_env(char *key, t_env *envp);
-// char	*create_fullstr(t_env *node); //MALLOC
-
+//main
 
 //redirections
-int	red_infile(char	*input_file);
-int	red_outfile(char *output_file, t_command *cmd);
-int	redirect(int fd, int fd_to_replace);
+int		red_infile(char	*input_file);
+int		red_outfile(char *output_file, t_command *cmd);
+int		redirect(int fd, int fd_to_replace);
 
-//single_builtin
-// int		only_builtin(t_command *cmd_list, t_env *envp);
-void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat); //no need to fork + pipe
+//single builtin
+void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat)
 
-
-//alloc_free_exec
-// void	free_2d_array(int **fd_pipe, int size);
-// int		**alloc_fd(int nr_cmd);
-// int		*alloc_pid(int nr_cmd);
-// void	free_env_list(t_env **env);
-// void	free_2d_char(char **array);
-// void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat);
-// void	free_cmd_list(t_command **cmd_list);
-// void	free_pipe_array(int **fd_pipe, int nr_cmd);
-
-//export.c
-int		eexport(t_command *cmd, t_env *envp);
-t_env	*check_existing_env(char *arg_name,  t_env *envp);
-
-//unset.c
-int			unset(t_command *cmd, t_env *envp);
-
-void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat); //works for 2 -> n cmds 
-
-
-char	*extend_upper_dir(t_command *cmd); // ../
-char	*extend_current_dir(t_command *cmd); // ./
 
 
 

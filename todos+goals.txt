@@ -146,3 +146,7 @@ exec:
 TO DO make every malloc fail and check for leaks, 
 	check every ft protection
 	check heredoc on error
+
+signals in heredoc
+
+echo -nnn same as bash?

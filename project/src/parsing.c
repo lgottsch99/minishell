@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/08 16:57:32 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:50:00 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ t_command	*create_command()
 
 t_command	*parse_tokens(Token *tokens)
 {
-	printf("in parse token\n");
 	t_command	*head;
 	t_command	*current;
 	t_command	*command;
@@ -73,8 +72,6 @@ t_command	*parse_tokens(Token *tokens)
 		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
         {
             command->heredoc_delimetr = ft_strdup(tokens->next->value);
-
-			//go and directly read here doc?
 
             tokens = tokens->next;
         }
@@ -94,7 +91,7 @@ t_command	*parse_tokens(Token *tokens)
 			current = command;
 			command = create_command();
 		}
-		else if(tokens->type == TOKEN_REDIRECT_IN)
+		else if (tokens->type == TOKEN_REDIRECT_IN)
 		{
 			if (tokens->next && tokens->next->type == TOKEN_WORD)
 			{
@@ -142,7 +139,6 @@ void	print_commands(t_command *commands) {
 			printf("  exec path: %s\n", commands->exec_path);
 		commands = commands->next;
 		printf("\n");
-
 	}
 }
 
