@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 16:29:09 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 12:52:29 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:54:41 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int	echo_with_n(t_command *cmd_list, int num_args)
 
 static int	do_echo(t_command *cmd_list, int num_args)
 {
-	if (ft_strncmp(cmd_list->args[1], "-n", ft_strlen(cmd_list->args[1])) == 0)
+	if (ft_strncmp(cmd_list->args[1], "-n", 2) == 0)
 	{
 		if (echo_with_n(cmd_list, num_args) == 1)
 			return (1);
