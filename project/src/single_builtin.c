@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/15 17:14:21 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 13:06:23 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,12 +124,23 @@ void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat) //no need to
 	restore_og_fd(&io, exit_stat);
 
 	//remove heredoc file if exists
-	if (cmd_list->heredoc_file)
-	{
-		unlink(cmd_list->heredoc_file);
-		free(cmd_list->heredoc_file);
-		cmd_list->heredoc_file = NULL;
-	}
+	remove_heredoc(cmd_list->heredoc_file);
+	// if (cmd_list->heredoc_file)
+	// {
+	// 	unlink(cmd_list->heredoc_file);
+	// 	free(cmd_list->heredoc_file);
+	// 	cmd_list->heredoc_file = NULL;
+	// }
 	close (io.og_in);
 	close (io.og_out);
+}
+
+void	remove_heredoc(char *heredoc_file)
+{
+	if (heredoc_file)
+	{
+		unlink(heredoc_file);
+		free(heredoc_file);
+		heredoc_file = NULL;
+	}
 }

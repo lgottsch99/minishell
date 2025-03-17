@@ -143,3 +143,6 @@ exec:
 	TO DO return values needed to be same as bash??: 
 		mostly ok but TODO: check i/o redirection errors
 	
+TO DO make every malloc fail and check for leaks, 
+	check every ft protection
+	check heredoc on error

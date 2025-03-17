@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 12:35:13 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 13:06:57 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,16 @@ typedef struct s_single_red {
 int		check_files(t_command *cmd, int *exit_stat);
 int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat);
 
+//alloc_free_exec
+int		**alloc_fd(int nr_cmd);
+int 	*alloc_pid(int nr_cmd);
+void	free_everything_pipeline_exit(t_env *envp, t_pipeline *pipeline, int stat);
+void	free_cmd_list(t_command **cmd_list);
+
+//builtin_echo
+int		get_num_args(char **args); //maybe move to other file?
+int		echo(t_command *cmd_list);
+
 
 //00_init_start
 void	print_start(void);
@@ -177,6 +187,7 @@ int	redirect(int fd, int fd_to_replace);
 //single_builtin
 // int		only_builtin(t_command *cmd_list, t_env *envp);
 void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat); //no need to fork + pipe
+void	remove_heredoc(char *heredoc_file);
 
 
 //alloc_free_exec

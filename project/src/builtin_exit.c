@@ -6,10 +6,9 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:07:51 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/15 17:23:14 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 12:55:03 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../includes/minishell.h"
 
@@ -28,7 +27,7 @@ static void	only_exit(t_command *cmd, t_env *envp, t_pipeline *pipeline, int *ex
 	if (pipeline != NULL)
 	{
 		stat = *pipeline->exit_stat;
-		free_everything_pipeline_exit(envp, pipeline, stat); //exit stat here is 1
+		free_everything_pipeline_exit(envp, pipeline, stat);
 	}
 	else
 	{
@@ -47,70 +46,21 @@ static int	check_only_digits(t_command *cmd)
 	no_digit = 0;
 	while (cmd->args[1][i])
 	{
-		if (ft_isdigit(cmd->args[1][i]) == 0) //check if arg nr is only digits 
+		if (ft_isdigit(cmd->args[1][i]) == 0)
 			no_digit = 1;
 		i++;
 	}
 	return (no_digit);
 }
 
-// static int	exit_with_nr(t_command *cmd, t_env *envp, t_pipeline *pipeline)
-// {
-// 	int	stat;
-// 	int no_digit;
-
-// 	no_digit = check_only_digits(cmd);
-// 	if (no_digit == 1)
-// 	{
-// 		printf("exit: numeric arg required\n");
-// 		return (1);
-// 	}
-// 	stat = ft_atoi(cmd->args[1]);
-// 	if (pipeline != NULL)
-// 		free_everything_pipeline_exit(envp, pipeline, stat);
-// 	else
-// 	{
-// 		free_rest(cmd, envp);
-// 		exit(stat);
-// 	}
-// 	return 0;
-// }
-
-// int exit_shell(t_command *cmd, t_env *envp, t_pipeline *pipeline) //TODO double check valgrind
-// {
-// 	int	num_args;
-
-// 	printf("exit\n"); //bash prints exit 
-// 	num_args = get_num_args(cmd->args);
-// 	if (num_args == 1)//only exit but no args OK
-// 		only_exit(cmd, envp, pipeline);
-
-
-
-// 	//TODO check bash behavior
-	
-	
-// 	else if (num_args == 2) //if only one: exit with nr 
-// 	{
-// 		if (exit_with_nr(cmd, envp, pipeline) == 1)
-// 			return 1;
-// 	}
-// 	else if (num_args > 2)//if more than one number: error mdg, set exit stat
-// 	{
-// 		printf("exit: too many arguments\n");
-// 		return (1);
-// 	}
-// 	return (1);
-// }
-
 void	exit_one_arg(t_command *cmd, t_env *envp, t_pipeline *pipeline)
-{//only one arg after exit
-	int no_digit;
-	int stat;
+{
+	int	no_digit;
+	int	stat;
 
 	stat = 0;
 	no_digit = check_only_digits(cmd);
-	if (no_digit == 1)//sth is not numeric in first
+	if (no_digit == 1)
 	{
 		printf("exit: numeric argument required\n");
 		if (pipeline != NULL)
@@ -122,7 +72,7 @@ void	exit_one_arg(t_command *cmd, t_env *envp, t_pipeline *pipeline)
 			exit(2);
 		}
 	}
-	else //only numeric -> atoi
+	else
 	{
 		stat = ft_atoi(cmd->args[1]);
 		if (pipeline != NULL)
@@ -136,7 +86,7 @@ void	exit_one_arg(t_command *cmd, t_env *envp, t_pipeline *pipeline)
 	}
 }
 
-int	check_first_arg(char *arg) //ret 1 is sth else than digit found
+int	check_first_arg(char *arg)
 {
 	int	i;
 
