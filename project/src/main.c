@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 16:40:25 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:16:39 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,26 +76,27 @@ int	main (int argc, char *argv[], char *envp[])
 		
 		if (tokens)
 		{
+
 			print_tokens(tokens);	
 			commands = parse_tokens(tokens);
-
+			print_commands(commands);
 			//go thru cmd list and check for each cmd: 
 			t_command *current_command;
-			int count;
+			
 
-			count = 0;
+			
 			current_command = commands;
-			while (current_command) //handling here doc within pipeline
-			{
-				printf("checking heredoc\n");
-				// Read the heredoc for each command that needs it
-				if (current_command->heredoc_delimetr)
-				{
-					printf("found heredoc del\n");
-					current_command->heredoc_file = read_heredoc(current_command->heredoc_delimetr, ++count);
-				}
-				current_command = current_command->next;
-			}
+			// while (current_command) //handling here doc within pipeline
+			// {
+			// 	printf("checking heredoc\n");
+			// 	// Read the heredoc for each command that needs it
+			// 	if (current_command->heredoc_delimetr)
+			// 	{
+			// 		printf("found heredoc del\n");
+			// 		current_command->heredoc_file = read_heredoc(current_command->heredoc_delimetr, ++count);
+			// 	}
+			// 	current_command = current_command->next;
+			// }
 			free_tokens(tokens);
 			tokens = NULL;	
 		}

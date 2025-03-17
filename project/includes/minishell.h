@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 16:49:59 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:16:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,8 @@ void	red_pipeline_pipe_out(t_pipeline *pipeline, int i, t_env *envp);
 //child helpers
 void	close_child_fds(t_pipeline *pipeline, int i);
 void	close_not_needed_pipe(int i, t_pipeline *pipeline);
+void	child_redirection(t_command *tmp, int i, t_pipeline *pipeline,
+	t_env *envp);
 
 //env setup
 t_env	*set_env(char *envp[]); //create linked list w all env vars, increasing shlvl by 1
@@ -210,7 +212,7 @@ int		red_outfile(char *output_file, t_command *cmd);
 int		redirect(int fd, int fd_to_replace);
 
 //single builtin
-void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat)
+void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat);
 
 
 
@@ -218,6 +220,7 @@ void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat)
 //parsing.c //tokenizing
 Token		*tokenize(char *input, int last_exit_status, char **envp);
 t_command 	*parse_tokens(Token *tokens);
+
 void		print_tokens(Token *tokens);
 void		free_tokens(Token *tokens);
 void		free_commands(t_command *commands);

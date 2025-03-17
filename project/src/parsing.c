@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/17 16:50:00 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:30:48 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,9 @@ t_command	*parse_tokens(Token *tokens)
 	t_command	*current;
 	t_command	*command;
 	char		*arg;
+	int			count;
 
+	count = 1;
 	head = NULL;
 	current = NULL;
 	command = create_command();
@@ -71,8 +73,22 @@ t_command	*parse_tokens(Token *tokens)
 	{
 		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
         {
+			//new heredoc logic
+			if (command->heredoc_file)
+			{
+				free(command->heredoc_delimetr);
+				command->heredoc_delimetr = NULL;
+				remove_heredoc(command->heredoc_file);
+			}
             command->heredoc_delimetr = ft_strdup(tokens->next->value);
-
+			
+			printf("checking heredoc\n");//remove
+			if (command->heredoc_delimetr)
+			{
+				printf("found heredoc del %s\n", command->heredoc_delimetr);//remove
+				command->heredoc_file = read_heredoc(command->heredoc_delimetr, count);
+			}
+			//------------------------------------
             tokens = tokens->next;
         }
         else if (tokens->type == TOKEN_WORD)
@@ -90,6 +106,8 @@ t_command	*parse_tokens(Token *tokens)
 				current->next = command;
 			current = command;
 			command = create_command();
+			if (command->heredoc_file)
+				count++;
 		}
 		else if (tokens->type == TOKEN_REDIRECT_IN)
 		{
@@ -120,10 +138,11 @@ void	print_commands(t_command *commands) {
 	while (commands)
 	{
 		printf("t_command:\n");
-
-		for (int i = 0; commands->args[i]; i++)	
-			printf("  Arg %d: %s\n", i, commands->args[i]);
-		//	if (commands->input_file)
+		if (commands && commands->args)
+		{	for (int i = 0; commands->args[i]; i++)	
+				printf("  Arg %d: %s\n", i, commands->args[i]);
+		}
+				//	if (commands->input_file)
 		printf("  Input file: %s\n", commands->input_file);
 		//if (commands->output_file)
 		printf("  Output file: %s\n", commands->output_file);

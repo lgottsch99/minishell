@@ -147,6 +147,22 @@ TO DO make every malloc fail and check for leaks,
 	check every ft protection
 	check heredoc on error
 
-signals in heredoc
+TODO signals in heredoc (ctrl c)
 
-echo -nnn same as bash?
+TODO cat << l << k (double heredoc for single cmd) 
+
+TODO:
+pwd | ls | echo << l << k
+you typed: pwd | ls | echo << l << k
+Token: pwd, Type: 0
+Token: |, Type: 1
+Token: ls, Type: 0
+Token: |, Type: 1
+Token: echo, Type: 0
+Token: <<, Type: 5
+Token: l, Type: 0
+Token: <<, Type: 5
+Token: k, Type: 0
+Token: 2, Type: 0 			-->>>?????????
+Token: (null), Type: 9
+checking heredoc ..
