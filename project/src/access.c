@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 15:46:29 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/15 16:12:34 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 12:35:23 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	check_files(t_command *cmd, int *exit_stat) //ret 1 if denied, 0 if ok
 }
 
 
-int	loop_check_access(t_command *tmp,t_env *envp, int *exit_stat)
+static int	loop_check_access(t_command *tmp,t_env *envp, int *exit_stat)
 {
 	if (tmp->is_builtin == 0)
 		check_path(tmp, envp);

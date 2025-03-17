@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/15 16:48:43 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/17 12:35:13 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,10 @@ typedef struct s_single_red {
 //---------- functions ------------------
 
 //main.c
+
+//access.c
+int		check_files(t_command *cmd, int *exit_stat);
+int		check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat);
 
 
 //00_init_start
