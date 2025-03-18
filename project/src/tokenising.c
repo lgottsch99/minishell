@@ -60,8 +60,6 @@ Token	*tokenize(char *input, int last_exit_status, char **envp)
 	Token	*token;
 	char	*start;
 	char	*end;
-	char	*value;
-	char	*quoted_value;
 
 	head = NULL;
 	current = NULL;
@@ -73,11 +71,7 @@ Token	*tokenize(char *input, int last_exit_status, char **envp)
 		if (ft_isspace(*end))
 		{
 			if (end > start)
-			{
-				value = ft_strndup(start, end - start);
-				token = create_token(value, TOKEN_WORD);
-				add_token(&head, &current, token);
-			}
+				handle_word(&start, &end, &head, &current,last_exit_status, envp);
 			start = ++end;
 		}
 		else if (*end == '|')
@@ -86,35 +80,22 @@ Token	*tokenize(char *input, int last_exit_status, char **envp)
 			handle_redir_more(&start, &end, &head, &current);
 		else if (*end == '<')
 			handle_redir_less(&start, &end, &head, &current);
-		// else if (*end == '"')
-		// 	handle_double_quote(&start, &end, &head, &current);
-		// else if (*end == '\'')
-		// 	handle_single_quote(&start, &end, &head, &current);
-		else if (*end == '"' || *end == '\'')
+		else if (*end == '"')
+			handle_double_quote(&start, &end, &head, &current, last_exit_status, envp);
+		else if (*end == '\'')
+			handle_single_quote(&start, &end, &head, &current);
+		else if (*end == '$')
 		{
-			if (end > start)
-			{
-				value = ft_strndup(start, end - start);
-				token = create_token(value, TOKEN_WORD);
-				add_token(&head, &current, token);
-			}
-			quoted_value = handle_quotes(&start, &end, *end);
-			token = create_token(quoted_value, TOKEN_WORD);
-			add_token(&head, &current, token);
+			handle_env_var(&start, &end, &head, &current, last_exit_status, envp, 1);
+			while (*end && !ft_isspace(*end) && *end != '|' && *end != '>' && *end != '<' && *end != '=')
+				(*end)++;
 			start = end;
 		}
-		else if (*end == '$')
-			handle_env_var(&start, &end, &head, &current,
-				last_exit_status, envp);
 		else
-			end++;
+			handle_word(&start, &end, &head, &current, last_exit_status, envp);
 	}
 	if (start != end)
-	{
-		value = ft_strndup(start, end - start);
-		token = create_token(value, TOKEN_WORD);
-		add_token(&head, &current, token);
-	}
+		handle_word(&start, &end, &head, &current, last_exit_status, envp);
 	token = create_token(NULL, TOKEN_END);
 	add_token(&head, &current, token);
 	return (head);

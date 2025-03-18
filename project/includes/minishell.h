@@ -168,16 +168,14 @@ char		**env_to_array(t_env *env);
 void		handle_redir_less(char **start, char **end, Token **head, Token **current);
 void		handle_heredoc(char **start, char **end, Token **head, Token **current);
 void		handle_redir_more(char **start, char **end, Token **head, Token **current);
-void		handle_env_var(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp);
-void		handle_double_quote(char **start, char **end, Token **head, Token **current);
+char		*handle_env_var(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp, int create_flag);
+void		handle_double_quote(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp);
 void		handle_single_quote(char **start, char **end, Token **head, Token **current);
 void		handle_pipe(char **start, char **end, Token **head, Token **current);
 void		add_token(Token **head, Token **current, Token *token);
 char		*ft_getenv(char *var_name, char **envp);
 Token		*create_token(char *value, Token_type type);
-char		*handle_quotes(char **start, char **end, char quote);
-
-
+void		handle_word(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp);
 
 
 //signals
