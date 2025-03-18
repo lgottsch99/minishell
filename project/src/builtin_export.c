@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 13:43:31 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:18 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:21:27 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ static int	update_or_create_env(t_command *cmd, t_env *envp)
 	return (exit_stat);
 }
 
+// ft_putstr_fd("error: invalid shell var format\n", 1);
 // //export w/o args: lists all exported env vars
 // //export multiple at once should be possible: 
 // 		//eg export VAR1="value1" VAR2="value2"
@@ -110,7 +111,6 @@ int	eexport(t_command *cmd, t_env *envp)
 	{
 		if (check_shellvar_rules(cmd) == 1)
 		{
-			ft_putstr_fd("error: invalid shell var format\n", 1);
 			return (1);
 		}
 		exit_stat = update_or_create_env(cmd, envp);
