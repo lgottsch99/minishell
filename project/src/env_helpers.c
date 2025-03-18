@@ -3,10 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   env_helpers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
+<<<<<<< HEAD
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 14:05:35 by lgottsch          #+#    #+#             */
 /*   Updated: 2025/03/17 14:58:35 by lgottsch         ###   ########.fr       */
+=======
+/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025-03-09 14:19:13 by dvasilen          #+#    #+#             */
+/*   Updated: 2025-03-09 14:19:13 by dvasilen         ###   ########.fr       */
+>>>>>>> dana
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +28,11 @@ char **env_to_array(t_env *env) //dana ft
 	char	**env_array;
 	size_t	len;
 
-    if (!env)
-        return (NULL);
-    current = env;
+	if (!env)
+		return (NULL);
+	current = env;
 	count = 0;
-	while(current)
+	while (current)
 	{
 		count++;
 		current = current->next;
@@ -35,7 +42,7 @@ char **env_to_array(t_env *env) //dana ft
 		return (NULL);
 	current = env;
 	i = 0;
-	while ( i < count)
+	while (i < count)
 	{
 		len = ft_strlen(current->key) + ft_strlen(current->value) + 2;
 		env_array[i] = malloc(len);
@@ -50,7 +57,7 @@ char **env_to_array(t_env *env) //dana ft
 			free(env_array);
 			return (NULL);
 		}
-		snprintf(env_array[i], len, "%s=%s", current->key, current->value); //toooodoooo
+		snprintf(env_array[i], len, "%s=%s", current->key, current->value); //todo
 		current = current->next;
 		i++;
 	}

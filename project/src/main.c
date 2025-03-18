@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 19:34:48 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:39:02 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ int	main (int argc, char *argv[], char *envp[])
 		}
 		//adding input to history
 		add_history(input);
-		printf("you typed: %s\n", input);
+		//printf("you typed: %s\n", input);
+		
+		//check if heredoc, if yes separate readline TODO 
 
 		//3. parse ------------------------
 		env_array = env_to_array(environ);

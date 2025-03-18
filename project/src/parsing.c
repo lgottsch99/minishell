@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/17 19:40:53 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:39:01 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,34 @@
 
 void	add_argument(t_command *command, char *arg)
 {
-	int	count;
-	
+	int		count;
+	char	**new_args;
+
 	count = 0;
 	if (command->args)
 	{
-		while(command->args[count])
+		while (command->args[count])
 			count++;
 	}
-	command->args = realloc(command->args, (count + 2) * sizeof(char *)); //TODO check ft if allowed
-	if (!command->args)
-		return;
+	new_args = realloc(command->args, (count + 2) * sizeof(char *));
+	if (!new_args)
+		return ;
+	command->args = new_args;
 	command->args[count] = arg;
 	command->args[count + 1] = NULL;
 }
 
 int	is_builtin(char *arg)
 {
-	if (strcmp(arg, "echo") == 0 || strcmp(arg, "cd") == 0 || strcmp(arg, "pwd") == 0 
-			|| strcmp(arg, "export") == 0 || strcmp(arg, "unset") == 0 
-				|| strcmp(arg, "env") == 0 || strcmp(arg, "exit") == 0)
+	if (strcmp(arg, "echo") == 0 || strcmp(arg, "cd") == 0
+		|| strcmp(arg, "pwd") == 0 || strcmp(arg, "export") == 0
+		|| strcmp(arg, "unset") == 0 || strcmp(arg, "env") == 0
+		|| strcmp(arg, "exit") == 0)
 		return (1);
-	return(0);
+	return (0);
 }
 
-t_command	*create_command()
+t_command	*create_command(void)
 {
 	t_command	*cmd;
 
@@ -51,8 +54,8 @@ t_command	*create_command()
 	cmd->append_mode = 0;
 	cmd->next = NULL;
 	cmd->is_builtin = 0;
-    cmd->heredoc_file = NULL;
-    cmd->heredoc_delimetr = NULL;
+	cmd->heredoc_file = NULL;
+	cmd->heredoc_delimetr = NULL;
 	cmd->exec_path = NULL;
 	return (cmd);
 }
@@ -69,7 +72,9 @@ t_command	*parse_tokens(Token *tokens)
 	head = NULL;
 	current = NULL;
 	command = create_command();
-	while(tokens)
+	if (!command)
+		return (NULL);
+	while (tokens)
 	{
 		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
         {
@@ -94,11 +99,16 @@ t_command	*parse_tokens(Token *tokens)
         else if (tokens->type == TOKEN_WORD)
 		{
 			arg = ft_strdup(tokens->value);
+			if (!arg)
+			{
+				free_commands(head);
+				return (NULL);
+			}
 			add_argument(command, arg);
-			if (command->args[0] && is_builtin(command->args[0])) 
+			if (command->args[0] && is_builtin(command->args[0]))
 				command->is_builtin = 1;
-		}		
-		else if(tokens->type == TOKEN_PIPE)
+		}
+		else if (tokens->type == TOKEN_PIPE)
 		{
 			if (!head)
 				head = command;
@@ -114,14 +124,38 @@ t_command	*parse_tokens(Token *tokens)
 			if (tokens->next && tokens->next->type == TOKEN_WORD)
 			{
 				command->input_file = ft_strdup(tokens->next->value);
- 				tokens = tokens->next;
+				if (!command->input_file)
+				{
+					free_commands(head);
+					return (NULL);
+				}
+				tokens = tokens->next;
 			}
 		}
-		else if(tokens->type == TOKEN_REDIRECT_OUT)
+		else if (tokens->type == TOKEN_REDIRECT_OUT)
 		{
 			if (tokens->next && tokens->next->type == TOKEN_WORD)
 			{
 				command->output_file = ft_strdup(tokens->next->value);
+				if (!command->output_file)
+				{
+					free_commands(head);
+					return (NULL);
+				}
+				tokens = tokens->next;
+			}
+		}
+		else if (tokens->type == TOKEN_REDIRECT_APPEND)
+		{
+			if (tokens->next && tokens->next->type == TOKEN_WORD)
+			{
+				command->append_mode = 1;
+				command->output_file = ft_strdup(tokens->next->value);
+				if (!command->output_file)
+				{
+					free_commands(head);
+					return (NULL);
+				}
 				tokens = tokens->next;
 			}
 		}
@@ -129,7 +163,7 @@ t_command	*parse_tokens(Token *tokens)
 	}
 	if (!head)
 		head = command;
-	if (current) 
+	if (current)
 		current->next = command;
 	return (head);
 }
@@ -161,19 +195,32 @@ void	print_commands(t_command *commands) { //remove whole ft later
 void	free_commands(t_command *commands)//used? bc it is not freeing whole cmd
 {
 	t_command	*tmp;
+	int			i;
+
 	while (commands)
 	{
 		tmp = commands;
 		commands = commands->next;
-		if (tmp->args){
-			for (int i = 0; tmp->args[i]; i++)
+		if (tmp->args)
+		{
+			i = 0;
+			while (tmp->args[i])
+			{
 				free(tmp->args[i]);
+				i++;
+			}
 			free(tmp->args);
 		}
 		if (tmp->input_file)
 			free(tmp->input_file);
 		if (tmp->output_file)
 			free(tmp->output_file);
+		if (tmp->heredoc_delimetr)
+			free(tmp->heredoc_delimetr);
+		if (tmp->heredoc_file)
+			free(tmp->heredoc_file);
+		if (tmp->exec_path)
+			free(tmp->exec_path);
 		free(tmp);
 	}
 }

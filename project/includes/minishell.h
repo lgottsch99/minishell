@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/17 19:16:53 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:39:28 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ typedef struct s_single_red {
 	int red_in;		//if 0 no red happened, if 1 yes 
 	int red_out;
 } t_single_red; 
-
 
 //---------- functions ------------------
 
@@ -228,6 +227,18 @@ void		print_commands(t_command *commands);
 char		*read_heredoc(char *delimetr, int count);
 void		clean_heredoc(t_command *cmd);
 char		**env_to_array(t_env *env);
+void		handle_redir_less(char **start, char **end, Token **head, Token **current);
+void		handle_heredoc(char **start, char **end, Token **head, Token **current);
+void		handle_redir_more(char **start, char **end, Token **head, Token **current);
+char		*handle_env_var(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp, int create_flag);
+void		handle_double_quote(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp);
+void		handle_single_quote(char **start, char **end, Token **head, Token **current);
+void		handle_pipe(char **start, char **end, Token **head, Token **current);
+void		add_token(Token **head, Token **current, Token *token);
+char		*ft_getenv(char *var_name, char **envp);
+Token		*create_token(char *value, Token_type type);
+void		handle_word(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp);
+
 
 //signals
 void	setup_signals();

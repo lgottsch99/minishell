@@ -6,23 +6,23 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:08:42 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 19:08:44 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:38:55 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void handle_sigint(int sig)//ctrl-c
+void	handle_sigint(int sig)//ctrl-c
 {
-    (void)sig;
-    g_signal_status = SIGINT;
-    write(STDOUT_FILENO, "\n", 1);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
+	(void)sig;
+	g_signal_status = SIGINT;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
-void	setup_signals()
+void	setup_signals(void)
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
