@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 13:43:31 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/20 18:25:14 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 20:48:27 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,11 @@ static int	update_or_create_env(t_command *cmd, t_env *envp)
 	i = 1;
 	while (cmd->args[i])
 	{
+		if (check_shellvar_rules(cmd->args[i]) == 1)
+		{
+			i++;	
+			continue ;
+		}
 		arg_name = get_name_only(cmd->args[i]);
 		if (!arg_name)
 			return (1);
@@ -102,11 +107,7 @@ int	eexport(t_command *cmd, t_env *envp)
 	if (num_args == 1)
 		exit_stat = print_env(envp);
 	else if (num_args > 1)
-	{
-		if (check_shellvar_rules(cmd) == 1)
-			return (1);
 		exit_stat = update_or_create_env(cmd, envp);
-	}
 	else
 	{
 		printf("sth wrong with cmd list or cmd args\n");

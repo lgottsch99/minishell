@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:06 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 20:16:43 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
 		only_builtin(cmd_list, envp, exit_stat);
 	else
-		pipeline(cmd_list, nr_cmd, envp, exit_stat);
+		pipeline(cmd_list, envp, exit_stat);
 	return ;
 }
 
@@ -62,10 +62,12 @@ static void	free_everything_malloced_pipe(t_pipeline *pipeline)
 		free(pipeline->pid);
 }
 
-void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat)
+void	pipeline(t_command *cmd_list, t_env *envp, int *exit_stat)
 {
 	t_pipeline	pipeline;
+	int	nr_cmd;
 
+	nr_cmd = get_nr_cmd(cmd_list);
 	init_pipeline(&pipeline, nr_cmd, cmd_list, exit_stat);
 	create_pipes(&pipeline, envp);
 	pipeline_loop(&pipeline, envp);

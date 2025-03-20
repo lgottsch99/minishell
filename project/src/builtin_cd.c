@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 18:47:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/20 19:12:20 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 19:43:30 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int	decide_case(t_command *cmd_list, char *home, t_env *envp)
 {
 	int		stat;
 
+	stat = 0;
 	if (!cmd_list->args[1])
 	{
 		if (!home)
@@ -104,7 +105,7 @@ int	decide_case(t_command *cmd_list, char *home, t_env *envp)
 		else
 			stat = change_for_real(home, envp);
 	}
-	else if (cmd_list->args[1])
+	else
 		stat = decide_more(cmd_list, envp);
 	return (stat);
 }

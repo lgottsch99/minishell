@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:08:42 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:38:55 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 20:24:53 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	handle_sigint(int sig)//ctrl-c
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
+
+
 
 void	setup_signals(void)
 {

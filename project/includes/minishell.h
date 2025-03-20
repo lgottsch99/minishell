@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/20 19:28:43 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 20:40:12 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,8 @@ t_env	*check_existing_env(char *arg_name, t_env *envp);
 	//buitlin export helpers
 char	*get_value_only(char *arg);
 char	*get_name_only(char *str);
-int		check_shellvar_rules(t_command *cmd);
+// int		check_shellvar_rules(t_command *cmd);
+int		check_shellvar_rules(char *arg);
 
 //builtin unset
 int		unset(t_command *cmd, t_env *envp);
@@ -193,7 +194,8 @@ char	*extend_current_dir(t_command *cmd);
 
 //execution
 void	execute(t_env *envp, int *exit_stat, t_command *cmd_list);
-void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat);
+
+void	pipeline(t_command *cmd_list, t_env *envp, int *exit_stat);
 //execution helpers
 int		get_nr_cmd(t_command *cmd_list);
 void	init_pipeline(t_pipeline *pipeline, int nr_cmd,
@@ -245,6 +247,8 @@ void		handle_word(char **start, char **end, Token **head, Token **current, int l
 
 //signals
 void	setup_signals(void);
-void	handle_sigint(int sig);
+// void	setup_signals(int *child);
+
+// void	handle_sigint(int sig);
 
 #endif
