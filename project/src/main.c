@@ -26,28 +26,26 @@ int	main (int argc, char *argv[], char *envp[])
 	char		**env_array;
 
 	exit_stat = 0;
-
-
-	//1. load config files, init etc
 	if (init_shell(&environ, envp) == 1)
 		return (1);
+
+	setup_signals();
 
 	//2. main loop
 	while (1)
 	{
 		input = readline("***miniShell***$ ");
+		g_signal_status = 0;
 		if (!input)  //ctrl-D handling, its not a signal but a eof detecter
 		{
-			exit_stat = 1;
-			write(STDOUT_FILENO, "exit\n", 5);//??needed
+			write(STDOUT_FILENO, "exit\n", 5);
 			free(input);
 			free_env_list(&environ);
 			rl_clear_history();
-            exit(1); //free before  rl history etc  TODO
+			exit(exit_stat);
 		}
-		if (g_signal_status == SIGINT)//ctrl c handling
+		if (g_signal_status == SIGINT)
 		{
-			g_signal_status = 0;
 			free(input);
 			continue;
 		}
@@ -56,10 +54,7 @@ int	main (int argc, char *argv[], char *envp[])
 			free(input);
 			continue;
 		}
-		//adding input to history
-		add_history(input);
-		//printf("you typed: %s\n", input);
-		
+		add_history(input);		
 		//check if heredoc, if yes separate readline TODO 
 
 		//3. parse ------------------------
@@ -80,19 +75,15 @@ int	main (int argc, char *argv[], char *envp[])
 		{
 
 			print_tokens(tokens);	
-			commands = parse_tokens(tokens); //heredoc now in parse_tokens
+			commands = parse_tokens(tokens);
 			print_commands(commands);
-			//go thru cmd list and check for each cmd: 
-			// t_command *current_command;
-			// current_command = commands;
 			free_tokens(tokens);
 			tokens = NULL;	
 		}
-		
-		// parsing end ------------------------
-		printf("finished parsing\n");
+		//printf("finished parsing\n");
 		
 		//4. execute
+		
 		execute(environ, &exit_stat, commands);
 
 		//5. free everything needed TODO

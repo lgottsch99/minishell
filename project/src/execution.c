@@ -26,6 +26,7 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 		only_builtin(cmd_list, envp, exit_stat);
 	else
 		pipeline(cmd_list, nr_cmd, envp, exit_stat);
+	g_signal_status = 0;
 	return ;
 }
 
@@ -45,7 +46,16 @@ static void	pipeline_loop(t_pipeline *pipeline, t_env *envp)
 			free_everything_pipeline_exit(envp, pipeline, 1);
 		}
 		if (pipeline->pid[i] == 0)
-			child_process(pipeline, envp, i, tmp);
+		{
+			printf("Child PID: %d\n", getpid());
+			fflush(stdout);
+		
+			//signal(SIGINT, handle_sigint);  // Ensure child installs the handler
+			signal(SIGINT, SIG_DFL);        // OR, explicitly reset to default if needed
+		
+			child_process(pipeline, envp, i, tmp);  // Replace with actual execution function
+		}	
+		//child_process(pipeline, envp, i, tmp);
 		else
 		{
 			tmp = tmp->next;
@@ -70,7 +80,9 @@ void	pipeline(t_command *cmd_list, int nr_cmd, t_env *envp, int *exit_stat)
 	create_pipes(&pipeline, envp);
 	pipeline_loop(&pipeline, envp);
 	close_parent_fds(&pipeline);
+	signal(SIGINT, SIG_IGN);
 	wait_children(&pipeline, envp);
+	signal(SIGINT, handle_sigint);
 	free_everything_malloced_pipe(&pipeline);
 	return ;
 }

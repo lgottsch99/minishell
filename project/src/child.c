@@ -14,6 +14,8 @@
 
 void	child_process(t_pipeline *pipeline, t_env *envp, int i, t_command *tmp)
 {
+    signal(SIGINT, SIG_DFL);
+
 	close_not_needed_pipe(i, pipeline);
 	child_redirection(tmp, i, pipeline, envp);
 	if (tmp->is_builtin == 0)

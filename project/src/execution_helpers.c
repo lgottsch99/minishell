@@ -73,21 +73,40 @@ void	close_parent_fds(t_pipeline *pipeline)
 	}
 }
 
-//wait for all children TO DO whatif terminated by SIGNAL? WTERMSIG
 void	wait_children(t_pipeline *pipeline, t_env *envp)
 {
-	int	y;
+	int		y;
+	pid_t	waited_pid;
+	int		status;
 
 	y = 0;
 	while (y < pipeline->nr_cmd)
 	{
-		if (waitpid(pipeline->pid[y], pipeline->exit_stat, 0) == -1)
+		waited_pid = waitpid(pipeline->pid[y], &status, 0);
+		if (waited_pid == -1)
 		{
-			perror("waitpid: ");
-			free_everything_pipeline_exit(envp, pipeline, 1);
+			if (errno == EINTR)
+			{
+				if (g_signal_status == SIGINT)
+				{
+					write(STDOUT_FILENO, "\n", 1);
+					break;
+				}
+				continue;
+			}
+			else
+			{
+				perror("waitpid");
+				free_everything_pipeline_exit(envp, pipeline, 1);
+			}
 		}
-		if (WIFEXITED(*pipeline->exit_stat))
-			*pipeline->exit_stat = WEXITSTATUS(*pipeline->exit_stat);
-		y++;
+		if (WIFEXITED(status))
+			*pipeline->exit_stat = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+		{
+			*pipeline->exit_stat = 128 + WTERMSIG(status);
+			write(STDOUT_FILENO, "\n", 1);
+		}
+		 y++;
 	}
 }
