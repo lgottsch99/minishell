@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:07:51 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:20 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:28:12 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ static void	only_exit(t_command *cmd, t_env *envp,
 	{
 		stat = *pipeline->exit_stat;
 		remove_heredoc(cmd->heredoc_file);
-		free_everything_pipeline_exit(envp, pipeline, stat);
+		free_everything_pipeline_exit(envp, pipeline, stat % 256);
 	}
 	else
 	{
 		stat = *exit_stat;
-		free_rest_exit(cmd, envp, stat);
+		free_rest_exit(cmd, envp, stat % 256);
 	}
 }
 
@@ -49,9 +49,9 @@ static void	exit_one_arg(t_command *cmd, t_env *envp, t_pipeline *pipeline)
 	{
 		stat = ft_atoi(cmd->args[1]);
 		if (pipeline != NULL)
-			free_everything_pipeline_exit(envp, pipeline, stat);
+			free_everything_pipeline_exit(envp, pipeline, stat % 256);
 		else
-			free_rest_exit(cmd, envp, stat);
+			free_rest_exit(cmd, envp, stat % 256);
 	}
 }
 

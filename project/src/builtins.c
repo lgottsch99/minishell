@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:17 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 19:28:52 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,50 +71,22 @@ int	pwd(void)
 	return (0);
 }
 
-static int	change_dir(t_command *cmd_list, char *home)
-{
-	if (cmd_list && cmd_list->args)
-	{
-		if (!cmd_list->args[1] && home)
-		{
-			if (chdir(home) == -1)
-			{
-				perror("cd: ");
-				return (1);
-			}
-		}
-		else if (cmd_list->args[1])
-		{
-			if (chdir(cmd_list->args[1]) == -1)
-			{
-				perror("cd: ");
-				return (1);
-			}
-		}
-		return (0);
-	}
-	else
-		return (1);
-}
-
 int	cd(t_command *cmd_list, t_env *envp)
 {
 	char	*home;
 	int		num_args;
 
 	home = ret_value_env("HOME", envp);
-	if (!home)
-	{
-		printf("cd error: cant find env var HOME\n");
-		return (1);
-	}
 	num_args = get_num_args(cmd_list->args);
 	if (num_args > 2)
 	{
 		printf("cd: too many args\n");
 		return (1);
 	}
-	if (change_dir(cmd_list, home) == 1)
-		return (1);
+	if (cmd_list && cmd_list->args)
+	{
+		if (decide_case(cmd_list, home, envp) == 1)
+			return (1);
+	}
 	return (0);
 }

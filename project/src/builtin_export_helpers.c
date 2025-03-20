@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 13:36:59 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:19 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 20:47:56 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,26 +51,21 @@ char	*get_name_only(char *str)
 //(a-z, A-Z), any digits (0-9), and an underscore ( _ ). However, 
 // a variable name must start with an alphabet 
 // or underscore. It can never start with a number. 
-int	check_shellvar_rules(t_command *cmd)
+// int	check_shellvar_rules(t_command *cmd)
+int	check_shellvar_rules(char *arg)
 {
-	int	i;
 	int	y;
 
-	i = 0;
 	y = 0;
-	while (cmd->args[i])
+	if (ft_isalpha(arg[0]) == 0 && arg[0] != '_')
+		return (1);
+	y = 1;
+	while (arg[y])
 	{
-		if (ft_isalpha(cmd->args[i][0]) == 0 && cmd->args[i][0] != '_')
+		if (ft_isalnum(arg[y]) == 0 && arg[y] != '_'
+			&& arg[y] != '=' && arg[y] != '"')
 			return (1);
-		y = 1;
-		while (cmd->args[i][y])
-		{
-			if (ft_isalnum(cmd->args[i][y]) == 0 && cmd->args[i][y] != '_'
-			&& cmd->args[i][y] != '=' && cmd->args[i][y] != '"')
-				return (1);
-			y++;
-		}
-		i++;
+		y++;
 	}
 	return (0);
 }

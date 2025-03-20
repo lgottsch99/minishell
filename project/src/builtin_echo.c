@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 16:29:09 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:24 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/18 20:00:10 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,72 +26,50 @@ int	get_num_args(char **args)
 
 static int	print_args(char **args, int start)
 {
-	int		i;
-	char	**tmp;
-
-	i = start;
-	tmp = args;
-	while (tmp[i])
+	while (args[start])
 	{
-		if (printf("%s", tmp[i]) < 0)
+		if (args[start][0] == '\0')
+		{
+			start++;
+			continue ;
+		}
+		if (printf("%s", args[start]) < 0)
 			return (1);
-		if (printf(" ") < 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-static int	echo_with_n(t_command *cmd_list, int num_args)
-{
-	int	skip;
-
-	skip = 2;
-	while (cmd_list->args[skip] && (ft_strncmp(cmd_list->args[skip],
-				"-n", ft_strlen(cmd_list->args[skip])) == 0))
-		skip++;
-	if (num_args > skip)
-		if (print_args(cmd_list->args, skip) == 1)
-			return (1);
-	return (0);
-}
-
-static int	do_echo(t_command *cmd_list, int num_args)
-{	
-	if (ft_strncmp(cmd_list->args[1], "-n", 2) == 0)
-	{
-		if (echo_with_n(cmd_list, num_args) == 1)
-			return (1);
-	}
-	else
-	{
-		if (print_args(cmd_list->args, 1) == 1)
-			return (1);
-		if (printf("\n") < 0)
-			return (1);
+		if (args[start + 1])
+		{
+			if (printf(" ") < 0)
+				return (1);
+		}
+		start++;
 	}
 	return (0);
 }
 
 int	echo(t_command *cmd_list)
 {
-	int	num_args;
+	int	nl;
+	int	start_arg;
+	int	y;
 
-	num_args = get_num_args(cmd_list->args);
-	if (num_args <= 1 || (cmd_list->args && cmd_list->args[1]
-			&& cmd_list->args[1][0] == '\0'))
+	nl = 1;
+	start_arg = 1;
+	while (cmd_list->args[start_arg]
+		&& ft_strncmp(cmd_list->args[start_arg], "-n", 2) == 0)
+	{
+		y = 2;
+		while (cmd_list->args[start_arg][y] == 'n')
+			y++;
+		if (cmd_list->args[start_arg][y] != '\0')
+			break ;
+		nl = 0;
+		start_arg++;
+	}
+	if (print_args(cmd_list->args, start_arg) == 1)
+		return (1);
+	if (nl == 1)
 	{
 		if (printf("\n") < 0)
 			return (1);
-	}
-	else if (cmd_list && cmd_list->args && cmd_list->args[1]
-		&& cmd_list->args[1][0])
-	{
-		if (cmd_list->args[1][0] != '\0')
-		{
-			if (do_echo(cmd_list, num_args) == 1)
-				return (1);
-		}
 	}
 	return (0);
 }

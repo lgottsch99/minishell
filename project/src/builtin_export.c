@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 13:43:31 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:18 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 20:48:27 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ t_env	*check_existing_env(char *arg_name, t_env *envp)
 	tmp = envp;
 	while (tmp)
 	{
-		if (ft_strncmp((char *)tmp->key, arg_name, ft_strlen(arg_name)) == 0)
+		if (ft_strncmp((char *)tmp->key, arg_name, ft_strlen(arg_name)) == 0
+	&& (ft_strlen(arg_name) == ft_strlen((char *)tmp->key)))
 		{
 			if (ft_strlen((char *)tmp->key) == ft_strlen(arg_name))
 				return (tmp);
@@ -33,25 +34,22 @@ static int	create_new_env(char *new_var, t_env *envp)
 {
 	t_env	*new_node;
 	char	*equal;
-	char	*dup;
 
-	dup = NULL;
 	new_node = (t_env *)malloc(sizeof(t_env) * 1);
 	if (!new_node)
 		return (1);
 	equal = ft_strchr(new_var, '=');
 	if (!equal)
-	{
-		dup = ft_strdup(new_var);
-		new_node->key = dup;
-		new_node->value = NULL;
-	}
+		free(new_node);
 	else
+	{
 		set_key_value(new_var, new_node, envp);
-	new_node->next = NULL;
-	add_env_back(&envp, new_node);
+		new_node->next = NULL;
+		add_env_back(&envp, new_node);
+	}
 	return (0);
 }
+
 
 static int	update_existing(t_env *existing_var, char *arg)
 {
@@ -78,12 +76,17 @@ static int	update_or_create_env(t_command *cmd, t_env *envp)
 	i = 1;
 	while (cmd->args[i])
 	{
+		if (check_shellvar_rules(cmd->args[i]) == 1)
+		{
+			i++;	
+			continue ;
+		}
 		arg_name = get_name_only(cmd->args[i]);
 		if (!arg_name)
 			return (1);
 		existing_var = check_existing_env(arg_name, envp);
 		if (!existing_var)
-			exit_stat = create_new_env(cmd->args[i], envp);
+				exit_stat = create_new_env(cmd->args[i], envp);
 		else
 			exit_stat = update_existing(existing_var, cmd->args[i]);
 		free(arg_name);
@@ -92,10 +95,7 @@ static int	update_or_create_env(t_command *cmd, t_env *envp)
 	return (exit_stat);
 }
 
-// //export w/o args: lists all exported env vars
-// //export multiple at once should be possible: 
-// 		//eg export VAR1="value1" VAR2="value2"
-// //usually setenv() but not allowed. -> modify env array manually
+// //export w/o args: ->UNIX: unspecified!
 int	eexport(t_command *cmd, t_env *envp)
 {
 	int	num_args;
@@ -107,16 +107,12 @@ int	eexport(t_command *cmd, t_env *envp)
 	if (num_args == 1)
 		exit_stat = print_env(envp);
 	else if (num_args > 1)
-	{
-		if (check_shellvar_rules(cmd) == 1)
-		{
-			ft_putstr_fd("error: invalid shell var format\n", 1);
-			return (1);
-		}
 		exit_stat = update_or_create_env(cmd, envp);
-	}
 	else
+	{
 		printf("sth wrong with cmd list or cmd args\n");
+		exit_stat = 1;
+	}
 	return (exit_stat);
 }
 
