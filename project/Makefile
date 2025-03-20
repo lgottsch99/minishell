@@ -55,9 +55,13 @@ CFLAGS = -Wall -Wextra -Werror -lreadline
 CFMAC = -L /Users/$(USER)/.brew/opt/readline/lib
 SRC_FOLDER = ./src/
 SRC = $(addprefix $(SRC_FOLDER), access.c alloc_free_exec.c builtin_echo.c builtin_exit.c \
-	builtin_exit_helpers.c builtin_export.c builtin_export_helpers.c builtin_unset.c builtins.c child_helpers.c child.c child_redirection.c \
-	env_helpers.c env_helpers2.c env_setup.c exec_path_helpers.c exec_path.c execution.c execution_helpers.c free_helpers.c heredoc_helpers.c init_start.c \
-	main.c parsing.c redirections.c signals_helpers.c single_builtin.c tokenising.c tokens_handlers.c tokens_helpers.c)
+	builtin_exit_helpers.c builtin_export.c builtin_export_helpers.c \
+	builtin_unset.c builtins.c child_helpers.c child.c child_redirection.c \
+	env_helpers.c env_helpers2.c env_setup.c exec_path_helpers.c exec_path.c \
+	execution.c execution_helpers.c free_helpers.c heredoc_helpers.c init_start.c \
+	main.c parsing.c redirections.c signals_helpers.c single_builtin.c tokenising.c \
+	tokens_handlers.c tokens_handlers2.c tokens_handlers3.c tokens_handlers4.c env_tokenising.c \
+	word_tokenising.c)
 
 
 OBJ = $(SRC:.c=.o)

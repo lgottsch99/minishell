@@ -26,6 +26,7 @@
 #include <fcntl.h>
 #include <limits.h> 
 #include <signal.h>
+#include <errno.h>
 
 //---------- Macros ------------------
 
@@ -91,6 +92,23 @@ typedef struct s_single_red {
 	int red_in;		//if 0 no red happened, if 1 yes 
 	int red_out;
 } t_single_red; 
+
+typedef struct s_env_var_context {
+    char **start;
+    char **end;
+    Token **head;
+    Token **current;
+    int last_exit_status;
+    char **envp;
+    int create_flag;
+} EnvVarContext;
+
+typedef struct s_tokenize_context {
+    char **start;
+    char **end;
+    Token **head;
+    Token **current;
+} TokenizeContext;
 
 //---------- functions ------------------
 
@@ -230,19 +248,35 @@ char		**env_to_array(t_env *env);
 void		handle_redir_less(char **start, char **end, Token **head, Token **current);
 void		handle_heredoc(char **start, char **end, Token **head, Token **current);
 void		handle_redir_more(char **start, char **end, Token **head, Token **current);
-char		*handle_env_var(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp, int create_flag);
+char		*handle_env_var(EnvVarContext *ctx);
 void		handle_double_quote(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp);
 void		handle_single_quote(char **start, char **end, Token **head, Token **current);
 void		handle_pipe(char **start, char **end, Token **head, Token **current);
 void		add_token(Token **head, Token **current, Token *token);
 char		*ft_getenv(char *var_name, char **envp);
 Token		*create_token(char *value, Token_type type);
-void		handle_word(char **start, char **end, Token **head, Token **current, int last_exit_status, char **envp);
+void		handle_word(TokenizeContext *token_ctx, 
+				EnvVarContext *env_ctx);
+char	*generate_exit_status_str(int last_exit_status);
+void	update_pointers_after_exit(char **start, char **end);
+char	*handle_token_creation(Token **head, Token **current,
+				char *str, int create_flag);
+char	*extract_var_name_and_value(char **end, char **envp);
+void handle_env_var_in_word(TokenizeContext *token_ctx,
+				EnvVarContext *env_ctx);
+void handle_quoted_value_after_equal(char **end);
+void handle_unquoted_value_after_equal(char **end);
+char *process_value_after_equal(char **start, char **end);
 
 
 //signals
 void	setup_signals();
 void	handle_sigint(int sig);
+void	reset_signal_handlers(void);
+void	block_signals(void);
+void	unblock_signals(void);
+
+
 
 
 #endif
