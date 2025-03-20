@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 13:43:31 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/20 16:49:28 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 18:25:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ t_env	*check_existing_env(char *arg_name, t_env *envp)
 	tmp = envp;
 	while (tmp)
 	{
-		if (ft_strncmp((char *)tmp->key, arg_name, ft_strlen(arg_name)) == 0)
+		if (ft_strncmp((char *)tmp->key, arg_name, ft_strlen(arg_name)) == 0
+	&& (ft_strlen(arg_name) == ft_strlen((char *)tmp->key)))
 		{
 			if (ft_strlen((char *)tmp->key) == ft_strlen(arg_name))
 				return (tmp);

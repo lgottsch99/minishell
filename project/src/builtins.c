@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:37:50 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:17 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/20 18:36:19 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,30 +71,126 @@ int	pwd(void)
 	return (0);
 }
 
-static int	change_dir(t_command *cmd_list, char *home)
+int	change_for_real(char *path, t_env *envp) //TODO only update PWD and OLDPWD
 {
-	if (cmd_list && cmd_list->args)
+	char	*cwd;
+	char	*newcwd;
+	t_env	*oldpwd;
+	t_env	*pwd;
+
+	cwd = NULL;
+	cwd = getcwd(cwd, 0); //MALLOC
+	if (!cwd)
 	{
-		if (!cmd_list->args[1] && home)
-		{
-			if (chdir(home) == -1)
-			{
-				perror("cd: ");
-				return (1);
-			}
-		}
-		else if (cmd_list->args[1])
-		{
-			if (chdir(cmd_list->args[1]) == -1)
-			{
-				perror("cd: ");
-				return (1);
-			}
-		}
-		return (0);
-	}
-	else
+		perror("error cd: ");
 		return (1);
+	}
+	printf("change from: %s\n", cwd);
+	if (chdir(path) == -1)
+	{
+		free(cwd);
+		perror("cd: ");
+		return (1);
+	}
+	//TODO set cwd -> OLDPWD
+		//check if OLDPWD existing
+	oldpwd = check_existing_env("OLDPWD", envp);
+	if (oldpwd)
+	{
+		printf("old oldpwd: %s\n",oldpwd->value);
+		free(oldpwd->value);
+		oldpwd->value = ft_strdup(cwd);
+		printf("updated oldpwd : %s\n", oldpwd->value);
+	}
+	if (cwd)
+		free(cwd);
+	//TODO set PWD to getcwd
+	pwd = check_existing_env("PWD", envp);
+	if (pwd)
+	{
+		newcwd = NULL;
+		newcwd = getcwd(newcwd, 0);
+		if (!newcwd)
+		{
+			perror("error cd: ");
+			return (1);
+		}
+		printf("change to: %s\n", newcwd);
+		printf("key node: %s\n", pwd->key);
+		free(pwd->value);
+		pwd->value = ft_strdup(newcwd);
+		printf("updated PWD: %s\n", pwd->value);
+		if(newcwd)
+			free(newcwd);
+	}
+	return (0);
+}
+
+static int	change_dir(t_command *cmd_list, char *home, t_env *envp)
+{
+	int	stat;
+	char	*old_pwd;
+
+	old_pwd = NULL;
+	stat = 0;
+	if (!cmd_list->args[1])
+	{
+		if (!home)
+		{
+			printf("cd error: cant find env var HOME\n");
+			return (1);
+		}
+		else
+		{
+			stat = change_for_real(home, envp);
+			//TODO set pwd -> OLDPWD
+			// if (chdir(home) == -1)
+			// {
+			// 	perror("cd: ");
+			// 	return (1);
+			// }
+			//TODO set PWD to getcwd
+		}
+	}
+	else if (cmd_list->args[1])
+	{
+		//to do check if args[1] == -
+		if (cmd_list->args[1][0] == '-')
+		{
+			//then get oldpwd
+			old_pwd = ret_value_env("OLDPWD", envp);
+			if (!old_pwd)
+			{
+				printf("cd error: cant find env var OLDPWD\n");
+				return (1);		
+			}
+			else
+			{
+				stat = change_for_real(old_pwd, envp);
+				// //TODO set pwd -> OLDPWD
+				// if (chdir(old_pwd) == -1)
+				// {
+				// 	perror("cd: ");
+				// 	return (1);
+				// }
+				// //TODO set PWD to getcwd
+			}
+		}
+
+		else
+		{
+			stat = change_for_real(cmd_list->args[1], envp);
+
+			// //TODO set pwd -> OLDPWD
+			// if (chdir(cmd_list->args[1]) == -1)
+			// {
+			// 	perror("cd: ");
+			// 	return (1);
+			// }
+			// //TODO set PWD to getcwd
+		}
+	}
+	return (stat);
 }
 
 int	cd(t_command *cmd_list, t_env *envp)
@@ -103,18 +199,16 @@ int	cd(t_command *cmd_list, t_env *envp)
 	int		num_args;
 
 	home = ret_value_env("HOME", envp);
-	if (!home)
-	{
-		printf("cd error: cant find env var HOME\n");
-		return (1);
-	}
 	num_args = get_num_args(cmd_list->args);
 	if (num_args > 2)
 	{
 		printf("cd: too many args\n");
 		return (1);
 	}
-	if (change_dir(cmd_list, home) == 1)
-		return (1);
+	if (cmd_list && cmd_list->args)
+	{
+		if (change_dir(cmd_list, home, envp) == 1)
+			return (1);
+	}
 	return (0);
 }
