@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/20 20:40:12 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/21 20:21:32 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@
 # include <fcntl.h>
 # include <limits.h> 
 # include <signal.h>
-#include <errno.h>
+# include <errno.h>
+# include <sys/ioctl.h>
+
+
 
 //---------- GLOBAL FOR SIGNAL ------------------
 
@@ -224,7 +227,9 @@ void	close_parent_fds(t_pipeline *pipeline);
 void	wait_children(t_pipeline *pipeline, t_env *envp);
 
 //heredoc_helpers
-void	heredoc_input(int fd, char *delimetr);
+// void	heredoc_input(int fd, char *delimetr);
+int	heredoc_input(int fd, char *delimetr);
+
 char	*read_heredoc(char *delimetr, int count);
 
 //init_start
@@ -278,6 +283,6 @@ char *process_value_after_equal(char **start, char **end);
 //signals
 void	setup_signals();
 void	handle_sigint(int sig);
-
+void handle_sigint_heredoc(int sig);
 
 #endif

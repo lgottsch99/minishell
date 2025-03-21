@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:01 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/21 20:23:00 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	add_argument(t_command *command, char *arg)
 		while (command->args[count])
 			count++;
 	}
-	new_args = realloc(command->args, (count + 2) * sizeof(char *));
+	new_args = realloc(command->args, (count + 2) * sizeof(char *)); //not allowed ft!!!!!
 	if (!new_args)
 		return ;
 	command->args = new_args;
@@ -92,6 +92,12 @@ t_command	*parse_tokens(Token *tokens)
 			{
 				printf("found heredoc del %s\n", command->heredoc_delimetr);//remove
 				command->heredoc_file = read_heredoc(command->heredoc_delimetr, count);
+				if (!command->heredoc_file)
+				{
+					free_commands(head); //leaking
+					return (NULL);//leaking
+				}
+				
 			}
 			//------------------------------------
             tokens = tokens->next;
@@ -101,7 +107,7 @@ t_command	*parse_tokens(Token *tokens)
 			arg = ft_strdup(tokens->value);
 			if (!arg)
 			{
-				free_commands(head);
+				free_commands(head);//leaking
 				return (NULL);
 			}
 			add_argument(command, arg);
@@ -126,7 +132,7 @@ t_command	*parse_tokens(Token *tokens)
 				command->input_file = ft_strdup(tokens->next->value);
 				if (!command->input_file)
 				{
-					free_commands(head);
+					free_commands(head);//leaking
 					return (NULL);
 				}
 				tokens = tokens->next;
@@ -139,7 +145,7 @@ t_command	*parse_tokens(Token *tokens)
 				command->output_file = ft_strdup(tokens->next->value);
 				if (!command->output_file)
 				{
-					free_commands(head);
+					free_commands(head);//leaking
 					return (NULL);
 				}
 				tokens = tokens->next;
@@ -153,7 +159,7 @@ t_command	*parse_tokens(Token *tokens)
 				command->output_file = ft_strdup(tokens->next->value);
 				if (!command->output_file)
 				{
-					free_commands(head);
+					free_commands(head);//leaking
 					return (NULL);
 				}
 				tokens = tokens->next;

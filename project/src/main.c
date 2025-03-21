@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/20 20:17:22 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/21 20:16:25 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,16 @@ int	main (int argc, char *argv[], char *envp[])
 
 			print_tokens(tokens);	
 			commands = parse_tokens(tokens);
-			print_commands(commands);
 			free_tokens(tokens);
-			tokens = NULL;	
+			tokens = NULL;
+			if (!commands) //return null in case of heredoc ctrl c
+			{
+				// printf("heredoc interrupted\n");
+				free_tokens(tokens);
+				free(input);
+				continue;
+			}
+			print_commands(commands);	
 		}
 		//printf("finished parsing\n");
 		

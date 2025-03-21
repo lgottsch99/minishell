@@ -6,21 +6,38 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:08:08 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:04 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/21 20:21:18 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	heredoc_input(int fd, char *delimetr)
+int	heredoc_input(int fd, char *delimetr)
 {
 	char	*line;
+
+	//set custom sig handler 
+	struct sigaction sa_new;
+	struct sigaction old_sa;
+
+	sa_new.sa_handler = handle_sigint_heredoc;
+	sigemptyset(&sa_new.sa_mask);
+	sa_new.sa_flags = 0;
+	sigaction(SIGINT, &sa_new, &old_sa);
+
+	g_signal_status = 0; // Reset before entering the loop
 
 	while (1)
 	{
 		line = readline("> ");
-		if (!line)
-			break ;
+		// Check if Ctrl+C was pressed
+		if (!line || g_signal_status == SIGINT)
+		{
+			close(fd);
+			sigaction(SIGINT, &old_sa, NULL);
+			open("/dev/tty", O_RDONLY); 
+			return (1);
+		}
 		if (ft_strcmp(line, delimetr) == 0
 			&& (ft_strlen(line) == ft_strlen(delimetr)))
 		{
@@ -32,6 +49,10 @@ void	heredoc_input(int fd, char *delimetr)
 		write(fd, "\n", 1);
 		free(line);
 	}
+	sigaction(SIGINT, &old_sa, NULL); // Restore original SIGINT handler
+	g_signal_status = 0; // Reset before entering the loop
+
+	return (0);
 }
 
 char	*read_heredoc(char *delimetr, int count)
@@ -50,6 +71,11 @@ char	*read_heredoc(char *delimetr, int count)
 		perror("Failed to create temporary file");
 		return (NULL);
 	}
-	heredoc_input(fd, delimetr);
+	if (heredoc_input(fd, delimetr) != 0)
+	{
+		unlink(heredoc_filename);
+		free(heredoc_filename);
+		return (NULL);
+	}
 	return (heredoc_filename);
 }
