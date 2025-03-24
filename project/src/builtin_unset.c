@@ -18,9 +18,9 @@
 static void	remove_from_envp(t_env *existing_var, t_env **envp)
 {
 	t_env	*before;
-	int		lstsize;
+	// int		lstsize;
 
-	lstsize = count_env_size(*envp);
+	// lstsize = count_env_size(*envp);
 	before = *envp;
 	if (before->next)
 	{
@@ -39,11 +39,11 @@ static void	remove_from_envp(t_env *existing_var, t_env **envp)
 
 int	unset(t_command *cmd, t_env *envp)
 {
-	int		num_args;
+	//int		num_args;
 	int		i;
 	t_env	*existing_var;
 
-	num_args = get_num_args(cmd->args);
+	//num_args = get_num_args(cmd->args);
 	i = 1;
 	while (cmd->args[i])
 	{

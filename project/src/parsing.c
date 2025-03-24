@@ -15,6 +15,7 @@
 void	add_argument(t_command *command, char *arg)
 {
 	int		count;
+	int		i;
 	char	**new_args;
 
 	count = 0;
@@ -23,9 +24,19 @@ void	add_argument(t_command *command, char *arg)
 		while (command->args[count])
 			count++;
 	}
-	new_args = realloc(command->args, (count + 2) * sizeof(char *)); //not allowed ft!!!!!
+	new_args = (char **)malloc((count + 2) * sizeof(char *));
 	if (!new_args)
 		return ;
+	if (command->args)
+	{
+		i = 0;
+		while (i < count)
+		{
+			new_args[i] = command->args[i];
+			i++;
+		}
+		free(command->args);
+	}
 	command->args = new_args;
 	command->args[count] = arg;
 	command->args[count + 1] = NULL;
@@ -198,35 +209,38 @@ void	print_commands(t_command *commands) { //remove whole ft later
 	}
 }
 
-void	free_commands(t_command *commands)//used? bc it is not freeing whole cmd
+void	free_command(t_command *cmd)
+{
+	int	i;
+
+	if (!cmd)
+		return;
+	if(cmd->args)
+	{
+		i = 0;
+		while (cmd->args[i])
+		{
+			free(cmd->args[i]);
+			i++;
+		}
+		free(cmd->args[i]);
+	}
+	free(cmd->input_file);
+	free(cmd->output_file);
+	free(cmd->heredoc_delimetr);
+	free(cmd->heredoc_file);
+	free(cmd->exec_path);
+	free(cmd);
+}
+
+void	free_commands(t_command *commands)
 {
 	t_command	*tmp;
-	int			i;
 
-	while (commands)
+	while(commands)
 	{
 		tmp = commands;
 		commands = commands->next;
-		if (tmp->args)
-		{
-			i = 0;
-			while (tmp->args[i])
-			{
-				free(tmp->args[i]);
-				i++;
-			}
-			free(tmp->args);
-		}
-		if (tmp->input_file)
-			free(tmp->input_file);
-		if (tmp->output_file)
-			free(tmp->output_file);
-		if (tmp->heredoc_delimetr)
-			free(tmp->heredoc_delimetr);
-		if (tmp->heredoc_file)
-			free(tmp->heredoc_file);
-		if (tmp->exec_path)
-			free(tmp->exec_path);
-		free(tmp);
+		free_command(tmp);
 	}
 }

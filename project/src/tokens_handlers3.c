@@ -36,7 +36,7 @@ char	*ft_getenv(char *var_name, char **envp)
 	env = envp;
 	while (*env)
 	{
-		if (strncmp(*env, var_name, var_name_len) == 0
+		if (ft_strncmp(*env, var_name, var_name_len) == 0
 			&& (*env)[var_name_len] == '=')
 			return (*env + var_name_len + 1);
 		env++;

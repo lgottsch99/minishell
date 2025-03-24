@@ -253,6 +253,7 @@ t_command	*parse_tokens(Token *tokens);
 void		print_tokens(Token *tokens);
 void		free_tokens(Token *tokens);
 void		free_commands(t_command *commands);
+void		free_command(t_command *cmd);
 void		print_commands(t_command *commands);
 char		*read_heredoc(char *delimetr, int count);
 void		clean_heredoc(t_command *cmd);
@@ -269,20 +270,20 @@ char		*ft_getenv(char *var_name, char **envp);
 Token		*create_token(char *value, Token_type type);
 void		handle_word(TokenizeContext *token_ctx, 
 				EnvVarContext *env_ctx);
-char	*generate_exit_status_str(int last_exit_status);
-void	update_pointers_after_exit(char **start, char **end);
-char	*handle_token_creation(Token **head, Token **current,
+char		*generate_exit_status_str(int last_exit_status);
+void		update_pointers_after_exit(char **start, char **end);
+char		*handle_token_creation(Token **head, Token **current,
 				char *str, int create_flag);
-char	*extract_var_name_and_value(char **end, char **envp);
-void handle_env_var_in_word(TokenizeContext *token_ctx,
+char		*extract_var_name_and_value(char **end, char **envp);
+void 		handle_env_var_in_word(TokenizeContext *token_ctx,
 				EnvVarContext *env_ctx);
-void handle_quoted_value_after_equal(char **end);
-void handle_unquoted_value_after_equal(char **end);
-char *process_value_after_equal(char **start, char **end);
+void		handle_quoted_value_after_equal(char **end);
+void		handle_unquoted_value_after_equal(char **end);
+char		*process_value_after_equal(char **start, char **end);
 
 //signals
 void	setup_signals();
 void	handle_sigint(int sig);
-void handle_sigint_heredoc(int sig);
+void	handle_sigint_heredoc(int sig);
 
 #endif

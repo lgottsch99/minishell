@@ -104,7 +104,7 @@ void	handle_double_quote(char **start, char **end,
 		{
 			if (*end > *start)
 			{
-				strncpy(buffer + buffer_index, *start, *end - *start);
+				ft_strncpy(buffer + buffer_index, *start, *end - *start);
 				buffer_index += (*end - *start);
 			}
 			ctx = (EnvVarContext){start, end, head, current,
@@ -112,7 +112,7 @@ void	handle_double_quote(char **start, char **end,
 			value = handle_env_var(&ctx);
 			if (value)
 			{
-				strncpy(buffer + buffer_index, value, ft_strlen(value));
+				ft_strncpy(buffer + buffer_index, value, ft_strlen(value));
 				buffer_index += ft_strlen(value);
 				free(value);
 			}
@@ -123,7 +123,7 @@ void	handle_double_quote(char **start, char **end,
 	}
 	if (*end > *start)
 	{
-		strncpy(buffer + buffer_index, *start, *end - *start);
+		ft_strncpy(buffer + buffer_index, *start, *end - *start);
 		buffer_index += *end - *start;
 	}
 	buffer[buffer_index] = '\0';

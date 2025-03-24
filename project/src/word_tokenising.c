@@ -24,6 +24,7 @@ void	handle_env_var_in_word(TokenizeContext *token_ctx,
 	}
 	else
 		(*token_ctx->end)++;
+	(void)value;
 }
 
 void	handle_quoted_value_after_equal(char **end)
