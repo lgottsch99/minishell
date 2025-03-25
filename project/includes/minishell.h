@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/21 20:21:32 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:59:04 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,11 +131,11 @@ int		*alloc_pid(int nr_cmd);
 void	free_everything_pipeline_exit(t_env *envp,
 			t_pipeline *pipeline, int stat);
 void	free_cmd_list(t_command **cmd_list);
-void	remove_heredoc(char *heredoc_file);
+void	remove_heredoc(char **heredoc_file);
 //free helpers
 void	free_2d_array(int **fd_pipe, int size);
 void	free_env_list(t_env **env);
-void	free_2d_char(char **array);
+void	free_2d_char(char ***array);
 void	free_pipe_array(int **fd_pipe, int nr_cmd);
 
 //builtin cd

@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:25 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 14:39:47 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,129 +34,73 @@ char *get_exec_path(char *cmd, char **path)
     return(NULL);
 }
 
-int	check_builtin(char *cmd) //ret 1 if yes, 0 if no
-{	//int	ft_strncmp(const char *s1, const char *s2, size_t n) //ret 0 if the same
+
+
+
+
+// int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access denied, 0 if ok
+// {
+// 	//printf("in check access \n");
+
+// 	int			i;
+// //	int			builtin;
+// 	t_command	*tmp; //to trav list
+
+// 	tmp = cmd_list;
+// 	i = 0;
+// 	while (i < nr_cmd)	//for each cmd in list
+// 	{
+// 		//builtin = 0;
+// 		//CHECK IF CMD IS BUILTIN
+// 		//builtin = check_builtin(tmp->command);
+// 		//IF NOT BUILTIN:
+// 		if (tmp->is_builtin == 0)
+// 			check_path(tmp, envp);
+// 		else if (tmp->is_builtin == 1 && tmp->args[0])
+// 			//printf("cmd is builtin: %s\n", tmp->args[0]);
+
+// 		if (!tmp->exec_path && tmp->is_builtin == 0) //cmd not found
+// 		{
+// 			printf("minishell error: cant find command\n");
+// 			return (1);
+// 		}
+// 		if (tmp->is_builtin == 0 && (!tmp->exec_path || access(tmp->exec_path, X_OK) != 0))//check executability of path
+// 		{
+// 			printf("no executable path found\n");
+// 			return (1);
+// 		}
+
+// 		//check access to files
+// 		if (tmp->input_file)
+// 		{
+// 			if (check_files(tmp) == 1)
+// 				return (1);
+// 		}
+// 		tmp = tmp->next;
+// 		i++;
+// 	}
+// 	return (0);
+// }
+
+// char	*ret_value_env(char *key, t_env *envp)
+// {
+// 	//printf("searching env\n");
 	
-	if ((ft_strncmp(cmd, "echo", 4) == 0) && ft_strlen(cmd) == 4) //dont want to treat echooo as same as echo!
-		return (1);
-	if ((ft_strncmp(cmd, "cd", 2) == 0) && ft_strlen(cmd) == 2)
-		return (1);
-	if ((ft_strncmp(cmd, "pwd", 3) == 0) && ft_strlen(cmd) == 3)
-		return (1);
-	if ((ft_strncmp(cmd, "export", 6) == 0) && ft_strlen(cmd) == 6)
-		return (1);
-	if ((ft_strncmp(cmd, "unset", 5) == 0) && ft_strlen(cmd) == 5)
-		return (1);
-	if ((ft_strncmp(cmd, "env", 3) == 0) && ft_strlen(cmd) == 3)
-		return (1);
-	if ((ft_strncmp(cmd, "exit", 4) == 0) && ft_strlen(cmd) == 4)
-		return (1);
-	return (0);
-}
+// 	t_env	*tmp;
 
-/*
-typedef struct s_command {
-    char	*command;       // The command name (e.g., "echo", "grep")
-    char	**args;         // Array of arguments (NULL-terminated)
-    char	*input_file;    // File for input redirection (NULL if none)
-    char	*output_file;   // File for output redirection (NULL if none)
-    int		append_mode;     // 1 if output should be appended, 0 otherwise
-	//..more if needed:
-	char 	*exec_path; // NULL for parsing, execution: saves executable path in here
-	int		is_builtin;	//0 for parsing, exec: 0 if not, 1 if yes
-
-    struct s_command *next; // Pointer to the next command in a pipeline
-} t_command;
-*/
-
-int	check_files(t_command *cmd) //ret 1 if denied, 0 if ok
-{
-	int	infile;
-
-	//printf("in check files\n");
-	
-	infile = 1;
-
-
-	//read access infile
-	if (access(cmd->input_file, F_OK) == 0) //file 1 need to exist
-	{
-		if (access(cmd->input_file, R_OK) == 0) //read access ok
-			infile = 0;
-		else 
-			printf("read access to %s denied\n", cmd->input_file);
-	}
-	else 
-		printf("%s does not exist\n", cmd->input_file);
-	
-	//write access outfile  ???needed???
-	
-	return (infile);
-}
-
-int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp)//ret 1 if access denied, 0 if ok
-{
-	//printf("in check access \n");
-
-	int			i;
-//	int			builtin;
-	t_command	*tmp; //to trav list
-
-	tmp = cmd_list;
-	i = 0;
-	while (i < nr_cmd)	//for each cmd in list
-	{
-		//builtin = 0;
-		//CHECK IF CMD IS BUILTIN
-		//builtin = check_builtin(tmp->command);
-		//IF NOT BUILTIN:
-		if (tmp->is_builtin == 0)
-			check_path(tmp, envp);
-		else if (tmp->is_builtin == 1 && tmp->args[0])
-			//printf("cmd is builtin: %s\n", tmp->args[0]);
-
-		if (!tmp->exec_path && tmp->is_builtin == 0) //cmd not found
-		{
-			printf("minishell error: cant find command\n");
-			return (1);
-		}
-		if (tmp->is_builtin == 0 && (!tmp->exec_path || access(tmp->exec_path, X_OK) != 0))//check executability of path
-		{
-			printf("no executable path found\n");
-			return (1);
-		}
-
-		//check access to files
-		if (tmp->input_file)
-		{
-			if (check_files(tmp) == 1)
-				return (1);
-		}
-		tmp = tmp->next;
-		i++;
-	}
-	return (0);
-}
-
-char	*ret_value_env(char *key, t_env *envp)
-{
-	//printf("searching env\n");
-	
-	t_env	*tmp;
-
-	tmp = envp;
-	//go thru list until we find key
-	while (ft_strncmp(tmp->key, key, ft_strlen(key)) != 0)
-		tmp = tmp->next;
-	//return value at node
-	if (tmp)
-		return ((char *)tmp->value);
-	else
-	{
-		printf("no key in env found\n");
-		return (NULL);
-	}
-}
+// 	tmp = envp;
+// 	//go thru list until we find key
+// 	while (ft_strncmp(tmp->key, key, ft_strlen(key)) != 0)
+// 		tmp = tmp->next;
+// 	//return value at node
+// 	if (tmp)
+// 		return ((char *)tmp->value);
+// 	else
+// 	{
+// 		printf("no key in env found\n");
+// 		return (NULL);
+// 	}
+// }
 
 char	*extend_upper_dir(t_command *cmd) // ../
 {
@@ -261,7 +205,7 @@ void	check_path(t_command *cmd, t_env *envp) //TODO
 		paths = ft_split(fullpath, ':');
 		//2. get executable path if cmd not builtin
 		exec_path = get_exec_path(cmd->args[0], paths); //returns malloced str if exists, NULL if not
-		free_2d_char(paths);
+		free_2d_char(&paths);
 		//3. save exec path in cmd table
 		cmd->exec_path = exec_path;
 	}
@@ -336,7 +280,7 @@ char **convert_env_array(t_env *envp, t_pipeline *pipeline) //The envp array mus
 		fullstr = create_fullstr(tmp); //MALLOC
 		if (!fullstr)
 		{
-			free_2d_char(array);
+			free_2d_char(&array);
 			free_everything_pipeline_exit(envp, pipeline, 1);
 		}
 		//set full str to array[i]

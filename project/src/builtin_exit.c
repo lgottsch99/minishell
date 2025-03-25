@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:07:51 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 18:28:12 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:59:19 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	only_exit(t_command *cmd, t_env *envp,
 	if (pipeline != NULL)
 	{
 		stat = *pipeline->exit_stat;
-		remove_heredoc(cmd->heredoc_file);
+		remove_heredoc(&cmd->heredoc_file);
 		free_everything_pipeline_exit(envp, pipeline, stat % 256);
 	}
 	else

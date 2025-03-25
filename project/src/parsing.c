@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/21 20:23:00 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:59:37 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,12 @@ void	add_argument(t_command *command, char *arg)
 	}
 	new_args = (char **)malloc((count + 2) * sizeof(char *));
 	if (!new_args)
+	{
+		free(arg); //test
+		arg = NULL;//test
 		return ;
+	}
+		// return ;
 	if (command->args)
 	{
 		i = 0;
@@ -94,7 +99,7 @@ t_command	*parse_tokens(Token *tokens)
 			{
 				free(command->heredoc_delimetr);
 				command->heredoc_delimetr = NULL;
-				remove_heredoc(command->heredoc_file);
+				remove_heredoc(&command->heredoc_file);
 			}
             command->heredoc_delimetr = ft_strdup(tokens->next->value);
 			
@@ -106,6 +111,8 @@ t_command	*parse_tokens(Token *tokens)
 				if (!command->heredoc_file)
 				{
 					free_commands(head); //leaking
+					free_command(command); //test
+
 					return (NULL);//leaking
 				}
 				
@@ -119,6 +126,7 @@ t_command	*parse_tokens(Token *tokens)
 			if (!arg)
 			{
 				free_commands(head);//leaking
+				free_command(command); //test
 				return (NULL);
 			}
 			add_argument(command, arg);
@@ -144,6 +152,8 @@ t_command	*parse_tokens(Token *tokens)
 				if (!command->input_file)
 				{
 					free_commands(head);//leaking
+					free_command(command); //test
+
 					return (NULL);
 				}
 				tokens = tokens->next;
@@ -157,6 +167,8 @@ t_command	*parse_tokens(Token *tokens)
 				if (!command->output_file)
 				{
 					free_commands(head);//leaking
+					free_command(command); //test
+
 					return (NULL);
 				}
 				tokens = tokens->next;
@@ -171,6 +183,8 @@ t_command	*parse_tokens(Token *tokens)
 				if (!command->output_file)
 				{
 					free_commands(head);//leaking
+					free_command(command); //test
+
 					return (NULL);
 				}
 				tokens = tokens->next;
@@ -215,7 +229,7 @@ void	free_command(t_command *cmd)
 
 	if (!cmd)
 		return;
-	if(cmd->args)
+	if (cmd->args)
 	{
 		i = 0;
 		while (cmd->args[i])
@@ -223,7 +237,8 @@ void	free_command(t_command *cmd)
 			free(cmd->args[i]);
 			i++;
 		}
-		free(cmd->args[i]);
+		// free(cmd->args[i]);
+		free(cmd->args);
 	}
 	free(cmd->input_file);
 	free(cmd->output_file);

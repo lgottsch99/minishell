@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 16:24:01 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:07 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:58:49 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	search_path(t_command *cmd, t_env *envp)
 		printf("Error: Invalid command arguments.\n");
 		exec_path = NULL;
 	}
-	free_2d_char(paths);
+	free_2d_char(&paths);
 	cmd->exec_path = exec_path;
 }
 

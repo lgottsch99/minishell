@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/21 20:16:25 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:59:01 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	main (int argc, char *argv[], char *envp[])
 			return (1);
 		}
 		tokens = tokenize(input, exit_stat, env_array);
-		free_2d_char(env_array);
+		free_2d_char(&env_array);
 		free(input);
 		input = NULL;
 		

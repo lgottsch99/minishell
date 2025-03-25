@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:13:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:41:13 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:58:52 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	free_everything_pipeline_exit(t_env *envp,
 	if (pipeline->pid)
 		free(pipeline->pid);
 	if (pipeline->env_array)
-		free_2d_char(pipeline->env_array);
+		free_2d_char(&pipeline->env_array);
 	if (pipeline->cmd_list)
 		free_cmd_list(&pipeline->cmd_list);
 	rl_clear_history();
@@ -82,8 +82,8 @@ void	free_cmd_list(t_command **cmd_list)
 		tmp = *cmd_list;
 		*cmd_list = (*cmd_list)->next;
 		if (tmp->args)
-			free_2d_char(tmp->args);
-		remove_heredoc(tmp->heredoc_file);//??ok
+			free_2d_char(&tmp->args);
+		remove_heredoc(&tmp->heredoc_file);//??ok
 		if (tmp->heredoc_delimetr)
 			free(tmp->heredoc_delimetr);
 		if (tmp->input_file)
@@ -98,12 +98,12 @@ void	free_cmd_list(t_command **cmd_list)
 	*cmd_list = NULL;
 }
 
-void	remove_heredoc(char *heredoc_file)
+void	remove_heredoc(char **heredoc_file)
 {
-	if (heredoc_file)
+	if (*heredoc_file)
 	{
-		unlink(heredoc_file);
-		free(heredoc_file);
-		heredoc_file = NULL;
+		unlink(*heredoc_file);
+		free(*heredoc_file);
+		*heredoc_file = NULL;
 	}
 }

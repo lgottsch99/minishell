@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:04:16 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:41:38 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:53:04 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void	only_builtin(t_command *cmd_list, t_env *envp, int *exit_stat)
 	red_only_builtin(cmd_list, exit_stat, &io);
 	run_builtin(cmd_list, envp, NULL, exit_stat);
 	restore_og_fd(&io, exit_stat);
-	remove_heredoc(cmd_list->heredoc_file);
+	remove_heredoc(&cmd_list->heredoc_file);
 	close (io.og_in);
 	close (io.og_out);
 }
