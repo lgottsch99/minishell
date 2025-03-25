@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/25 17:07:33 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 17:18:15 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	add_argument(t_command *command, char *arg)
 	command->args[count + 1] = NULL;
 }
 
-int	is_builtin(char *arg)
+int	is_builtin(char *arg)  //forbidden strcmp 
 {
 	if (strcmp(arg, "echo") == 0 || strcmp(arg, "cd") == 0
 		|| strcmp(arg, "pwd") == 0 || strcmp(arg, "export") == 0

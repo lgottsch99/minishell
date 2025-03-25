@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokens_helpers.c                                   :+:      :+:    :+:   */
+/*   tokens_handlers2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-09 14:14:46 by dvasilen          #+#    #+#             */
-/*   Updated: 2025-03-09 14:14:46 by dvasilen         ###   ########.fr       */
+/*   Created: 2025/03/09 14:14:46 by dvasilen          #+#    #+#             */
+/*   Updated: 2025/03/25 17:17:45 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ void	handle_heredoc(char **start, char **end,
 	delimiter = ft_strndup(*start, *end - *start);
 	if (!delimiter)
 	{
-		fprintf(stderr, "Error: malloc failed\n");
+		fprintf(stderr, "Error: malloc failed\n"); //forbidden
 		return ;
 	}
 	token = create_token(ft_strdup("<<"), TOKEN_REDIRECT_HEREDOC);
 	if (!token)
 	{
 		free(delimiter);
-		fprintf(stderr, "Error: create_token failed\n");
+		fprintf(stderr, "Error: create_token failed\n");  //forbidden
 		return ;
 	}
 	add_token(head, current, token);
@@ -42,7 +42,7 @@ void	handle_heredoc(char **start, char **end,
 	if (!token)
 	{
 		free(delimiter);
-		fprintf(stderr, "Error: create_token failed\n");
+		fprintf(stderr, "Error: create_token failed\n"); //forbidden
 		return ;
 	}
 	add_token(head, current, token);
