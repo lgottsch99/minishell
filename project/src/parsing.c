@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/25 13:59:37 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 17:07:33 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,7 @@ void	add_argument(t_command *command, char *arg)
 	}
 	new_args = (char **)malloc((count + 2) * sizeof(char *));
 	if (!new_args)
-	{
-		free(arg); //test
-		arg = NULL;//test
 		return ;
-	}
-		// return ;
 	if (command->args)
 	{
 		i = 0;
@@ -94,7 +89,7 @@ t_command	*parse_tokens(Token *tokens)
 	{
 		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
         {
-			//new heredoc logic
+			//new heredoc logic ---
 			if (command->heredoc_file)
 			{
 				free(command->heredoc_delimetr);
@@ -102,20 +97,17 @@ t_command	*parse_tokens(Token *tokens)
 				remove_heredoc(&command->heredoc_file);
 			}
             command->heredoc_delimetr = ft_strdup(tokens->next->value);
-			
-			printf("checking heredoc\n");//remove
+			// printf("checking heredoc\n");//remove
 			if (command->heredoc_delimetr)
 			{
-				printf("found heredoc del %s\n", command->heredoc_delimetr);//remove
+				// printf("found heredoc del %s\n", command->heredoc_delimetr);//remove
 				command->heredoc_file = read_heredoc(command->heredoc_delimetr, count);
 				if (!command->heredoc_file)
 				{
-					free_commands(head); //leaking
-					free_command(command); //test
-
-					return (NULL);//leaking
+					free_commands(head);
+					free_command(command); //prevents leaks
+					return (NULL);
 				}
-				
 			}
 			//------------------------------------
             tokens = tokens->next;
@@ -125,8 +117,8 @@ t_command	*parse_tokens(Token *tokens)
 			arg = ft_strdup(tokens->value);
 			if (!arg)
 			{
-				free_commands(head);//leaking
-				free_command(command); //test
+				free_commands(head);
+				free_command(command); //prevents leaks
 				return (NULL);
 			}
 			add_argument(command, arg);
@@ -151,9 +143,8 @@ t_command	*parse_tokens(Token *tokens)
 				command->input_file = ft_strdup(tokens->next->value);
 				if (!command->input_file)
 				{
-					free_commands(head);//leaking
-					free_command(command); //test
-
+					free_commands(head);
+					free_command(command);//prevents leaks
 					return (NULL);
 				}
 				tokens = tokens->next;
@@ -166,9 +157,8 @@ t_command	*parse_tokens(Token *tokens)
 				command->output_file = ft_strdup(tokens->next->value);
 				if (!command->output_file)
 				{
-					free_commands(head);//leaking
-					free_command(command); //test
-
+					free_commands(head);
+					free_command(command);//prevents leaks
 					return (NULL);
 				}
 				tokens = tokens->next;
@@ -182,9 +172,8 @@ t_command	*parse_tokens(Token *tokens)
 				command->output_file = ft_strdup(tokens->next->value);
 				if (!command->output_file)
 				{
-					free_commands(head);//leaking
-					free_command(command); //test
-
+					free_commands(head);
+					free_command(command);//prevents leaks
 					return (NULL);
 				}
 				tokens = tokens->next;
@@ -237,7 +226,6 @@ void	free_command(t_command *cmd)
 			free(cmd->args[i]);
 			i++;
 		}
-		// free(cmd->args[i]);
 		free(cmd->args);
 	}
 	free(cmd->input_file);

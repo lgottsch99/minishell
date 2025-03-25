@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 16:57:14 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 17:04:40 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ static void	pipeline_loop(t_pipeline *pipeline, t_env *envp)
 		}
 		if (pipeline->pid[i] == 0)
 		{
-			// printf("Child PID: %d\n", getpid()); //remove
+			// printf("Child PID: %d\n", getpid());
+
 			fflush(stdout); //forbidden 
 		
 			//signal(SIGINT, handle_sigint);  // Ensure child installs the handler
@@ -51,7 +52,6 @@ static void	pipeline_loop(t_pipeline *pipeline, t_env *envp)
 			if (loop_check_access(tmp, envp, pipeline->exit_stat) != 0) //checking access in each child to make other run normal
 			{
 				printf("access error\n");
-				*pipeline->exit_stat = 99;
 				return ;
 			}
 			child_process(pipeline, envp, i, tmp);

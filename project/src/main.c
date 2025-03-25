@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 16:20:52 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 17:09:04 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,29 +106,11 @@ int	main (int argc, char *argv[], char *envp[])
 	{
 		if (main_loop(&exit_stat, environ) == 1)
 			continue ;
-		// input = readline("***miniShell***$ ");
-		// if (handle_input(input, environ, &exit_stat) == 1)
-		// {
-		// 	free(input);
-		// 	continue ;
-		// }
-		// //3. parse
-		// commands = parsing(&input, environ, &exit_stat); //ret NULL in case of error
-		// if (!commands)
-		// {
-		// 	free(input);
-		// 	continue ;
-		// }
-		// //4. execute
-		// execute(environ, &exit_stat, commands);	
-		// //5. free everything needed TODO
-		// if (commands)
-		// {
-		// 	free_cmd_list(&commands);
-		// 	commands = NULL;
-		// }
 	}
 }
+
+
+//OG MAIN NOT NORMED:
 
 // int	main (int argc, char *argv[], char *envp[])
 // {

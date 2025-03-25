@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/02 12:12:58 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:00 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 17:01:25 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	red_infile(char	*input_file)
 }
 
 static int	red_out_append(char *output_file)
-{ //TODO TEST APPEND MODE
+{
 	int	outfile_fd;
 
 	outfile_fd = open(output_file, O_WRONLY | O_CREAT | O_APPEND,
