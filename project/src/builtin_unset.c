@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 14:58:22 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:17 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:04:13 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@
 static void	remove_from_envp(t_env *existing_var, t_env **envp)
 {
 	t_env	*before;
-	// int		lstsize;
 
-	// lstsize = count_env_size(*envp);
 	before = *envp;
 	if (before->next)
 	{
@@ -39,11 +37,9 @@ static void	remove_from_envp(t_env *existing_var, t_env **envp)
 
 int	unset(t_command *cmd, t_env *envp)
 {
-	//int		num_args;
 	int		i;
 	t_env	*existing_var;
 
-	//num_args = get_num_args(cmd->args);
 	i = 1;
 	while (cmd->args[i])
 	{

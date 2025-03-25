@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 13:43:25 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:06 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 16:55:07 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,25 @@ void	close_parent_fds(t_pipeline *pipeline)
 	}
 }
 
+
+void	error_waitpid(t_pipeline *pipeline, t_env *envp)
+{
+	// perror("waitpid");
+	free_everything_pipeline_exit(envp, pipeline, 1);
+}
+
+void	wait_more(int status, t_pipeline *pipeline)
+{
+	// printf("Exit status: %d\n", WEXITSTATUS(status));  // Debugging
+	if (WIFEXITED(status))
+		*pipeline->exit_stat = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		*pipeline->exit_stat = 128 + WTERMSIG(status);
+		write(STDOUT_FILENO, "\n", 1);
+	}	
+}
+
 void	wait_children(t_pipeline *pipeline, t_env *envp)
 {
 	int		y;
@@ -90,23 +109,15 @@ void	wait_children(t_pipeline *pipeline, t_env *envp)
 				if (g_signal_status == SIGINT)
 				{
 					write(STDOUT_FILENO, "\n", 1);
-					break;
+					break ;
 				}
-				continue;
+				continue ;
 			}
 			else
-			{
-				perror("waitpid");
-				free_everything_pipeline_exit(envp, pipeline, 1);
-			}
+				error_waitpid(pipeline, envp);
 		}
-		if (WIFEXITED(status))
-			*pipeline->exit_stat = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-		{
-			*pipeline->exit_stat = 128 + WTERMSIG(status);
-			write(STDOUT_FILENO, "\n", 1);
-		}
-		 y++;
+		if (y == pipeline->nr_cmd - 1)
+			wait_more(status, pipeline);
+		y++;
 	}
 }

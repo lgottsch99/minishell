@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 13:44:11 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 16:57:14 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,6 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 	int	nr_cmd;
 
 	nr_cmd = get_nr_cmd(cmd_list);
-	if (check_access(cmd_list, nr_cmd, envp, exit_stat) != 0)
-	{
-		printf("access error\n");
-		return ;
-	}
 	if (nr_cmd == 1 && cmd_list->is_builtin == 1)
 		only_builtin(cmd_list, envp, exit_stat);
 	else
@@ -47,13 +42,19 @@ static void	pipeline_loop(t_pipeline *pipeline, t_env *envp)
 		}
 		if (pipeline->pid[i] == 0)
 		{
-			printf("Child PID: %d\n", getpid());
-			fflush(stdout);
+			// printf("Child PID: %d\n", getpid()); //remove
+			fflush(stdout); //forbidden 
 		
 			//signal(SIGINT, handle_sigint);  // Ensure child installs the handler
 			signal(SIGINT, SIG_DFL);        // OR, explicitly reset to default if needed
 		
-			child_process(pipeline, envp, i, tmp);  // Replace with actual execution function
+			if (loop_check_access(tmp, envp, pipeline->exit_stat) != 0) //checking access in each child to make other run normal
+			{
+				printf("access error\n");
+				*pipeline->exit_stat = 99;
+				return ;
+			}
+			child_process(pipeline, envp, i, tmp);
 		}	
 		//child_process(pipeline, envp, i, tmp);
 		else

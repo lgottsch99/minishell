@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_tokenising.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-20 21:10:56 by dvasilen          #+#    #+#             */
-/*   Updated: 2025-03-20 21:10:56 by dvasilen         ###   ########.fr       */
+/*   Created: 2025/03/20 21:10:56 by dvasilen          #+#    #+#             */
+/*   Updated: 2025/03/25 16:56:15 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*generate_exit_status_str(int last_exit_status)
 	exit_status_str = malloc(12);
 	if (!exit_status_str)
 		return (NULL);
-	snprintf(exit_status_str, 12, "%d", last_exit_status);
+	snprintf(exit_status_str, 12, "%d", last_exit_status); //forbidden
 	return (exit_status_str);
 }
 

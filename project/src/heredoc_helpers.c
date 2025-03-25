@@ -6,36 +6,49 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:08:08 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/21 20:21:18 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:47:16 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+static void	set_heredoc_signal(struct sigaction *sa_new,
+	struct sigaction *old_sa)
+{
+	sa_new->sa_handler = handle_sigint_heredoc;
+	sigemptyset(&sa_new->sa_mask);
+	sa_new->sa_flags = 0;
+	sigaction(SIGINT, sa_new, old_sa);
+	g_signal_status = 0;
+}
+
+static void	handle_ctrlc(int fd, struct sigaction *old_sa)
+{
+	close(fd);
+	sigaction(SIGINT, old_sa, NULL);
+	open("/dev/tty", O_RDONLY);
+}
+
+static void	write_free(int fd, char *line)
+{
+	write(fd, line, ft_strlen(line));
+	write(fd, "\n", 1);
+	free(line);
+}
+
 int	heredoc_input(int fd, char *delimetr)
 {
-	char	*line;
+	char				*line;
+	struct sigaction	sa_new;
+	struct sigaction	old_sa;
 
-	//set custom sig handler 
-	struct sigaction sa_new;
-	struct sigaction old_sa;
-
-	sa_new.sa_handler = handle_sigint_heredoc;
-	sigemptyset(&sa_new.sa_mask);
-	sa_new.sa_flags = 0;
-	sigaction(SIGINT, &sa_new, &old_sa);
-
-	g_signal_status = 0; // Reset before entering the loop
-
+	set_heredoc_signal(&sa_new, &old_sa);
 	while (1)
 	{
 		line = readline("> ");
-		// Check if Ctrl+C was pressed
-		if (!line || g_signal_status == SIGINT)
+		if (!line || g_signal_status == SIGINT) // Check if Ctrl+C was pressed
 		{
-			close(fd);
-			sigaction(SIGINT, &old_sa, NULL);
-			open("/dev/tty", O_RDONLY); 
+			handle_ctrlc(fd, &old_sa);
 			return (1);
 		}
 		if (ft_strcmp(line, delimetr) == 0
@@ -45,13 +58,10 @@ int	heredoc_input(int fd, char *delimetr)
 			close (fd);
 			break ;
 		}
-		write(fd, line, strlen(line));
-		write(fd, "\n", 1);
-		free(line);
+		write_free(fd, line);
 	}
 	sigaction(SIGINT, &old_sa, NULL); // Restore original SIGINT handler
 	g_signal_status = 0; // Reset before entering the loop
-
 	return (0);
 }
 

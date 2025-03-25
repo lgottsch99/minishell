@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 14:54:31 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 13:58:50 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:38:42 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	**convert_env_array(t_env *envp, t_pipeline *pipeline)
 		fullstr = create_fullstr(tmp);
 		if (!fullstr)
 		{
-			free_2d_char(&array);
+			free_2d_char(array);
 			free_everything_pipeline_exit(envp, pipeline, 1);
 		}
 		array[i] = fullstr;

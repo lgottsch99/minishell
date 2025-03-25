@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 15:46:29 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:39:24 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 16:57:46 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,13 @@ int	check_files(t_command *cmd, int *exit_stat)
 	return (0);
 }
 
-static int	loop_check_access(t_command *tmp, t_env *envp, int *exit_stat)
+int	loop_check_access(t_command *tmp, t_env *envp, int *exit_stat)
 {
 	if (tmp->is_builtin == 0)
 		check_path(tmp, envp);
 	if (!tmp->exec_path && tmp->is_builtin == 0)
 	{
-		printf("minishell error: cant find command\n");
+		printf("minishell: cant find command\n");
 		*exit_stat = 127;
 		return (1);
 	}
@@ -55,23 +55,6 @@ static int	loop_check_access(t_command *tmp, t_env *envp, int *exit_stat)
 	{
 		if (check_files(tmp, exit_stat) == 1)
 			return (1);
-	}
-	return (0);
-}
-
-int	check_access(t_command	*cmd_list, int nr_cmd, t_env *envp, int *exit_stat)
-{
-	int			i;
-	t_command	*tmp;
-
-	tmp = cmd_list;
-	i = 0;
-	while (i < nr_cmd)
-	{
-		if (loop_check_access(tmp, envp, exit_stat) == 1)
-			return (1);
-		tmp = tmp->next;
-		i++;
 	}
 	return (0);
 }

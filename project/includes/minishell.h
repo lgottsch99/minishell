@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 13:59:04 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 16:57:56 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,9 @@
 # include <errno.h>
 # include <sys/ioctl.h>
 
-
-
 //---------- GLOBAL FOR SIGNAL ------------------
 
-extern volatile sig_atomic_t g_signal_status;
-
+extern volatile sig_atomic_t	g_signal_status;
 
 //---------- Structs ------------------
 
@@ -99,22 +96,24 @@ typedef struct s_single_red
 	int	red_out;
 }	t_single_red;
 
-typedef struct s_env_var_context {
-    char **start;
-    char **end;
-    Token **head;
-    Token **current;
-    int last_exit_status;
-    char **envp;
-    int create_flag;
-} EnvVarContext;
+typedef struct s_env_var_context
+{
+	char **start;
+	char **end;
+	Token **head;
+	Token **current;
+	int last_exit_status;
+	char **envp;
+	int create_flag;
+}	EnvVarContext;
 
-typedef struct s_tokenize_context {
-    char **start;
-    char **end;
-    Token **head;
-    Token **current;
-} TokenizeContext;
+typedef struct s_tokenize_context
+{
+	char **start;
+	char **end;
+	Token **head;
+	Token **current;
+}	TokenizeContext;
 
 //---------- FUNCTIONS ------------------------------
 
@@ -122,8 +121,7 @@ typedef struct s_tokenize_context {
 
 //access.c
 int		check_files(t_command *cmd, int *exit_stat);
-int		check_access(t_command	*cmd_list, int nr_cmd,
-			t_env *envp, int *exit_stat);
+int		loop_check_access(t_command *tmp, t_env *envp, int *exit_stat);
 
 //alloc_free_exec
 int		**alloc_fd(int nr_cmd);
@@ -135,7 +133,7 @@ void	remove_heredoc(char **heredoc_file);
 //free helpers
 void	free_2d_array(int **fd_pipe, int size);
 void	free_env_list(t_env **env);
-void	free_2d_char(char ***array);
+void	free_2d_char(char **array);
 void	free_pipe_array(int **fd_pipe, int nr_cmd);
 
 //builtin cd

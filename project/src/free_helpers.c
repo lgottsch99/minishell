@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 15:42:18 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 13:58:01 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:30:20 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,22 +46,19 @@ void	free_env_list(t_env **env)
 	*env = NULL;
 }
 
-void	free_2d_char(char ***array)
+void	free_2d_char(char **array)
 {
 	int	i;
 
 	i = 0;
-	if (!*array)
-		return ;
-
-	while ((*array)[i])
+	while (array[i])
 	{
-		free((*array)[i]);
+		free(array[i]);
 		i++;
 	}
-	if (*array)
-		free(*array);
-	*array = NULL;
+	if (array)
+		free(array);
+	array = NULL;
 }
 
 void	free_pipe_array(int **fd_pipe, int nr_cmd)

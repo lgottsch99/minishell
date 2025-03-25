@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 14:05:26 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 13:58:51 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 16:43:26 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void	child_process(t_pipeline *pipeline, t_env *envp, int i, t_command *tmp)
 {
-    signal(SIGINT, SIG_DFL);
-
+	signal(SIGINT, SIG_DFL);
 	close_not_needed_pipe(i, pipeline);
 	child_redirection(tmp, i, pipeline, envp);
 	if (tmp->is_builtin == 0)
@@ -45,7 +44,7 @@ void	pipeline_exec(t_pipeline *pipeline, t_command *tmp, t_env *envp)
 	if (execve(tmp->exec_path, tmp->args, pipeline->env_array) == -1)
 	{
 		perror("execve: \n");
-		free_2d_char(&pipeline->env_array);
+		free_2d_char(pipeline->env_array);
 		free_everything_pipeline_exit(envp, pipeline, 1);
 	}
 }

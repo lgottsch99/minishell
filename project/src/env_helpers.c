@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 14:05:35 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/18 15:41:30 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:38:33 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char **env_to_array(t_env *env) //dana ft
 			free(env_array);
 			return (NULL);
 		}
-		snprintf(env_array[i], len, "%s=%s", current->key, current->value); //todo
+		snprintf(env_array[i], len, "%s=%s", current->key, current->value); // forbidden, todo
 		current = current->next;
 		i++;
 	}
