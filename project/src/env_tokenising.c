@@ -15,11 +15,25 @@
 char	*generate_exit_status_str(int last_exit_status)
 {
 	char	*exit_status_str;
+	int		num_len;
+	int		temp;
 
-	exit_status_str = malloc(12);
+	num_len = 1;
+	temp = last_exit_status;
+	while (temp >= 10)
+	{
+		temp /= 10;
+		num_len++;
+	}
+	exit_status_str = malloc(num_len + 1);
 	if (!exit_status_str)
 		return (NULL);
-	snprintf(exit_status_str, 12, "%d", last_exit_status); //forbidden
+	exit_status_str[num_len] = '\0';
+	while (num_len--)
+	{
+		exit_status_str[num_len] = (last_exit_status % 10) + '0';
+		last_exit_status /= 10;
+	}
 	return (exit_status_str);
 }
 

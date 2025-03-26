@@ -12,15 +12,16 @@
 
 #include "../includes/minishell.h"
 
-Token	*tokenize(char *input, int last_exit_status, char **envp)
+t_token	*tokenize(char *input, int last_exit_status, char **envp)
 {
-	Token			*head;
-	Token			*current;
-	Token			*token;
+	t_token			*head;
+	t_token			*current;
+	t_token			*token;
 	char			*start;
 	char			*end;
-	EnvVarContext	env_ctx;
-	TokenizeContext token_ctx = {&start, &end, &head, &current};
+	t_envVarContext	env_ctx;
+	t_tokenizeContext	token_ctx = {&start, &end, &head, &current};
+	t_quote_context	quote_ctx;
 
 	head = NULL;
 	current = NULL;
@@ -55,14 +56,25 @@ Token	*tokenize(char *input, int last_exit_status, char **envp)
 			if (end > start)
 				handle_word(&token_ctx, &env_ctx);
 			if (*end == '"')
-				handle_double_quote(&start, &end, &head,
-					&current, last_exit_status, envp);
+			{
+				quote_ctx = (t_quote_context)
+				{
+					.start = &start,
+					.end = &end,
+					.head = &head,
+					.current = &current,
+					.last_exit_status = last_exit_status,
+					.envp = envp
+				};
+				handle_double_quote(&quote_ctx);
+			}
 			else
 				handle_single_quote(&start, &end, &head, &current);
 		}
 		else if (*end == '$')
 		{
-			env_ctx = (EnvVarContext){&start, &end, &head, &current, last_exit_status, envp, 1};
+			env_ctx = (t_envVarContext){&start, &end, &head,
+				&current, last_exit_status, envp, 1};
 			handle_env_var(&env_ctx);
 			while (*end && !ft_isspace(*end) && *end != '|'
 				&& *end != '>' && *end != '<' && *end != '=')
@@ -70,7 +82,7 @@ Token	*tokenize(char *input, int last_exit_status, char **envp)
 			start = end;
 		}
 		else
-		handle_word(&token_ctx, &env_ctx);
+			handle_word(&token_ctx, &env_ctx);
 	}
 	if (start != end)
 		handle_word(&token_ctx, &env_ctx);

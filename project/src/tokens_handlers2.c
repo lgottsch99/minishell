@@ -12,10 +12,8 @@
 
 #include "../includes/minishell.h"
 
-void	handle_heredoc(char **start, char **end,
-	Token **head, Token **current)
+char	*extract_delimeter(char **start, char **end)
 {
-	Token	*token;
 	char	*delimiter;
 
 	*start = *end + 2;
@@ -25,16 +23,24 @@ void	handle_heredoc(char **start, char **end,
 	while (**end && !ft_isspace(**end) && **end != '\0')
 		(*end)++;
 	delimiter = ft_strndup(*start, *end - *start);
+	return (delimiter);
+}
+
+void	handle_heredoc(char **start, char **end,
+	t_token **head, t_token **current)
+{
+	t_token	*token;
+	char	*delimiter;
+
+	delimiter = extract_delimeter(start, end);
 	if (!delimiter)
-	{
-		fprintf(stderr, "Error: malloc failed\n"); //forbidden
 		return ;
-	}
 	token = create_token(ft_strdup("<<"), TOKEN_REDIRECT_HEREDOC);
 	if (!token)
 	{
 		free(delimiter);
-		fprintf(stderr, "Error: create_token failed\n");  //forbidden
+		free(token->value);
+		free(token);
 		return ;
 	}
 	add_token(head, current, token);
@@ -42,7 +48,6 @@ void	handle_heredoc(char **start, char **end,
 	if (!token)
 	{
 		free(delimiter);
-		fprintf(stderr, "Error: create_token failed\n"); //forbidden
 		return ;
 	}
 	add_token(head, current, token);
@@ -50,9 +55,9 @@ void	handle_heredoc(char **start, char **end,
 }
 
 void	handle_redir_less(char **start, char **end,
-	Token **head, Token **current)
+	t_token **head, t_token **current)
 {
-	Token	*token;
+	t_token	*token;
 	char	*value;
 
 	if (*end > *start)
@@ -62,9 +67,7 @@ void	handle_redir_less(char **start, char **end,
 		add_token(head, current, token);
 	}
 	if (*(*end + 1) == '<')
-	{
 		handle_heredoc(start, end, head, current);
-	}
 	else
 	{
 		token = create_token(ft_strdup("<"), TOKEN_REDIRECT_IN);
@@ -73,14 +76,15 @@ void	handle_redir_less(char **start, char **end,
 	*start = ++(*end);
 }
 
-void handle_word(TokenizeContext *token_ctx, EnvVarContext *env_ctx)
+void	handle_word(t_tokenizeContext *token_ctx, t_envVarContext *env_ctx)
 {
 	char	*value;
-	Token	*token;
+	t_token	*token;
 
-	while (**token_ctx->end && !ft_isspace(**token_ctx->end) && **token_ctx->end != '|' &&
-			**token_ctx->end != '>' && **token_ctx->end != '<' && **token_ctx->end != '=' &&
-			**token_ctx->end != '"' && **token_ctx->end != '\'')
+	while (**token_ctx->end && !ft_isspace(**token_ctx->end)
+		&& **token_ctx->end != '|' && **token_ctx->end != '>'
+		&& **token_ctx->end != '<' && **token_ctx->end != '='
+		&& **token_ctx->end != '"' && **token_ctx->end != '\'')
 		handle_env_var_in_word(token_ctx, env_ctx);
 	if (**token_ctx->end == '=')
 	{
@@ -92,7 +96,8 @@ void handle_word(TokenizeContext *token_ctx, EnvVarContext *env_ctx)
 		value = process_value_after_equal(token_ctx->start, token_ctx->end);
 	}
 	else
-		value = ft_strndup(*token_ctx->start, *token_ctx->end - *token_ctx->start);
+		value = ft_strndup(*token_ctx->start,
+				*token_ctx->end - *token_ctx->start);
 	token = create_token(value, TOKEN_WORD);
 	add_token(token_ctx->head, token_ctx->current, token);
 	*token_ctx->start = *token_ctx->end;

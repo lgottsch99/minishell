@@ -27,7 +27,7 @@ SRC = $(addprefix $(SRC_FOLDER), access.c alloc_free_exec.c builtin_cd.c builtin
  	execution.c execution_helpers.c free_helpers.c heredoc_helpers.c init_start.c \
  	main.c parsing.c redirections.c signals_helpers.c single_builtin.c tokenising.c \
  	tokens_handlers.c tokens_handlers2.c tokens_handlers3.c tokens_handlers4.c env_tokenising.c \
- 	word_tokenising.c)
+ 	word_tokenising.c parsing_helpers2.c parsing_helpers.c)
 
 OBJ = $(SRC:.c=.o)
 

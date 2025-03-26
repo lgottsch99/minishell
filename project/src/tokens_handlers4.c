@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-char	*handle_env_var(EnvVarContext *ctx)
+char	*handle_env_var(t_envVarContext *ctx)
 {
 	char	*exit_status_str;
 	char	*value_copy;
@@ -35,4 +35,21 @@ char	*handle_env_var(EnvVarContext *ctx)
 		return (handle_token_creation(ctx->head, ctx->current,
 				value_copy, ctx->create_flag));
 	}
+}
+
+void	handle_single_quote(char **start, char **end,
+	t_token **head, t_token **current)
+{
+	char	*value;
+	t_token	*token;
+
+	(*end)++;
+	*start = *end;
+	while (**end && **end != '\'')
+		(*end)++;
+	value = ft_strndup(*start, *end - *start);
+	token = create_token(value, TOKEN_WORD);
+	add_token(head, current, token);
+	(*end)++;
+	*start = *end;
 }

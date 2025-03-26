@@ -12,8 +12,8 @@
 
 #include "../includes/minishell.h"
 
-void	handle_env_var_in_word(TokenizeContext *token_ctx,
-			EnvVarContext *env_ctx)
+void	handle_env_var_in_word(t_tokenizeContext *token_ctx,
+			t_envVarContext *env_ctx)
 {
 	char	*value;
 

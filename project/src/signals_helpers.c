@@ -33,10 +33,7 @@ void	handle_sigint(int sig)
 		rl_redisplay();
 	}
 	else
-	{
-		//write(STDOUT_FILENO, "\nHANDLED IN CHILD\n", 18);
 		exit(130);
-	}
 }
 
 void	setup_signals(void)

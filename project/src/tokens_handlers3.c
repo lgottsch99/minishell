@@ -12,11 +12,11 @@
 
 #include "../includes/minishell.h"
 
-Token	*create_token(char *value, Token_type type)
+t_token	*create_token(char *value, t_token_type type)
 {
-	Token	*token;
+	t_token	*token;
 
-	token = malloc(sizeof(Token));
+	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
 	token->value = value;
@@ -44,7 +44,7 @@ char	*ft_getenv(char *var_name, char **envp)
 	return (NULL);
 }
 
-void	add_token(Token **head, Token **current, Token *token)
+void	add_token(t_token **head, t_token **current, t_token *token)
 {
 	if (!*head)
 		*head = token;
@@ -53,18 +53,18 @@ void	add_token(Token **head, Token **current, Token *token)
 	*current = token;
 }
 
-void	print_tokens(Token *tokens)
+void	print_tokens(t_token *tokens)
 {
 	while (tokens)
 	{
-		printf("Token: %s, Type: %d\n", tokens->value, tokens->type);
+		printf("t_token: %s, Type: %d\n", tokens->value, tokens->type);
 		tokens = tokens->next;
 	}
 }
 
-void	free_tokens(Token *tokens)
+void	free_tokens(t_token *tokens)
 {
-	Token	*tmp;
+	t_token	*tmp;
 
 	while (tokens)
 	{

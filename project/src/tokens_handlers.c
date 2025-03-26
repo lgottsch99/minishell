@@ -12,9 +12,9 @@
 
 #include "../includes/minishell.h"
 
-void	handle_pipe(char **start, char **end, Token **head, Token **current)
+void	handle_pipe(char **start, char **end, t_token **head, t_token **current)
 {
-	Token	*token;
+	t_token	*token;
 	char	*value;
 
 	if (*end > *start)
@@ -29,9 +29,9 @@ void	handle_pipe(char **start, char **end, Token **head, Token **current)
 }
 
 void	handle_redir_more(char **start, char **end,
-	Token **head, Token **current)
+	t_token **head, t_token **current)
 {
-	Token	*token;
+	t_token	*token;
 	char	*value;
 
 	if (*end > *start)
@@ -54,83 +54,67 @@ void	handle_redir_more(char **start, char **end,
 	*start = ++(*end);
 }
 
-void	handle_single_quote(char **start, char **end,
-	Token **head, Token **current)
+static void	handle_empty_quotes(t_quote_context *ctx)
 {
-	char	*value;
-	Token	*token;
+	t_token	*token;
 
-	(*end)++;
-	*start = *end;
-	while (**end && **end != '\'')
-		(*end)++;
-	value = ft_strndup(*start, *end - *start);
-	token = create_token(value, TOKEN_WORD);
-	add_token(head, current, token);
-	(*end)++;
-	*start = *end;
+	while (*(*ctx->end) == '"')
+		(*ctx->end)++;
+	if (!(*ctx->current) || (*ctx->current)->type != TOKEN_WORD)
+	{
+		token = create_token(ft_strdup(""), TOKEN_WORD);
+		add_token(ctx->head, ctx->current, token);
+	}
+	*ctx->start = *ctx->end;
 }
 
-void	handle_double_quote(char **start, char **end,
-	Token **head, Token **current, int last_exit_status, char **envp)
+static void	process_env_var(t_quote_context *ctx, char *buffer, int *buf_idx)
 {
-	Token			*token;
-	char			buffer[1024];
-	int				buffer_index;
 	char			*value;
-	EnvVarContext	ctx;
+	t_envVarContext	env_ctx;
 
-	(*end)++;
-	*start = *end;
-	if (**end == '"')
+	env_ctx = (t_envVarContext)
+	{ctx->start, ctx->end, ctx->head, ctx->current,
+		ctx->last_exit_status, ctx->envp, 0};
+	if (*ctx->end > *ctx->start)
 	{
-		while (**end == '"')
-			(*end)++;
-		if (*current && (*current)->type == TOKEN_WORD)
-		{
-		}
-		else
-		{
-			token = create_token(ft_strdup(""), TOKEN_WORD);
-			add_token(head, current, token);
-		}
-		*start = *end;
-		return ;
+		ft_strncpy(buffer + *buf_idx, *ctx->start, *ctx->end - *ctx->start);
+		*buf_idx += (*ctx->end - *ctx->start);
 	}
+	value = handle_env_var(&env_ctx);
+	if (value)
+	{
+		ft_strncpy(buffer + *buf_idx, value, ft_strlen(value));
+		*buf_idx += ft_strlen(value);
+		free(value);
+	}
+	*ctx->start = *ctx->end;
+}
+
+void	handle_double_quote(t_quote_context *ctx)
+{
+	char	buffer[1024];
+	int		buffer_index;
+
+	(*ctx->end)++;
+	*ctx->start = *ctx->end;
+	if (**ctx->end == '"')
+		return (handle_empty_quotes(ctx));
 	buffer_index = 0;
-	while (**end && **end != '"')
+	while (**ctx->end && **ctx->end != '"')
 	{
-		if (**end == '$')
-		{
-			if (*end > *start)
-			{
-				ft_strncpy(buffer + buffer_index, *start, *end - *start);
-				buffer_index += (*end - *start);
-			}
-			ctx = (EnvVarContext){start, end, head, current,
-				last_exit_status, envp, 0};
-			value = handle_env_var(&ctx);
-			if (value)
-			{
-				ft_strncpy(buffer + buffer_index, value, ft_strlen(value));
-				buffer_index += ft_strlen(value);
-				free(value);
-			}
-			*start = *end;
-		}
+		if (**ctx->end == '$')
+			process_env_var(ctx, buffer, &buffer_index);
 		else
-			(*end)++;
+			(*ctx->end)++;
 	}
-	if (*end > *start)
-	{
-		ft_strncpy(buffer + buffer_index, *start, *end - *start);
-		buffer_index += *end - *start;
-	}
-	buffer[buffer_index] = '\0';
-	token = create_token(ft_strdup(buffer), TOKEN_WORD);
-	add_token(head, current, token);
-	(*end)++;
-	*start = *end;
-	while (**end == '"')
-		(*end)++;
+	if (*ctx->end > *ctx->start)
+		ft_strncpy(buffer + buffer_index, *ctx->start, *ctx->end - *ctx->start);
+	buffer[buffer_index + (*ctx->end - *ctx->start)] = '\0';
+	add_token(ctx->head, ctx->current,
+		create_token(ft_strdup(buffer), TOKEN_WORD));
+	(*ctx->end)++;
+	*ctx->start = *ctx->end;
+	while (**ctx->end == '"')
+		(*ctx->end)++;
 }
