@@ -37,7 +37,7 @@ int	handle_input(char *input, t_env	*environ, int *exit_stat)
 t_command	*parsing(char **input, t_env *environ, int *exit_stat)
 {
 	char		**env_array;
-	Token		*tokens;
+	t_token		*tokens;
 	t_command	*commands;
 
 	commands = NULL;
@@ -119,7 +119,7 @@ int	main (int argc, char *argv[], char *envp[])
 // 	char	*input;
 // 	t_env	*environ;
 // 	int		exit_stat;
-// 	// Token		*tokens;
+// 	// t_token		*tokens;
 // 	t_command	*commands;
 // 	// char		**env_array;
 

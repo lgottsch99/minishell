@@ -43,10 +43,10 @@ void	update_pointers_after_exit(char **start, char **end)
 	*start = *end;
 }
 
-char	*handle_token_creation(Token **head, Token **current,
+char	*handle_token_creation(t_token **head, t_token **current,
 	char *str, int create_flag)
 {
-	Token	*token;
+	t_token	*token;
 
 	if (create_flag)
 	{

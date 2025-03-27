@@ -90,7 +90,7 @@ void	print_commands(t_command *commands) { //remove whole ft later
 	}
 }
 
-t_command	*parse_tokens(Token *tokens)
+t_command	*parse_tokens(t_token *tokens)
 {
 	t_command	*head;
 	t_command	*current;

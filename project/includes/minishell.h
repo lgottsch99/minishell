@@ -53,7 +53,7 @@ typedef struct s_token
 {
 	char				*value;
 	t_token_type		type;
-	struct t_oken		*next;
+	struct s_token		*next;
 }	t_token;
 
 typedef struct s_command

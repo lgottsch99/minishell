@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int	handle_heredoc_parsing(t_command **cmd, Token **tokens,
+int	handle_heredoc_parsing(t_command **cmd, t_token **tokens,
 		int count, t_command **head)
 {
 	if ((*cmd)->heredoc_file)
@@ -52,7 +52,7 @@ int	handle_word_parsing(t_command *cmd, char *value, t_command **head)
 	return (1);
 }
 
-int	handle_redir(t_command **cmd, Token **tokens, t_command **head, int mode)
+int	handle_redir(t_command **cmd, t_token **tokens, t_command **head, int mode)
 {
 	char	**target;
 
