@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:43:57 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/20 20:15:56 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/01 14:50:59 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	print_start(void)
 	printf(" ▐█▄▪▐███▌▐▀▐█▄▄▌▐█▌▐▌▐█▌▐▌    ▐█▌██▐█▌▐█▄▄▌\n");
 	printf("  ▀▀▀▀ ▀▀▀ · ▀▀▀ .▀▀▀ .▀▀▀      ▀▀▀▀ ▀▪ ▀▀▀  ??????\n");
 	printf("\n");
+	printf("-- BY DVASILEN & LGOTTSCH -- 42 PRAGUE --\n");
 	printf("\n");
 	return ;
 }
