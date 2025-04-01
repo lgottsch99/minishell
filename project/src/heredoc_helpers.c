@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:08:08 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 15:47:16 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/01 14:09:22 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	heredoc_input(int fd, char *delimetr)
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || g_signal_status == SIGINT) // Check if Ctrl+C was pressed
+		if (!line || g_signal_status == SIGINT)
 		{
 			handle_ctrlc(fd, &old_sa);
 			return (1);
@@ -60,8 +60,8 @@ int	heredoc_input(int fd, char *delimetr)
 		}
 		write_free(fd, line);
 	}
-	sigaction(SIGINT, &old_sa, NULL); // Restore original SIGINT handler
-	g_signal_status = 0; // Reset before entering the loop
+	sigaction(SIGINT, &old_sa, NULL);
+	g_signal_status = 0;
 	return (0);
 }
 

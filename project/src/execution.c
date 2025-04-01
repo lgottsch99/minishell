@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 17:04:40 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/01 14:36:52 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,19 @@ void	execute(t_env *envp, int *exit_stat, t_command *cmd_list)
 		pipeline(cmd_list, envp, exit_stat);
 	g_signal_status = 0;
 	return ;
+}
+
+static int	check_access_and_child(t_command *tmp, t_env *envp,
+	t_pipeline *pipeline, int i)
+{
+	signal(SIGINT, SIG_DFL);
+	if (loop_check_access(tmp, envp, pipeline->exit_stat) != 0)
+	{
+		printf("access error\n");
+		return (1);
+	}
+	child_process(pipeline, envp, i, tmp);
+	return (0);
 }
 
 static void	pipeline_loop(t_pipeline *pipeline, t_env *envp)
@@ -42,14 +55,9 @@ static void	pipeline_loop(t_pipeline *pipeline, t_env *envp)
 		}
 		if (pipeline->pid[i] == 0)
 		{
-			signal(SIGINT, SIG_DFL);
-			if (loop_check_access(tmp, envp, pipeline->exit_stat) != 0)
-			{
-				printf("access error\n");
+			if (check_access_and_child(tmp, envp, pipeline, i) == 1)
 				return ;
-			}
-			child_process(pipeline, envp, i, tmp);
-		}	
+		}
 		else
 		{
 			tmp = tmp->next;
@@ -69,7 +77,7 @@ static void	free_everything_malloced_pipe(t_pipeline *pipeline)
 void	pipeline(t_command *cmd_list, t_env *envp, int *exit_stat)
 {
 	t_pipeline	pipeline;
-	int	nr_cmd;
+	int			nr_cmd;
 
 	nr_cmd = get_nr_cmd(cmd_list);
 	init_pipeline(&pipeline, nr_cmd, cmd_list, exit_stat);

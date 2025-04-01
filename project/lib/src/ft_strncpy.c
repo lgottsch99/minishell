@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isascii.c                                       :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvasilen <dvasilen@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:42:30 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/24 19:13:54 by dvasilen         ###   ########.fr       */
+/*   Updated: 2025/04/01 14:05:19 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../full_libft.h"
 
-char	*ft_strncpy(char *dest,char *src,int n)
+char	*ft_strncpy(char *dest, char *src, int n)
 {
 	int	i;
 
