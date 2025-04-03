@@ -136,6 +136,26 @@ typedef struct s_tokenize_setup
 	t_envVarContext		env_ctx;
 }	t_tokenize_setup;
 
+typedef struct tokenize_data
+{
+	t_token				*head;
+	t_token				*current;
+	t_token				*token;
+	char				*start;
+	char				*end;
+	t_envVarContext		env_ctx;
+	t_tokenizeContext	token_ctx;
+	t_quote_context		quote_ctx;
+}	t_tdata;
+
+typedef struct s_parse_ctx
+{
+	t_command			**cmd;
+	t_command			**head;
+	t_command			**current;
+	int					*count;
+}	t_parse_ctx;
+
 //---------- FUNCTIONS ------------------------------
 
 //main.c
@@ -248,7 +268,7 @@ void		wait_children(t_pipeline *pipeline, t_env *envp);
 
 //heredoc_helpers
 // void	heredoc_input(int fd, char *delimetr);
-int			heredoc_input(int fd, char *delimetr);
+void		heredoc_input(int fd, char *delimetr);
 
 char		*read_heredoc(char *delimetr, int count);
 
@@ -294,6 +314,7 @@ void		add_token(t_token **head, t_token **current, t_token *token);
 char		*ft_getenv(char *var_name, char **envp);
 t_token		*create_token(char *value, t_token_type type);
 void		handle_word(t_tokenizeContext *token_ctx, t_envVarContext *env_ctx);
+void		handle_space(t_tdata *data);
 char		*generate_exit_status_str(int last_exit_status);
 void		update_pointers_after_exit(char **start, char **end);
 char		*handle_token_creation(t_token **head, t_token **current,
@@ -304,6 +325,10 @@ void		handle_env_var_in_word(t_tokenizeContext *token_ctx,
 void		handle_quoted_value_after_equal(char **end);
 void		handle_unquoted_value_after_equal(char **end);
 char		*process_value_after_equal(char **start, char **end);
+int			process_token(t_token **token, t_parse_ctx *ctx);
+int			handle_redirection_parsing(t_token **token, t_parse_ctx *ctx,
+				int is_output);
+int			handle_heredoc_token(t_token **token, t_parse_ctx *ctx);
 
 //signals
 void		setup_signals(void);

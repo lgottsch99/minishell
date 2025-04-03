@@ -49,13 +49,11 @@ t_command	*parsing(char **input, t_env *environ, int *exit_stat)
 	*input = NULL;
 	if (tokens)
 	{
-		print_tokens(tokens);//rm
 		commands = parse_tokens(tokens);
 		free_tokens(tokens);
 		tokens = NULL;
-		if (!commands) //return null in case of heredoc ctrl c
+		if (!commands)
 			return (NULL);
-		print_commands(commands);//rm
 	}
 	return (commands);
 }

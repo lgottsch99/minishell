@@ -57,7 +57,7 @@ int	handle_redir(t_command **cmd, t_token **tokens, t_command **head, int mode)
 	char	**target;
 
 	if (!(*tokens)->next || (*tokens)->next->type != TOKEN_WORD)
-		return (1);
+		return (0);
 	if (mode == 1)
 	{
 		if ((*tokens)->type == TOKEN_REDIRECT_APPEND)

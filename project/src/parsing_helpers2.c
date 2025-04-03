@@ -47,3 +47,30 @@ void	free_commands(t_command *commands)
 		free_command(tmp);
 	}
 }
+
+t_command	*parse_tokens(t_token *tokens)
+{
+	t_command	*head;
+	t_command	*current;
+	t_command	*cmd;
+	int			count;
+	t_parse_ctx	ctx;
+
+	head = NULL;
+	current = NULL;
+	count = 1;
+	cmd = create_command();
+	ctx = (t_parse_ctx)
+	{
+		&cmd, &head, &current, &count
+	};
+	if (!cmd)
+		return (NULL);
+	while (tokens && process_token(&tokens, &ctx))
+		tokens = tokens->next;
+	if (!head)
+		head = cmd;
+	if (current)
+		current->next = cmd;
+	return (head);
+}

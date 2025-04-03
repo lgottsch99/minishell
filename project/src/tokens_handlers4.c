@@ -53,3 +53,10 @@ void	handle_single_quote(char **start, char **end,
 	(*end)++;
 	*start = *end;
 }
+
+void	handle_space(t_tdata *data)
+{
+	if (data->end > data->start)
+		handle_word(&data->token_ctx, &data->env_ctx);
+	data->start = ++data->end;
+}

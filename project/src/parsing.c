@@ -66,72 +66,22 @@ t_command	*create_command(void)
 	return (cmd);
 }
 
-void	print_commands(t_command *commands) { //remove whole ft later
-	while (commands)
-	{
-		printf("t_command:\n");
-		if (commands && commands->args)
-		{	for (int i = 0; commands->args[i]; i++)	
-				printf("  Arg %d: %s\n", i, commands->args[i]);
-		}
-		printf("  Input file: %s\n", commands->input_file);
-		printf("  Output file: %s\n", commands->output_file);
-		printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
-		if (commands->heredoc_file)
-			printf("Heredoc filename: %s\n", commands->heredoc_file);
-		if (commands->append_mode)
-			printf("  Append output: yes\n");
-		if (commands->is_builtin)
-			printf("  Builtin: yes\n");
-		if (commands->exec_path)
-			printf("  exec path: %s\n", commands->exec_path);
-		commands = commands->next;
-		printf("\n");
-	}
+int	handle_redirection_parsing(t_token **token, t_parse_ctx *ctx, int is_output)
+{
+	t_token	*next_token;
+
+	next_token = (*token)->next;
+	if (!next_token || next_token->type != TOKEN_WORD)
+		return (0);
+	if (!handle_redir(ctx->cmd, token, ctx->head, is_output))
+		return (0);
+	*token = next_token;
+	return (1);
 }
 
-t_command	*parse_tokens(t_token *tokens)
+int	handle_heredoc_token(t_token **token, t_parse_ctx *ctx)
 {
-	t_command	*head;
-	t_command	*current;
-	t_command	*cmd;
-	int			count;
-
-	head = NULL;
-	current = NULL;
-	count = 1;
-	cmd = create_command();
-	if (!cmd)
-		return (NULL);
-	while (tokens)
-	{
-		if (tokens->type == TOKEN_REDIRECT_HEREDOC)
-		{
-			if (!handle_heredoc_parsing(&cmd, &tokens, count, &head))
-				return (NULL);
-		}
-		else if (tokens->type == TOKEN_WORD)
-		{
-			if (!handle_word_parsing(cmd, tokens->value, &head))
-				return (NULL);
-		}
-		else if (tokens->type == TOKEN_PIPE)
-			handle_pipe_parsing(&head, &current, &cmd, &count);
-		else if (tokens->type == TOKEN_REDIRECT_IN)
-		{
-			if (!handle_redir(&cmd, &tokens, &head, 0))
-				return (NULL);
-		}
-		else if (tokens->type >= TOKEN_REDIRECT_OUT)
-		{
-			if (!handle_redir(&cmd, &tokens, &head, 1))
-				return (NULL);
-		}
-		tokens = tokens->next;
-	}
-	if (!head)
-		head = cmd;
-	if (current)
-		current->next = cmd;
-	return (head);
+	if (!handle_heredoc_parsing(ctx->cmd, token, *(ctx->count), ctx->head))
+		return (0);
+	return (1);
 }

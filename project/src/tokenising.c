@@ -12,81 +12,94 @@
 
 #include "../includes/minishell.h"
 
+int	data_init(t_tdata *data, char *input)
+{
+	data->head = NULL;
+	data->current = NULL;
+	data->token = NULL;
+	data->start = input;
+	data->end = input;
+	data->token_ctx = (t_tokenizeContext){&data->start,
+		&data->end, &data->head, &data->current};
+	while (ft_isspace(*data->start))
+		data->start++;
+	data->end = data->start;
+	if (!*(data->start))
+	{
+		data->token = create_token(NULL, TOKEN_END);
+		add_token(&data->head, &data->current, data->token);
+		return (0);
+	}
+	return (1);
+}
+
+void	handle_quotes(t_tdata *data, int last_exit_status, char **envp)
+{
+	if (data->end > data->start)
+		handle_word(&data->token_ctx, &data->env_ctx);
+	if (*data->end == '"')
+	{
+		data->quote_ctx = (t_quote_context)
+		{
+			.start = &data->start,
+			.end = &data->end,
+			.head = &data->head,
+			.current = &data->current,
+			.last_exit_status = last_exit_status,
+			.envp = envp
+		};
+		handle_double_quote(&data->quote_ctx);
+	}
+	else
+		handle_single_quote(&data->start, &data->end,
+			&data->head, &data->current);
+}
+
+void	handle_env(t_tdata *data, int last_exit_status, char **envp)
+{
+	data->env_ctx = (t_envVarContext){&data->start, &data->end, &data->head,
+		&data->current, last_exit_status, envp, 1};
+	handle_env_var(&data->env_ctx);
+	while (*data->end && !ft_isspace(*data->end) && *data->end != '|'
+		&& *data->end != '>' && *data->end != '<' && *data->end != '=')
+		(*data->end)++;
+	data->start = data->end;
+}
+
+static void	handle_redirections(t_tdata *data)
+{
+	if (*data->end == '>')
+		handle_redir_more(&data->start, &data->end,
+			&data->head, &data->current);
+	else if (*data->end == '<')
+		handle_redir_less(&data->start, &data->end,
+			&data->head, &data->current);
+}
+
 t_token	*tokenize(char *input, int last_exit_status, char **envp)
 {
-	t_token			*head;
-	t_token			*current;
-	t_token			*token;
-	char			*start;
-	char			*end;
-	t_envVarContext	env_ctx;
-	t_tokenizeContext	token_ctx = {&start, &end, &head, &current};
-	t_quote_context	quote_ctx;
+	t_tdata	data;
 
-	head = NULL;
-	current = NULL;
-	token = NULL;
-	start = input;
-	end = input;
-	while (ft_isspace(*start))
-		start++;
-	end = start;
-	if (!*start)
-	{
-		token = create_token(NULL, TOKEN_END);
-		add_token(&head, &current, token);
+	if (!data_init(&data, input))
 		return (NULL);
-	}
-	while (*end)
+	while (*(data.end))
 	{
-		if (ft_isspace(*end))
-		{
-			if (end > start)
-				handle_word(&token_ctx, &env_ctx);
-			start = ++end;
-		}
-		else if (*end == '|')
-			handle_pipe(&start, &end, &head, &current);
-		else if (*end == '>')
-			handle_redir_more(&start, &end, &head, &current);
-		else if (*end == '<')
-			handle_redir_less(&start, &end, &head, &current);
-		else if (*end == '"' || *end == '\'')
-		{
-			if (end > start)
-				handle_word(&token_ctx, &env_ctx);
-			if (*end == '"')
-			{
-				quote_ctx = (t_quote_context)
-				{
-					.start = &start,
-					.end = &end,
-					.head = &head,
-					.current = &current,
-					.last_exit_status = last_exit_status,
-					.envp = envp
-				};
-				handle_double_quote(&quote_ctx);
-			}
-			else
-				handle_single_quote(&start, &end, &head, &current);
-		}
-		else if (*end == '$')
-		{
-			env_ctx = (t_envVarContext){&start, &end, &head,
-				&current, last_exit_status, envp, 1};
-			handle_env_var(&env_ctx);
-			while (*end && !ft_isspace(*end) && *end != '|'
-				&& *end != '>' && *end != '<' && *end != '=')
-				(*end)++;
-			start = end;
-		}
+		if (ft_isspace(*data.end))
+			handle_space(&data);
+		else if (*data.end == '|')
+			handle_pipe(&data.start, &data.end, &data.head, &data.current);
+		else if (*data.end == '>' || *data.end == '<')
+			handle_redirections(&data);
+		else if (*data.end == '"' || *data.end == '\'')
+			handle_quotes(&data, last_exit_status, envp);
+		else if (*data.end == '$')
+			handle_env(&data, last_exit_status, envp);
 		else
-			handle_word(&token_ctx, &env_ctx);
+			handle_word(&data.token_ctx, &data.env_ctx);
 	}
-	if (start != end)
-		handle_word(&token_ctx, &env_ctx);
-	token = create_token(NULL, TOKEN_END);
-	add_token(&head, &current, token);
-	return (head);
+	if (data.start != data.end)
+		handle_word(&data.token_ctx, &data.env_ctx);
+	data.token = create_token(NULL, TOKEN_END);
+	add_token(&data.head, &data.current, data.token);
+	return (data.head);
 }
