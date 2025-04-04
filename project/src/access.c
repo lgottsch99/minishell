@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 15:46:29 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/25 16:57:46 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:21:45 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,17 @@ int	check_files(t_command *cmd, int *exit_stat)
 	return (0);
 }
 
-int	loop_check_access(t_command *tmp, t_env *envp, int *exit_stat)
+int	loop_check_access(t_command *tmp, t_env *envp, t_pipeline *pipeline)
 {
+	int	*exit_stat;
+
+	exit_stat = pipeline->exit_stat;
 	if (tmp->is_builtin == 0)
 		check_path(tmp, envp);
 	if (!tmp->exec_path && tmp->is_builtin == 0)
 	{
 		printf("minishell: cant find command\n");
-		*exit_stat = 127;
+		*pipeline->exit_stat = 127;
 		return (1);
 	}
 	if (tmp->is_builtin == 0

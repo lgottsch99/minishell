@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:55:48 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/04/01 14:27:18 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:53:43 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,11 +158,10 @@ typedef struct s_parse_ctx
 
 //---------- FUNCTIONS ------------------------------
 
-//main.c
-
 //access.c
 int			check_files(t_command *cmd, int *exit_stat);
-int			loop_check_access(t_command *tmp, t_env *envp, int *exit_stat);
+int			loop_check_access(t_command *tmp, t_env *envp,
+				t_pipeline *pipeline);
 
 //alloc_free_exec
 int			**alloc_fd(int nr_cmd);
@@ -187,7 +186,7 @@ int			echo(t_command *cmd_list);
 //builtin exit
 int			exit_shell(t_command *cmd, t_env *envp,
 				t_pipeline *pipeline, int *exit_stat);
-	//builtin exit helpers
+//builtin exit helpers
 int			check_only_digits(t_command *cmd);
 void		free_rest_exit(t_command *cmd, t_env *envp, int stat);
 int			check_first_arg(char *arg);
@@ -195,10 +194,9 @@ int			check_first_arg(char *arg);
 //builtin export
 int			eexport(t_command *cmd, t_env *envp);
 t_env		*check_existing_env(char *arg_name, t_env *envp);
-	//buitlin export helpers
+//buitlin export helpers
 char		*get_value_only(char *arg);
 char		*get_name_only(char *str);
-// int		check_shellvar_rules(t_command *cmd);
 int			check_shellvar_rules(char *arg);
 
 //builtin unset
@@ -267,16 +265,12 @@ void		close_parent_fds(t_pipeline *pipeline);
 void		wait_children(t_pipeline *pipeline, t_env *envp);
 
 //heredoc_helpers
-// void	heredoc_input(int fd, char *delimetr);
 void		heredoc_input(int fd, char *delimetr);
-
 char		*read_heredoc(char *delimetr, int count);
 
 //init_start
 void		print_start(void);
 int			init_shell(t_env **environ, char *envp[]);
-
-//main
 
 //redirections
 int			red_infile(char	*input_file);

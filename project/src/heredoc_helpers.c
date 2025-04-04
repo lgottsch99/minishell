@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 19:08:08 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/08 19:08:11 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:14:32 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ char	*read_heredoc(char *delimetr, int count)
 	str_nr = ft_itoa(count);
 	heredoc_filename = ft_strjoin("heredoc", str_nr);
 	free(str_nr);
-	printf("\n\nheredoc filename: %s\n", heredoc_filename);
 	fd = open(heredoc_filename, O_RDWR | O_CREAT | O_EXCL, 0666);
 	if (fd == -1)
 	{
@@ -51,7 +50,6 @@ char	*read_heredoc(char *delimetr, int count)
 		perror("Failed to create temporary file");
 		return (NULL);
 	}
-	printf("opened file, del: %s\n", delimetr);
 	heredoc_input(fd, delimetr);
 	return (heredoc_filename);
 }

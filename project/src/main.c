@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 17:16:20 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/04/01 14:44:29 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:51:42 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,5 +193,29 @@ int	main(int argc, char *argv[], char *envp[])
 // 			free_cmd_list(&commands);
 // 			commands = NULL;
 // 		}
+// 	}
+// }
+
+// void	print_commands(t_command *commands) { //remove whole ft later
+// 	while (commands)
+// 	{ //////rm
+// 		printf("t_command:\n");
+// 		if (commands && commands->args)
+// 		{	for (int i = 0; commands->args[i]; i++)	
+// 				printf("  Arg %d: %s\n", i, commands->args[i]);
+// 		}
+// 		printf("  Input file: %s\n", commands->input_file);
+// 		printf("  Output file: %s\n", commands->output_file);
+// 		printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
+// 		if (commands->heredoc_file)
+// 			printf("Heredoc filename: %s\n", commands->heredoc_file);
+// 		if (commands->append_mode)
+// 			printf("  Append output: yes\n");
+// 		if (commands->is_builtin)
+// 			printf("  Builtin: yes\n");
+// 		if (commands->exec_path)
+// 			printf("  exec path: %s\n", commands->exec_path);
+// 		commands = commands->next;
+// 		printf("\n");
 // 	}
 // }

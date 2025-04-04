@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:40 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/25 17:18:15 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:50:57 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,14 @@ void	add_argument(t_command *command, char *arg)
 
 int	is_builtin(char *arg)
 {
-	if (ft_strcmp(arg, "echo") == 0 || ft_strcmp(arg, "cd") == 0
-		|| ft_strcmp(arg, "pwd") == 0 || ft_strcmp(arg, "export") == 0
-		|| ft_strcmp(arg, "unset") == 0 || ft_strcmp(arg, "env") == 0
-		|| ft_strcmp(arg, "exit") == 0)
+	if (arg[0] && (ft_strncmp(arg, "env", ft_strlen(arg)) == 0
+			|| ft_strncmp(arg, "echo", ft_strlen(arg)) == 0
+			|| ft_strncmp(arg, "cd", ft_strlen(arg)) == 0
+			|| ft_strncmp(arg, "pwd", ft_strlen(arg)) == 0
+			|| ft_strncmp(arg, "export", ft_strlen(arg)) == 0
+			|| ft_strncmp(arg, "unset", ft_strlen(arg)) == 0
+			|| ft_strncmp(arg, "exit", ft_strlen(arg)) == 0)
+	)
 		return (1);
 	return (0);
 }

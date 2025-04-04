@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:26:09 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/04/01 14:37:13 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:55:00 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ static void	wait_more(int status, t_pipeline *pipeline)
 	}
 }
 
-//1 break, 2 continue
 static int	handle_wait_error(t_pipeline *pipeline, t_env *envp)
 {
 	if (errno == EINTR)

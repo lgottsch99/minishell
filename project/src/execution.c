@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/01 18:09:12 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/04/01 14:36:52 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:55:08 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	check_access_and_child(t_command *tmp, t_env *envp,
 	t_pipeline *pipeline, int i)
 {
 	signal(SIGINT, SIG_DFL);
-	if (loop_check_access(tmp, envp, pipeline->exit_stat) != 0)
+	if (loop_check_access(tmp, envp, pipeline) != 0)
 	{
 		printf("access error\n");
 		return (1);
@@ -56,7 +56,8 @@ static void	pipeline_loop(t_pipeline *pipeline, t_env *envp)
 		if (pipeline->pid[i] == 0)
 		{
 			if (check_access_and_child(tmp, envp, pipeline, i) == 1)
-				return ;
+				free_everything_pipeline_exit(envp, pipeline,
+					*pipeline->exit_stat);
 		}
 		else
 		{
