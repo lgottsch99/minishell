@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:02:32 by dvasilen          #+#    #+#             */
-/*   Updated: 2025/03/18 15:38:48 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/06 14:18:02 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,5 +101,6 @@ t_token	*tokenize(char *input, int last_exit_status, char **envp)
 		handle_word(&data.token_ctx, &data.env_ctx);
 	data.token = create_token(NULL, TOKEN_END);
 	add_token(&data.head, &data.current, data.token);
+
 	return (data.head);
 }

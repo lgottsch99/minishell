@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_handlers4.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-20 21:44:47 by dvasilen          #+#    #+#             */
-/*   Updated: 2025-03-20 21:44:47 by dvasilen         ###   ########.fr       */
+/*   Created: 2025/03/20 21:44:47 by dvasilen          #+#    #+#             */
+/*   Updated: 2025/04/06 15:18:04 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,26 @@ void	handle_single_quote(char **start, char **end,
 	t_token **head, t_token **current)
 {
 	char	*value;
+	char	*tmp;
 	t_token	*token;
+	int		check;
 
 	(*end)++;
 	*start = *end;
+	tmp = *start;
+	check = 0;
 	while (**end && **end != '\'')
+	{
+		if (!ft_isspace(**end))
+			check = 1;
 		(*end)++;
-	value = ft_strndup(*start, *end - *start);
-	token = create_token(value, TOKEN_WORD);
-	add_token(head, current, token);
+	}
+	if (*end != *start && check != 0)
+	{
+		value = ft_strndup(*start, *end - *start);
+		token = create_token(value, TOKEN_WORD);
+		add_token(head, current, token);
+	}
 	(*end)++;
 	*start = *end;
 }

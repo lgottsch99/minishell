@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_handlers3.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-20 20:55:09 by dvasilen          #+#    #+#             */
-/*   Updated: 2025-03-20 20:55:09 by dvasilen         ###   ########.fr       */
+/*   Created: 2025/03/20 20:55:09 by dvasilen          #+#    #+#             */
+/*   Updated: 2025/04/06 14:08:41 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,22 @@
 t_token	*create_token(char *value, t_token_type type)
 {
 	t_token	*token;
+
+	///
+	int y;
+	size_t i;
+
+	y = 0;
+	i = 0;
+	while (i < ft_strlen(value))
+	{
+		if (ft_isspace(value[i]) == 0)
+			y = 1; //indi sth NOT space
+		i++;
+	}
+	if (y == 0)
+		return (NULL);
+	//
 
 	token = malloc(sizeof(t_token));
 	if (!token)

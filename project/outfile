@@ -1,0 +1,10 @@
+includes
+lib
+libft
+lol.c
+Makefile
+minishell
+minishell.dSYM
+outfile
+src
+valgrind.supp

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_handlers.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dvasilen <dvasilen@student.42.fr>          #+#  +:+       +#+        */
+/*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-03-09 13:55:16 by dvasilen          #+#    #+#             */
-/*   Updated: 2025-03-09 13:55:16 by dvasilen         ###   ########.fr       */
+/*   Created: 2025/03/09 13:55:16 by dvasilen          #+#    #+#             */
+/*   Updated: 2025/04/06 15:40:12 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,15 @@ void	handle_redir_more(char **start, char **end,
 
 static void	handle_empty_quotes(t_quote_context *ctx)
 {
-	t_token	*token;
+	// t_token	*token;
 
 	while (*(*ctx->end) == '"')
 		(*ctx->end)++;
-	if (!(*ctx->current) || (*ctx->current)->type != TOKEN_WORD)
-	{
-		token = create_token(ft_strdup(""), TOKEN_WORD);
-		add_token(ctx->head, ctx->current, token);
-	}
+	// if (!(*ctx->current) || (*ctx->current)->type != TOKEN_WORD)
+	// {
+	// 	token = create_token(ft_strdup(""), TOKEN_WORD);
+	// 	add_token(ctx->head, ctx->current, token);
+	// }
 	*ctx->start = *ctx->end;
 }
 
@@ -95,7 +95,9 @@ void	handle_double_quote(t_quote_context *ctx)
 {
 	char	buffer[1024];
 	int		buffer_index;
+	int		check;
 
+	check = 0;
 	(*ctx->end)++;
 	*ctx->start = *ctx->end;
 	if (**ctx->end == '"')
@@ -106,13 +108,26 @@ void	handle_double_quote(t_quote_context *ctx)
 		if (**ctx->end == '$')
 			process_env_var(ctx, buffer, &buffer_index);
 		else
+		{
+			if (!ft_isspace(**ctx->end))
+				check = 1;
 			(*ctx->end)++;
+		}
 	}
-	if (*ctx->end > *ctx->start)
+	if (*ctx->end > *ctx->start){
 		ft_strncpy(buffer + buffer_index, *ctx->start, *ctx->end - *ctx->start);
+		printf("ft_strncpy\n");
+	}
 	buffer[buffer_index + (*ctx->end - *ctx->start)] = '\0';
+	printf("buffer is created\n");
+	if (**ctx->end != '"' || check == 0)
+	{
+		(*ctx->end)++;
+		*ctx->start = *ctx->end;
+		return ;
+	}
 	add_token(ctx->head, ctx->current,
-		create_token(ft_strdup(buffer), TOKEN_WORD));
+	create_token(ft_strdup(buffer), TOKEN_WORD));
 	(*ctx->end)++;
 	*ctx->start = *ctx->end;
 	while (**ctx->end == '"')

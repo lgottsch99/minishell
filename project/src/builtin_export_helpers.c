@@ -6,7 +6,7 @@
 /*   By: lgottsch <lgottsch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 13:36:59 by lgottsch          #+#    #+#             */
-/*   Updated: 2025/03/21 18:32:56 by lgottsch         ###   ########.fr       */
+/*   Updated: 2025/04/06 15:44:40 by lgottsch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ char	*get_value_only(char *arg)
 	value = ft_substr(arg, index + 1, ft_strlen(arg) - index);
 	if (!value)
 		return (NULL);
-	printf("new value: %s\n", value);
 	return (value);
 }
 
