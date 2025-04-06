@@ -54,21 +54,14 @@ void	handle_redir_more(char **start, char **end,
 	*start = ++(*end);
 }
 
-static void	handle_empty_quotes(t_quote_context *ctx)
+void	handle_empty_quotes(t_quote_context *ctx)
 {
-	// t_token	*token;
-
 	while (*(*ctx->end) == '"')
 		(*ctx->end)++;
-	// if (!(*ctx->current) || (*ctx->current)->type != TOKEN_WORD)
-	// {
-	// 	token = create_token(ft_strdup(""), TOKEN_WORD);
-	// 	add_token(ctx->head, ctx->current, token);
-	// }
 	*ctx->start = *ctx->end;
 }
 
-static void	process_env_var(t_quote_context *ctx, char *buffer, int *buf_idx)
+void	process_env_var(t_quote_context *ctx, char *buffer, int *buf_idx)
 {
 	char			*value;
 	t_envVarContext	env_ctx;
@@ -97,29 +90,13 @@ void	handle_double_quote(t_quote_context *ctx)
 	int		buffer_index;
 	int		check;
 
-	check = 0;
-	(*ctx->end)++;
-	*ctx->start = *ctx->end;
+	init_double_quote_handling(ctx, &buffer_index, &check);
 	if (**ctx->end == '"')
-		return (handle_empty_quotes(ctx));
-	buffer_index = 0;
-	while (**ctx->end && **ctx->end != '"')
-	{
-		if (**ctx->end == '$')
-			process_env_var(ctx, buffer, &buffer_index);
-		else
-		{
-			if (!ft_isspace(**ctx->end))
-				check = 1;
-			(*ctx->end)++;
-		}
-	}
-	if (*ctx->end > *ctx->start){
+		return ;
+	process_double_quote_content(ctx, buffer, &buffer_index, &check);
+	if (*ctx->end > *ctx->start)
 		ft_strncpy(buffer + buffer_index, *ctx->start, *ctx->end - *ctx->start);
-		printf("ft_strncpy\n");
-	}
 	buffer[buffer_index + (*ctx->end - *ctx->start)] = '\0';
-	printf("buffer is created\n");
 	if (**ctx->end != '"' || check == 0)
 	{
 		(*ctx->end)++;
@@ -127,7 +104,7 @@ void	handle_double_quote(t_quote_context *ctx)
 		return ;
 	}
 	add_token(ctx->head, ctx->current,
-	create_token(ft_strdup(buffer), TOKEN_WORD));
+		create_token(ft_strdup(buffer), TOKEN_WORD));
 	(*ctx->end)++;
 	*ctx->start = *ctx->end;
 	while (**ctx->end == '"')

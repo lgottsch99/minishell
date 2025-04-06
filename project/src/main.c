@@ -47,17 +47,14 @@ t_command	*parsing(char **input, t_env *environ, int *exit_stat)
 	free_2d_char(env_array);
 	free(*input);
 	*input = NULL;
-	print_tokens(tokens); //r,
 	if (tokens)
 	{
-		
 		commands = parse_tokens(tokens);
 		free_tokens(tokens);
 		tokens = NULL;
 		if (!commands)
 			return (NULL);
 	}
-	print_commands(commands); //rm
 	return (commands);
 }
 
@@ -199,26 +196,26 @@ int	main(int argc, char *argv[], char *envp[])
 // 	}
 // }
 
-void	print_commands(t_command *commands) { //remove whole ft later
-	while (commands)
-	{ //////rm
-		printf("t_command:\n");
-		if (commands && commands->args)
-		{	for (int i = 0; commands->args[i]; i++)	
-				printf("  Arg %d: %s\n", i, commands->args[i]);
-		}
-		printf("  Input file: %s\n", commands->input_file);
-		printf("  Output file: %s\n", commands->output_file);
-		printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
-		if (commands->heredoc_file)
-			printf("Heredoc filename: %s\n", commands->heredoc_file);
-		if (commands->append_mode)
-			printf("  Append output: yes\n");
-		if (commands->is_builtin)
-			printf("  Builtin: yes\n");
-		if (commands->exec_path)
-			printf("  exec path: %s\n", commands->exec_path);
-		commands = commands->next;
-		printf("\n");
-	}
-}
+// void	print_commands(t_command *commands) { //remove whole ft later
+// 	while (commands)
+// 	{ //////rm
+// 		printf("t_command:\n");
+// 		if (commands && commands->args)
+// 		{	for (int i = 0; commands->args[i]; i++)	
+// 				printf("  Arg %d: %s\n", i, commands->args[i]);
+// 		}
+// 		printf("  Input file: %s\n", commands->input_file);
+// 		printf("  Output file: %s\n", commands->output_file);
+// 		printf("Heredoc del.: %s\n", commands->heredoc_delimetr);
+// 		if (commands->heredoc_file)
+// 			printf("Heredoc filename: %s\n", commands->heredoc_file);
+// 		if (commands->append_mode)
+// 			printf("  Append output: yes\n");
+// 		if (commands->is_builtin)
+// 			printf("  Builtin: yes\n");
+// 		if (commands->exec_path)
+// 			printf("  exec path: %s\n", commands->exec_path);
+// 		commands = commands->next;
+// 		printf("\n");
+// 	}
+// }

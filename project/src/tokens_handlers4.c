@@ -71,3 +71,33 @@ void	handle_space(t_tdata *data)
 		handle_word(&data->token_ctx, &data->env_ctx);
 	data->start = ++data->end;
 }
+
+void	init_double_quote_handling(t_quote_context *ctx,
+			int *buffer_index, int *check)
+{
+	*check = 0;
+	(*ctx->end)++;
+	*ctx->start = *ctx->end;
+	*buffer_index = 0;
+	if (**ctx->end == '"')
+	{
+		handle_empty_quotes(ctx);
+		return ;
+	}
+}
+
+void	process_double_quote_content(t_quote_context *ctx, char *buffer,
+			int *buffer_index, int *check)
+{
+	while (**ctx->end && **ctx->end != '"')
+	{
+		if (**ctx->end == '$')
+			process_env_var(ctx, buffer, buffer_index);
+		else
+		{
+			if (!ft_isspace(**ctx->end))
+				*check = 1;
+			(*ctx->end)++;
+		}
+	}
+}

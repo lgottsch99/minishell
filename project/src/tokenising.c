@@ -101,6 +101,5 @@ t_token	*tokenize(char *input, int last_exit_status, char **envp)
 		handle_word(&data.token_ctx, &data.env_ctx);
 	data.token = create_token(NULL, TOKEN_END);
 	add_token(&data.head, &data.current, data.token);
-
 	return (data.head);
 }

@@ -323,6 +323,12 @@ int			process_token(t_token **token, t_parse_ctx *ctx);
 int			handle_redirection_parsing(t_token **token, t_parse_ctx *ctx,
 				int is_output);
 int			handle_heredoc_token(t_token **token, t_parse_ctx *ctx);
+void		init_double_quote_handling(t_quote_context *ctx,
+				int *buffer_index, int *check);
+void		process_double_quote_content(t_quote_context *ctx, char *buffer,
+				int *buffer_index, int *check);
+void		handle_empty_quotes(t_quote_context *ctx);
+void		process_env_var(t_quote_context *ctx, char *buffer, int *buf_idx);
 
 //signals
 void		setup_signals(void);

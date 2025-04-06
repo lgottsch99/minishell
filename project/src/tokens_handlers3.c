@@ -15,23 +15,19 @@
 t_token	*create_token(char *value, t_token_type type)
 {
 	t_token	*token;
-
-	///
-	int y;
-	size_t i;
+	int		y;
+	size_t	i;
 
 	y = 0;
 	i = 0;
 	while (i < ft_strlen(value))
 	{
 		if (ft_isspace(value[i]) == 0)
-			y = 1; //indi sth NOT space
+			y = 1;
 		i++;
 	}
 	if (y == 0)
 		return (NULL);
-	//
-
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
