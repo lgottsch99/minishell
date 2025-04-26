@@ -41,13 +41,11 @@ void	handle_single_quote(char **start, char **end,
 	t_token **head, t_token **current)
 {
 	char	*value;
-	char	*tmp;
 	t_token	*token;
 	int		check;
 
 	(*end)++;
 	*start = *end;
-	tmp = *start;
 	check = 0;
 	while (**end && **end != '\'')
 	{
